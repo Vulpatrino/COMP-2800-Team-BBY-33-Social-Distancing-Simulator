@@ -11,17 +11,13 @@ main {
         "footer footer footer";
     height:100vh;
 }
-main > *{
-    border:solid black 1px;
-}
 
 header {
     grid-area: header;
     display:flex;
     justify-content: center;
 
-    background-color: black;
-    color: white;
+    background-color: grey;
 }
 
 #play {
@@ -29,6 +25,7 @@ header {
     display:flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
 
 #leaderboard {
@@ -37,7 +34,9 @@ header {
     flex-direction: column;
     align-items: center;
 
-    
+    background-color: black;
+    color:white;
+
 }
 
 #account {
@@ -45,10 +44,37 @@ header {
     display:flex;
     flex-direction: column;
     align-items: center;    
+
+    background-color: black;
+    color:white;
 }
 
 footer {
     grid-area: footer;
+    
+    background-color: grey;
+}
+#logo{
+    max-height:100%;
+    max-width: 100%;
+    margin:10px;
+}
+#play > input{
+    height:25px;
+    width:100px;
+    margin:10px;
+    position: relative;
+    top:-10%;
+
+    background-color: white;
+    border:1px black solid;
+    border-radius: 3px;;
+}
+#play > input:hover{  
+    background-color: black;
+    color:white;
+    border:1px black solid;
+    border-radius: 3px;;
 }
 @media screen and (max-width: 1024px){
     main{
@@ -57,8 +83,8 @@ footer {
         "play play"
         "account leaderboard"
         "footer footer";
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: 10vh 90vh 90vh 10vh;
+    grid-template-columns: repeat(2, 50vw);
+    grid-template-rows: 20vh 80vh 90vh 10vh;
     }
 }
 @media screen and (max-width: 450px){
@@ -69,7 +95,11 @@ footer {
         "account"
         "leaderboard"
         "footer";
-    grid-template-columns: 1fr;
-    grid-template-rows: 10vh 90vh 100vh 100vh 10vh;
+    grid-template-columns: 100vw;
+    grid-template-rows: 20vh 80vh 100vh 90vh 10vh;
+    }
+    #leaderboard{
+        background-color: white;
+        color:initial;
     }
 }
