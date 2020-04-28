@@ -18,13 +18,9 @@ document.addEventListener("keydown", function (event) {
 })
 
 function Player() {
-    img = document.createElement("img");
-    img.src = "images/128.png";
-    img.style = "position:absolute; top:0px; left:0px;"
-    this.sprite = img;
+    let img = document.getElementById("player");
     this.x = 0;
     this.y = 0;
-    document.body.appendChild(img);
     this.moveLeft = function () {
         this.x -= 2;
         img.style.left = this.x + "px";
