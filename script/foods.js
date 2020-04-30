@@ -4,10 +4,10 @@
  * @author: Jaedon Braun
  */
 
-/** Array of all food images. */
-let foodImages = [];
+/** Array of all food images.*/
+let foodImages = ["images/food.jpg"];
 /** Array of all food names. EACH NAME SHOULD CORRESPOND TO THE SAME IMAGE ABOVE.*/
-let foodNames = [];
+let foodNames = ["Banana"];
 
 /**
  * Array of all possible shopping lists.
@@ -16,6 +16,7 @@ let foodNames = [];
 let listsPossible = [
     []
 ];
+
 /**
  * Current shopping list.
  * Should be populated with Food objects.
@@ -23,7 +24,7 @@ let listsPossible = [
 let list = [];
 
 /**
- * Food Object
+ * FOOD OBJECT
  */
 class Food {
 
@@ -61,6 +62,14 @@ class Food {
     getValue() {
         return this.value;
     }
+
+    /**
+     * Get the name of this food.
+     * @return name
+     */
+    getName() {
+        return this.name;
+    }
 }
 
 /**
@@ -96,5 +105,6 @@ function CheckList(shelfFood) {
  */
 function UpdateList(index) {
     list[index].setCollected();
+    console.log("Crossed off " + list[index].getName);
     //TODO: Cross off item from visual/HTML version of shopping list.
 }
