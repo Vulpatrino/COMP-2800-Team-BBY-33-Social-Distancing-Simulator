@@ -35,7 +35,7 @@
             this.load.image('background', 'images/social-distancing.jpg');
             this.load.image('logo', 'images/logo.png');
             this.load.image('ground', 'images/128.png');
-            this.load.image('bomb', 'assets/bomb.png');
+            this.load.image('star', 'images/food.jpg');
             this.load.spritesheet('dude',
                 'images/mario.png', {
                     frameWidth: 32,
@@ -91,6 +91,24 @@
             });
 
             this.physics.add.collider(player, platforms);
+
+            stars = this.physics.add.group({
+                key: 'star',
+                repeat: 11,
+                setXY: {
+                    x: 12,
+                    y: 0,
+                    stepX: 70
+                }
+            });
+
+            stars.children.iterate(function (child) {
+
+                child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+
+            });
+
+            this.physics.add.overlap(player, stars, collectStar, null, this);
         }
 
         function update() {
@@ -99,24 +117,20 @@
                 player.setVelocityX(-160);
 
                 player.anims.play('left', true);
-            }
-            else if (cursors.right.isDown) {
+            } else if (cursors.right.isDown) {
                 player.setVelocityX(160);
 
                 player.anims.play('right', true);
-            }
-            else {
+            } else {
                 player.setVelocityX(0);
 
                 player.anims.play('turn');
             }
             if (cursors.up.isDown) {
                 player.setVelocityY(-160);
-            }
-            else if (cursors.down.isDown) {
+            } else if (cursors.down.isDown) {
                 player.setVelocityY(160);
-            }
-            else {
+            } else {
                 player.setVelocityY(0);
             }
 
@@ -124,6 +138,11 @@
                 player.setVelocityY(0);
             }
         }
+
+        function collectStar (player, star)
+{
+    star.disableBody(true, true);
+}
     </script>
 </body>
 
