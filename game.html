@@ -55,6 +55,18 @@
                     frameHeight: 48
                 }
             );
+<<<<<<< HEAD
+=======
+            
+            this.load.spritesheet('food',
+                'images/food.png', {
+                    frameWidth: 49,
+                    frameHeight:49
+                    
+                }
+            );
+            
+>>>>>>> b2fa8a1e4126252801a4ef303cbfc17375f5a76d
         }
 
         var enemy;
@@ -121,11 +133,32 @@
             this.physics.add.collider(player, aisles);
 
             food = this.physics.add.staticGroup();
+<<<<<<< HEAD
             food.create(45, 45, 'bannana');
             food.create(545, 400, 'bannana');
             food.create(1020, 600, 'bannana');
 
 
+=======
+            var i;
+            var j;
+            var h =45;
+            var w =60;
+            var foodcount =0;
+            for (i = 0; i < 10; i++) {
+                for(j=0; j<13;j++){
+                    food.create(w , h, 'food',foodcount);
+                    foodcount +=1;
+                    h += 50;
+                    if(foodcount > 99){
+                        foodcount =0;
+                    }
+                    foodcount +=1;
+                }
+                w += 120;
+                h =45;
+            }
+>>>>>>> b2fa8a1e4126252801a4ef303cbfc17375f5a76d
 
             this.physics.add.overlap(player, food, collectFood, null, this);
 
