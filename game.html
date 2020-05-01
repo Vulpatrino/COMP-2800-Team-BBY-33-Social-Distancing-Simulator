@@ -70,6 +70,7 @@
         var walls;
         var score = 0;
         var scoreText;
+        var gameOverText;
 
         function create() {
 
@@ -143,16 +144,23 @@
                 fill: '#000'
             });
 
+            gameOverText = this.add.text(600, 400, "You Win!", {
+                fontSize: "50px",
+                fill: "#000"
+            });
+            gameOverText.setOrigin(0.5);
+            gameOverText.visible = false;
+
         }
 
         function update() {
             cursors = this.input.keyboard.createCursorKeys();
             if (cursors.left.isDown) {
-                player.setVelocityX(-160);
+                player.setVelocityX(-300);
 
                 player.anims.play('left', true);
             } else if (cursors.right.isDown) {
-                player.setVelocityX(160);
+                player.setVelocityX(300);
 
                 player.anims.play('right', true);
             } else {
@@ -161,9 +169,9 @@
                 player.anims.play('turn');
             }
             if (cursors.up.isDown) {
-                player.setVelocityY(-160);
+                player.setVelocityY(-300);
             } else if (cursors.down.isDown) {
-                player.setVelocityY(160);
+                player.setVelocityY(300);
             } else {
                 player.setVelocityY(0);
             }
@@ -177,6 +185,9 @@
             food.disableBody(true, true);
             score += 10;
             scoreText.setText('Score: ' + score);
+            if(score > 20){
+                gameOverText.visible = true;
+            }
 
         }   
     </script>
