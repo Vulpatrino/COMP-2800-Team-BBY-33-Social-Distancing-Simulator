@@ -40,7 +40,7 @@
             <img src="images/logo.png" alt="Logo" id="logo">
         </header>
         <section id="play">
-            <input type="button" value="Play">
+            <input type="button" value="Play" onclick="window.open('game.html','_self')">
             <input type="button" value="Tutorial">
             <input type="button" value="logout" onclick = "logout()">
         </section>
@@ -76,8 +76,12 @@
             <h5>Footer</h5>
         </footer>
     </main>
+    <!-- Firebase Scripts -->
     <script src="script/create_user.js"></script>
     <script src="script/logout.js"></script>
+    <!-- Game Scripts -->
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
+    <script src="script/game.js"></script>
     <script>createUser();</script>
 </body>
 
