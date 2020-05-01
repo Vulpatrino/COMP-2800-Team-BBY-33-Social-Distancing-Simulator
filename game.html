@@ -40,6 +40,7 @@
         };
 
         var game = new Phaser.Game(config);
+        var enemyArray = [];
 
 
         function preload() {
@@ -52,6 +53,12 @@
                 'images/mario.png', {
                     frameWidth: 32,
                     frameHeight: 48
+                }
+            );
+            this.load.spritesheet('enemy',
+                'images/trump_run_resized.png', {
+                    frameWidth: 66.66666666666666,
+                    frameHeight: 66.75,
                 }
             );
             
@@ -145,6 +152,62 @@
                 w += 120;
                 h =45;
             }
+            
+            enemies = this.physics.add.group();
+            this.physics.add.collider(player, enemies);
+            this.physics.add.collider(enemies, enemies);
+            this.physics.add.collider(enemies, walls);
+            this.physics.add.collider(enemies, aisles);
+
+            var i;
+            for (i = 0; i < 11; i++) {
+                var x = Phaser.Math.Between(100, 700);
+                var y = Phaser.Math.Between(100, 500);
+                var enemy = enemies.create(x, y, 'enemy');
+                enemy.setCollideWorldBounds(true);
+                enemyArray.push(enemy);
+            }
+
+            this.anims.create({
+                key: 'eRight',
+                frames: this.anims.generateFrameNumbers('enemy', {
+                    start: 6,
+                    end: 11
+                }),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            this.anims.create({
+                key: 'eLeft',
+                frames: this.anims.generateFrameNumbers('enemy', {
+                    start: 18,
+                    end: 23
+                }),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            this.anims.create({
+                key: 'eUp',
+                frames: this.anims.generateFrameNumbers('enemy', {
+                    start: 12,
+                    end: 17
+                }),
+                frameRate: 10,
+                repeat: -1
+            });
+
+            this.anims.create({
+                key: 'eDown',
+                frames: this.anims.generateFrameNumbers('enemy', {
+                    start: 0,
+                    end: 5
+                }),
+                frameRate: 10,
+                repeat: -1
+            });
+            
 
             this.physics.add.overlap(player, food, collectFood, null, this);
 
@@ -162,6 +225,7 @@
 
         }
 
+        var count = 0;
         function update() {
             cursors = this.input.keyboard.createCursorKeys();
             if (cursors.left.isDown) {
@@ -188,8 +252,44 @@
             if (cursors.up.isDown && player.body.touching.down) {
                 player.setVelocityY(0);
             }
+
+            if (count++ == 100) {
+                enemyMove();
+                count = 0;
+            }
         }
 
+        function enemyMove () {
+            var i;
+            for (i = 0; i < enemyArray.length; i++) {
+                var speed = Phaser.Math.Between(-100, 100);
+                var choice = Phaser.Math.Between(0, 1);
+                if (choice == 0) {
+                    enemyArray[i].setVelocityX(speed);
+                    enemyArray[i].setVelocityY(0);
+                    if (speed < 0) {
+                        enemyArray[i].anims.play('eLeft');
+                    }
+                    else if (speed > 0) {
+                        enemyArray[i].anims.play('eRight');
+                    }
+                }
+                else if (choice == 1) {
+                    enemyArray[i].setVelocityY(speed);
+                    enemyArray[i].setVelocityX(0);
+                    if (speed < 0) {
+                        enemyArray[i].anims.play('eUp');
+                    }
+                    else if (speed > 0) {
+                        enemyArray[i].anims.play('eDown');
+                    }
+                }
+            }
+        }
+
+        function collectStar (player, star) {
+            star.disableBody(true, true);
+        }
         function collectFood(player, food) {
             food.disableBody(true, true);
             score += 10;
@@ -201,8 +301,15 @@
 
                 gameOverText.visible = true;
             }
-        
 
+        }
+
+
+        function stopMove(player, enemies) {
+            enemies.setVelocityX(0);
+            enemies.setVelocityY(0);
+            player.setVelocityX(0);
+            player.setVelocityY(0);
         }
     </script>
     <div id="my-game"></div>
