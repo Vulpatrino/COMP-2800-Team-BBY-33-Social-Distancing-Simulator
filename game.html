@@ -40,7 +40,9 @@
         };
 
         var game = new Phaser.Game(config);
-
+        function makeFood(){
+            
+        }
 
         function preload() {
             this.load.image('background', 'images/floor.jpg');
@@ -54,6 +56,15 @@
                     frameHeight: 48
                 }
             );
+            
+            this.load.spritesheet('food',
+                'images/foodsprite.png', {
+                    frameWidth: 51,
+                    frameHeight:51,
+                    
+                }
+            );
+            
         }
 
         var walls;
@@ -83,7 +94,8 @@
             player = this.physics.add.sprite(40, 700, 'dude');
 
             player.setCollideWorldBounds(true);
-
+            
+            
             this.anims.create({
                 key: 'left',
                 frames: this.anims.generateFrameNumbers('dude', {
@@ -118,6 +130,7 @@
 
             food = this.physics.add.staticGroup();
             food.create(45, 45, 'bannana');
+            food.create(85,100, 'food', 10);
             food.create(545, 400, 'bannana');
             food.create(1020, 600, 'bannana');
 
