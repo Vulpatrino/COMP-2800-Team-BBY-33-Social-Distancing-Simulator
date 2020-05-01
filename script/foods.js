@@ -4,24 +4,19 @@
  * @author: Jaedon Braun
  */
 
-/** Array of all food images.*/
-let foodImages = ["images/food.jpg"];
+/** Array of all food frames.*/
+let foodImages = [0];
 /** Array of all food names. EACH NAME SHOULD CORRESPOND TO THE SAME IMAGE ABOVE.*/
 let foodNames = ["Banana"];
 
 /**
- * Array of all possible shopping lists.
- * Should be populated with numbers that match an index from foodImages and foodNames.
- */
-let listsPossible = [
-    []
-];
-
-/**
  * Current shopping list.
- * Should be populated with Food objects.
+ * Will be populated with Food objects.
  */
 let list = [];
+
+/** Number of items on shopping list. */
+let listLength = 10;
 
 /**
  * FOOD OBJECT
@@ -73,15 +68,34 @@ class Food {
 }
 
 /**
- * Sets the current shopping list to a random list.
+ * Populates the shopping list with random food items.
  * CALL ON GAME START/RESTART!!
  */
 function initList() {
-    let listToUse = listsPossible[Math.floor(Math.random() * listsPossible.length)];
+    for (let i = 0; i < listLength; i++) {
 
-    // Add Food instances to the shopping list.
-    for (let i = 0; i < listToUse.length; i++) {
-        list[i] = new Food(listToUse[i]);
+        let newItem;
+        let itemAlreadyContained = true;
+
+        do {
+            // Generate a random (valid) item index.
+            newItem = Math.floor(Math.random * foodNames.length);
+            // Assume this random item isn't already on the list.
+            itemAlreadyContained = false;
+
+            // Iterate through the list to make sure it's not already there.
+            for (let j = 0; j < list.length; j++) {
+                if (list[j] == newItem) {
+                    itemAlreadyContained = true;
+                    break;
+                }
+            }
+        } while (itemAlreadyContained);
+
+        // Since we broke the "is already on the list" loop, the item can be added.
+        list[i] = new Food(newItem);
+        console.log("Added " + foodNames[newItem] + " to shopping list.");
+
     }
 }
 
