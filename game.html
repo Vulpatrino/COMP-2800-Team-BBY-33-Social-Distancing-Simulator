@@ -58,9 +58,9 @@
             );
             
             this.load.spritesheet('food',
-                'images/foodsprite.png', {
-                    frameWidth: 51,
-                    frameHeight:51,
+                'images/food.png', {
+                    frameWidth: 49,
+                    frameHeight:49
                     
                 }
             );
@@ -130,12 +130,24 @@
             this.physics.add.collider(player, aisles);
 
             food = this.physics.add.staticGroup();
-            food.create(45, 45, 'bannana');
-            food.create(85,100, 'food', 10);
-            food.create(545, 400, 'bannana');
-            food.create(1020, 600, 'bannana');
-
-
+            var i;
+            var j;
+            var h =45;
+            var w =60;
+            var foodcount =0;
+            for (i = 0; i < 10; i++) {
+                for(j=0; j<13;j++){
+                    food.create(w , h, 'food',foodcount);
+                    foodcount +=1;
+                    h += 50;
+                    if(foodcount > 99){
+                        foodcount =0;
+                    }
+                    foodcount +=1;
+                }
+                w += 120;
+                h =45;
+            }
 
             this.physics.add.overlap(player, food, collectFood, null, this);
 
