@@ -2,7 +2,7 @@
 
 <head>
     <style>
-        * {
+         {
             margin: 0;
             padding: 0;
         }
@@ -40,9 +40,7 @@
         };
 
         var game = new Phaser.Game(config);
-        function makeFood(){
-            
-        }
+
 
         function preload() {
             this.load.image('background', 'images/floor.jpg');
@@ -67,6 +65,7 @@
             
         }
 
+        var enemy;
         var walls;
         var score = 0;
         var scoreText;
@@ -75,7 +74,6 @@
         function create() {
 
             this.add.image(600, 400, 'background').setScale(6);
-
             walls = this.physics.add.staticGroup();
 
             walls.create(600, 790, 'wall1');
@@ -95,8 +93,7 @@
             player = this.physics.add.sprite(40, 700, 'dude');
 
             player.setCollideWorldBounds(true);
-            
-            
+
             this.anims.create({
                 key: 'left',
                 frames: this.anims.generateFrameNumbers('dude', {
@@ -197,11 +194,12 @@
             food.disableBody(true, true);
             score += 10;
             scoreText.setText('Score: ' + score);
-            if(score > 500){
+
+            if (score > 1300) {
+
                 gameOverText.visible = true;
             }
 
-        }   
     </script>
     <div id="my-game"></div>
 </body>
