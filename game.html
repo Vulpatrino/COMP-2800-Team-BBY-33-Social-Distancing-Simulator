@@ -2,7 +2,7 @@
 
 <head>
     <style>
-         {
+        * {
             margin: 0;
             padding: 0;
         }
@@ -195,10 +195,11 @@
             score += 10;
             scoreText.setText('Score: ' + score);
 
-            if (score > 1300) {
+            if (score == 1300) {
 
                 gameOverText.visible = true;
             }
+        }
 
     </script>
     <div id="my-game"></div>
