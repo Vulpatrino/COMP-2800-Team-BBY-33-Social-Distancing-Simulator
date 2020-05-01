@@ -105,6 +105,7 @@
             
             enemies = this.physics.add.group();
             this.physics.add.collider(player, enemies);
+            this.physics.add.collider(enemies, enemies);
 
             var i;
             for (i = 0; i < 11; i++) {
@@ -194,7 +195,7 @@
                 player.setVelocityY(0);
             }
 
-            if (count++ == 1) {
+            if (count++ == 100) {
                 enemyMove();
                 count = 0;
             }
@@ -203,21 +204,27 @@
         function enemyMove () {
             var i;
             for (i = 0; i < enemyArray.length; i++) {
-                var x = Phaser.Math.Between(-1000, 1000);
-                var y = Phaser.Math.Between(-1000, 1000);
-                enemyArray[i].setVelocityX(x);
-                enemyArray[i].setVelocityY(y);
-                if (x < 0) {
-                    enemyArray[i].anims.play('eLeft');
+                var speed = Phaser.Math.Between(-100, 100);
+                var choice = Phaser.Math.Between(0, 1);
+                if (choice == 0) {
+                    enemyArray[i].setVelocityX(speed);
+                    enemyArray[i].setVelocityY(0);
+                    if (speed < 0) {
+                        enemyArray[i].anims.play('eLeft');
+                    }
+                    else if (speed > 0) {
+                        enemyArray[i].anims.play('eRight');
+                    }
                 }
-                else if (x > 0) {
-                    enemyArray[i].anims.play('eRight');
-                }
-                if (y < 0) {
-                    enemyArray[i].anims.play('eUp');
-                }
-                else if (y > 0) {
-                    enemyArray[i].anims.play('eDown');
+                else if (choice == 1) {
+                    enemyArray[i].setVelocityY(speed);
+                    enemyArray[i].setVelocityX(0);
+                    if (speed < 0) {
+                        enemyArray[i].anims.play('eUp');
+                    }
+                    else if (speed > 0) {
+                        enemyArray[i].anims.play('eDown');
+                    }
                 }
             }
         }
