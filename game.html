@@ -40,11 +40,10 @@
         };
 
         var game = new Phaser.Game(config);
-        function makeFood(){
-            
-        }
+
 
         function preload() {
+            this.load.image('enemy', 'images/128.png');
             this.load.image('background', 'images/floor.jpg');
             this.load.image('wall1', 'images/wall1.png');
             this.load.image('wall2', 'images/wall2.png');
@@ -56,17 +55,9 @@
                     frameHeight: 48
                 }
             );
-            
-            this.load.spritesheet('food',
-                'images/foodsprite.png', {
-                    frameWidth: 51,
-                    frameHeight:51,
-                    
-                }
-            );
-            
         }
 
+        var enemy;
         var walls;
         var score = 0;
         var scoreText;
@@ -75,7 +66,8 @@
         function create() {
 
             this.add.image(600, 400, 'background').setScale(6);
-
+            enemy = this.physics.add.sprite(80, 400, 'enemy');
+            enemy.setCollideWorldBounds(true);
             walls = this.physics.add.staticGroup();
 
             walls.create(600, 790, 'wall1');
@@ -95,8 +87,7 @@
             player = this.physics.add.sprite(40, 700, 'dude');
 
             player.setCollideWorldBounds(true);
-            
-            
+
             this.anims.create({
                 key: 'left',
                 frames: this.anims.generateFrameNumbers('dude', {
@@ -131,7 +122,6 @@
 
             food = this.physics.add.staticGroup();
             food.create(45, 45, 'bannana');
-            food.create(85,100, 'food', 10);
             food.create(545, 400, 'bannana');
             food.create(1020, 600, 'bannana');
 
@@ -179,17 +169,28 @@
             if (cursors.up.isDown && player.body.touching.down) {
                 player.setVelocityY(0);
             }
+            enemy.setVelocityX =100;
+            /*
+            setInterval(function () {
+                    if (enemy.setVelocityX == 100) {
+                        enemy.setVelocityX = -100;
+                    } else {
+                        enemy.setVelocityX = 100;
+                    }
+                },
+                3000);
+            */
         }
 
         function collectFood(player, food) {
             food.disableBody(true, true);
             score += 10;
             scoreText.setText('Score: ' + score);
-            if(score > 20){
+            if (score > 20) {
                 gameOverText.visible = true;
             }
 
-        }   
+        }
     </script>
     <div id="my-game"></div>
 </body>
