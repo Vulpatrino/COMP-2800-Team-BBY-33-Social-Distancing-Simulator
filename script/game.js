@@ -4,10 +4,16 @@
  * @author Sam Shannon
  * @author Jaedon Braun
  */
+
 var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
+    parent: "my-game",
     physics: {
         default: 'arcade',
         arcade: {
@@ -25,34 +31,64 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
+var enemyArray = [];
+
 
 function preload() {
-    this.load.image('background', 'images/social-distancing.jpg');
-    this.load.image('logo', 'images/logo.png');
-    this.load.image('ground', 'images/128.png');
-    this.load.image('star', 'images/food.jpg');
+    this.load.image('background', 'images/floor.jpg');
+    this.load.image('wall1', 'images/wall1.png');
+    this.load.image('wall2', 'images/wall2.png');
+    this.load.image('aisle1', 'images/aisle1.png');
+    this.load.image('bannana', 'images/bannana.png');
     this.load.spritesheet('dude',
         'images/mario.png', {
         frameWidth: 32,
         frameHeight: 48
     }
     );
+    this.load.spritesheet('enemy',
+        'images/trump_run_resized.png', {
+        frameWidth: 66.66666666666666,
+        frameHeight: 66.75,
+    }
+    );
+
+    this.load.spritesheet('food',
+        'images/food.png', {
+        frameWidth: 49,
+        frameHeight: 49
+
+    }
+    );
+
 }
 
-var platforms;
+var enemy;
+var walls;
+var score = 0;
+var scoreText;
+var gameOverText;
 
 function create() {
-    this.add.image(400, 300, 'background');
 
-    platforms = this.physics.add.staticGroup();
+    this.add.image(600, 400, 'background').setScale(6);
+    walls = this.physics.add.staticGroup();
 
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+    walls.create(600, 790, 'wall1');
+    walls.create(600, 10, 'wall1');
+    walls.create(1190, 400, 'wall2');
+    walls.create(10, 400, 'wall2');
+    aisles = this.physics.add.staticGroup({
+        key: 'aisle1',
+        repeat: 8,
+        setXY: {
+            x: 120,
+            y: 375,
+            stepX: 120
+        }
+    });
 
-    platforms.create(600, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
-
-    player = this.physics.add.sprite(100, 450, 'dude');
+    player = this.physics.add.sprite(40, 700, 'dude');
 
     player.setCollideWorldBounds(true);
 
@@ -85,35 +121,110 @@ function create() {
         repeat: -1
     });
 
-    this.physics.add.collider(player, platforms);
+    this.physics.add.collider(player, walls);
+    this.physics.add.collider(player, aisles);
 
-    stars = this.physics.add.group({
-        key: 'star',
-        repeat: 11,
-        setXY: {
-            x: 12,
-            y: 0,
-            stepX: 70
+    food = this.physics.add.staticGroup();
+    var i;
+    var j;
+    var h = 45;
+    var w = 60;
+    var foodcount = 0;
+    for (i = 0; i < 10; i++) {
+        for (j = 0; j < 13; j++) {
+            food.create(w, h, 'food', foodcount);
+            foodcount += 1;
+            h += 50;
+            if (foodcount > 99) {
+                foodcount = 0;
+            }
+            foodcount += 1;
         }
+        w += 120;
+        h = 45;
+    }
+
+    enemies = this.physics.add.group();
+    this.physics.add.collider(player, enemies);
+    this.physics.add.collider(enemies, enemies);
+    this.physics.add.collider(enemies, walls);
+    this.physics.add.collider(enemies, aisles);
+
+    var i;
+    for (i = 0; i < 11; i++) {
+        var x = Phaser.Math.Between(100, 700);
+        var y = Phaser.Math.Between(100, 500);
+        var enemy = enemies.create(x, y, 'enemy');
+        enemy.setCollideWorldBounds(true);
+        enemyArray.push(enemy);
+    }
+
+    this.anims.create({
+        key: 'eRight',
+        frames: this.anims.generateFrameNumbers('enemy', {
+            start: 6,
+            end: 11
+        }),
+        frameRate: 10,
+        repeat: -1
     });
 
-    stars.children.iterate(function (child) {
-
-        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
+    this.anims.create({
+        key: 'eLeft',
+        frames: this.anims.generateFrameNumbers('enemy', {
+            start: 18,
+            end: 23
+        }),
+        frameRate: 10,
+        repeat: -1
     });
 
-    this.physics.add.overlap(player, stars, collectStar, null, this);
+    this.anims.create({
+        key: 'eUp',
+        frames: this.anims.generateFrameNumbers('enemy', {
+            start: 12,
+            end: 17
+        }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    this.anims.create({
+        key: 'eDown',
+        frames: this.anims.generateFrameNumbers('enemy', {
+            start: 0,
+            end: 5
+        }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+
+    this.physics.add.overlap(player, food, collectFood, null, this);
+
+    scoreText = this.add.text(20, 20, 'Score: 0', {
+        fontSize: '32px',
+        fill: '#000'
+    });
+
+    gameOverText = this.add.text(600, 400, "You Win!", {
+        fontSize: "50px",
+        fill: "#000"
+    });
+    gameOverText.setOrigin(0.5);
+    gameOverText.visible = false;
+
 }
 
+var count = 0;
 function update() {
     cursors = this.input.keyboard.createCursorKeys();
     if (cursors.left.isDown) {
-        player.setVelocityX(-160);
+        player.setVelocityX(-300);
 
         player.anims.play('left', true);
     } else if (cursors.right.isDown) {
-        player.setVelocityX(160);
+        player.setVelocityX(300);
 
         player.anims.play('right', true);
     } else {
@@ -122,9 +233,9 @@ function update() {
         player.anims.play('turn');
     }
     if (cursors.up.isDown) {
-        player.setVelocityY(-160);
+        player.setVelocityY(-300);
     } else if (cursors.down.isDown) {
-        player.setVelocityY(160);
+        player.setVelocityY(300);
     } else {
         player.setVelocityY(0);
     }
@@ -132,8 +243,62 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(0);
     }
+
+    if (count++ == 100) {
+        enemyMove();
+        count = 0;
+    }
+}
+
+function enemyMove() {
+    var i;
+    for (i = 0; i < enemyArray.length; i++) {
+        var speed = Phaser.Math.Between(-100, 100);
+        var choice = Phaser.Math.Between(0, 1);
+        if (choice == 0) {
+            enemyArray[i].setVelocityX(speed);
+            enemyArray[i].setVelocityY(0);
+            if (speed < 0) {
+                enemyArray[i].anims.play('eLeft');
+            }
+            else if (speed > 0) {
+                enemyArray[i].anims.play('eRight');
+            }
+        }
+        else if (choice == 1) {
+            enemyArray[i].setVelocityY(speed);
+            enemyArray[i].setVelocityX(0);
+            if (speed < 0) {
+                enemyArray[i].anims.play('eUp');
+            }
+            else if (speed > 0) {
+                enemyArray[i].anims.play('eDown');
+            }
+        }
+    }
 }
 
 function collectStar(player, star) {
     star.disableBody(true, true);
+}
+function collectFood(player, food) {
+    food.disableBody(true, true);
+    score += 10;
+    scoreText.setText('Score: ' + score);
+
+
+
+    if (score >= 1300) {
+
+        gameOverText.visible = true;
+    }
+
+}
+
+
+function stopMove(player, enemies) {
+    enemies.setVelocityX(0);
+    enemies.setVelocityY(0);
+    player.setVelocityX(0);
+    player.setVelocityY(0);
 }
