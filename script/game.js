@@ -144,7 +144,6 @@ function create() {
             if (foodcount > 99) {
                 foodcount = 0;
             }
-            foodcount += 1;
         }
         w += 120;
         h = 45;
@@ -154,7 +153,10 @@ function create() {
     let foodChildren = food.getChildren();
     for (let i = 0; i < foodChildren.length; i++) {
         foodChildren[i].setDataEnabled();
-        foodChildren[i].setData("food", new Food(i));
+        let food = new Food(i);
+        console.log(" " + food.getName());
+        foodChildren[i].setData("food", food);
+        
     }
 
     enemies = this.physics.add.group();
