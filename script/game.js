@@ -5,6 +5,7 @@
  * @author Jaedon Braun
  */
 
+ /** Phaser configuration. */
 var config = {
     type: Phaser.AUTO,
     width: 1200,
@@ -30,10 +31,12 @@ var config = {
     }
 };
 
+/** Phaser instance. */
 var game = new Phaser.Game(config);
+/** Array of all enemies. */
 var enemyArray = [];
 
-
+/** Pre-loads necessary resources, like images. */
 function preload() {
     this.load.image('background', 'images/floor.jpg');
     this.load.image('wall1', 'images/wall1.png');
@@ -69,7 +72,11 @@ var score = 0;
 var scoreText;
 var gameOverText;
 
+/** Called once at the start of the game. Use this to build objects. */
 function create() {
+
+    // Initializes the shopping list.
+    initList();
 
     this.add.image(600, 400, 'background').setScale(6);
     walls = this.physics.add.staticGroup();
@@ -124,14 +131,13 @@ function create() {
     this.physics.add.collider(player, walls);
     this.physics.add.collider(player, aisles);
 
+    // Section that adds food to the map.
     food = this.physics.add.staticGroup();
-    var i;
-    var j;
     var h = 45;
     var w = 60;
     var foodcount = 0;
-    for (i = 0; i < 10; i++) {
-        for (j = 0; j < 13; j++) {
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 13; j++) {
             food.create(w, h, 'food', foodcount);
             foodcount += 1;
             h += 50;
@@ -142,6 +148,13 @@ function create() {
         }
         w += 120;
         h = 45;
+    }
+
+    // Adds a Food object to the food collectibles.
+    let foodChildren = food.getChildren();
+    for (let i = 0; i < foodChildren.length; i++) {
+        foodChildren[i].setDataEnabled();
+        foodChildren[i].setData("food", new Food(i));
     }
 
     enemies = this.physics.add.group();
@@ -217,6 +230,8 @@ function create() {
 }
 
 var count = 0;
+
+/** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
 function update() {
     cursors = this.input.keyboard.createCursorKeys();
     if (cursors.left.isDown) {
@@ -278,14 +293,15 @@ function enemyMove() {
     }
 }
 
-function collectStar(player, star) {
-    star.disableBody(true, true);
-}
+/** Called when the player touches a food object. */
 function collectFood(player, food) {
-    food.disableBody(true, true);
-    score += 10;
-    scoreText.setText('Score: ' + score);
+    let foodType = food.getData("food");
 
+    if (foodType != undefined && CheckList(foodType)) {
+        food.disableBody(true, true);
+        score += 10;
+        scoreText.setText('Score: ' + score);
+    }
 
 
     if (score >= 1300) {
