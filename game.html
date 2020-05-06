@@ -29,7 +29,7 @@
                     gravity: {
                         y: 0
                     },
-                    debug: false
+                    debug: true
                 }
             },
             scene: {
@@ -55,9 +55,9 @@
                 }
             );
             this.load.spritesheet('enemy',
-                'images/trump_run_resized.png', {
-                    frameWidth: 66.66666666666666,
-                    frameHeight: 66.75,
+                'images/trump_run_resized_smaller.png', {
+                    frameWidth: 50,
+                    frameHeight: 50,
                 }
             );
             
@@ -71,11 +71,13 @@
             
         }
 
-        var enemy;
         var walls;
         var score = 0;
         var scoreText;
         var gameOverText;
+        var graphics;
+        var enemies;
+        var speed;
 
         function create() {
 
@@ -153,19 +155,9 @@
             }
             
             enemies = this.physics.add.group();
-            this.physics.add.collider(player, enemies);
-            this.physics.add.collider(enemies, enemies);
-            this.physics.add.collider(enemies, walls);
-            this.physics.add.collider(enemies, aisles);
-
-            var i;
-            for (i = 0; i < 11; i++) {
-                var x = Phaser.Math.Between(100, 700);
-                var y = Phaser.Math.Between(100, 500);
-                var enemy = enemies.create(x, y, 'enemy');
-                enemy.setCollideWorldBounds(true);
-                enemyArray.push(enemy);
-            }
+            enemies.enableBody = true;
+            this.physics.add.collider(enemies, walls, hitWallMove, null, this);
+            this.physics.add.collider(enemies, aisles, hitWallMove, null, this);
 
             this.anims.create({
                 key: 'eRight',
@@ -207,7 +199,16 @@
                 repeat: -1
             });
             
-
+            var i;
+            var x = 60;
+            var y = 45;
+            for (i = 0; i < 11; i++) {
+                var enemy = enemies.create(x, y, 'enemy');
+                enemy.setCollideWorldBounds(true);
+                enemyArray.push(enemy);
+                x+= 120;
+            }
+            
             this.physics.add.overlap(player, food, collectFood, null, this);
 
             scoreText = this.add.text(20, 20, 'Score: 0', {
@@ -221,10 +222,15 @@
             });
             gameOverText.setOrigin(0.5);
             gameOverText.visible = false;
-
+            graphics = this.add.graphics();
+            this.physics.add.existing(graphics);
+            changeMove();
         }
 
         var count = 0;
+        var colour = 0xffffff;
+        var thickness = 4;
+        var alpha = 1;
         function update() {
             cursors = this.input.keyboard.createCursorKeys();
             if (cursors.left.isDown) {
@@ -251,40 +257,62 @@
             if (cursors.up.isDown && player.body.touching.down) {
                 player.setVelocityY(0);
             }
-
-            if (count++ == 100) {
-                enemyMove();
+            graphics.clear();
+            graphics.lineStyle(thickness, colour, alpha);
+            graphics.strokeCircle(player.x, player.y, 50);
+            if (count++== 300) {
+                changeMove();
                 count = 0;
             }
         }
-
-        function enemyMove () {
-            var i;
-            for (i = 0; i < enemyArray.length; i++) {
-                var speed = Phaser.Math.Between(-100, 100);
-                var choice = Phaser.Math.Between(0, 1);
+        
+        function changeMove() {
+            var speed = [-100, 100];
+            for (var i = 0; i < enemyArray.length; i++) {
+                var choice = Math.floor(Math.random()*2)
+                var choice2 = Math.floor(Math.random()*2)
                 if (choice == 0) {
-                    enemyArray[i].setVelocityX(speed);
-                    enemyArray[i].setVelocityY(0);
-                    if (speed < 0) {
+                    enemyArray[i].setVelocity(speed[choice2], 0);
+                    if (speed[choice2] > 0) {
+                    enemyArray[i].anims.play('eRight');
+                    } else if (speed[choice2] < 0) {
                         enemyArray[i].anims.play('eLeft');
                     }
-                    else if (speed > 0) {
-                        enemyArray[i].anims.play('eRight');
-                    }
-                }
-                else if (choice == 1) {
-                    enemyArray[i].setVelocityY(speed);
-                    enemyArray[i].setVelocityX(0);
-                    if (speed < 0) {
-                        enemyArray[i].anims.play('eUp');
-                    }
-                    else if (speed > 0) {
+                } else if (choice == 1) {
+                    enemyArray[i].setVelocity(0, speed[choice2]);
+                    if (speed[choice2] > 0) {
                         enemyArray[i].anims.play('eDown');
+                    } else if (speed[choice2] < 0) {
+                        enemyArray[i].anims.play('eUp');
                     }
                 }
             }
         }
+
+        function hitWallMove(enemy) {
+            var speed = [-100, 100];
+            var choice = Math.floor(Math.random()*2)
+            var eKey = enemy.anims.getCurrentKey();
+            if (eKey === 'eLeft' || eKey === 'eRight') {
+                enemy.setVelocityX(0);
+                enemy.setVelocityY(speed[choice]);
+                if (speed[choice] > 0) {
+                    enemy.anims.play('eDown');
+                } else if (speed[choice] < 0) {
+                    enemy.anims.play('eUp');
+                }
+            }
+            else if (eKey === 'eUp' || eKey === 'eDown') {
+                enemy.setVelocityY(0);
+                enemy.setVelocityX(speed[choice]);
+                if (speed[choice] > 0) {
+                    enemy.anims.play('eRight');
+                } else if (speed[choice] < 0) {
+                    enemy.anims.play('eLeft');
+                }
+            }
+        }
+        var hit = false;
 
         function collectStar (player, star) {
             star.disableBody(true, true);
@@ -298,12 +326,6 @@
             }
         }
 
-        function stopMove(player, enemies) {
-            enemies.setVelocityX(0);
-            enemies.setVelocityY(0);
-            player.setVelocityX(0);
-            player.setVelocityY(0);
-        }
     </script>
     <div id="my-game"></div>
 </body>
