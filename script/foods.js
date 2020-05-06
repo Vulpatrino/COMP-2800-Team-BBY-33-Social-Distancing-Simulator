@@ -18,7 +18,7 @@ let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
 "tomato", "cake slice", "kiwi", "lettuce wrap", "chocolate donut", "lemon", "pumpkin",
 "potato", "crepe", "taco", "steak", "bacon", "grape", "strawberry", "ice cream sundae",
 "shrimp", "french fry", "salad roll", "candy", "burrito", "lollipop", "pink lemonade",
-"olives", "lobster", "toast", "white radish", "bok choy", "chilli pepper"];
+"olives", "lobster", "toast", "white radish", "bok choy", "chili pepper"];
 
 /**
  * Current shopping list.

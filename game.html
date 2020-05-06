@@ -6,6 +6,23 @@
             display:grid;
             grid-template-columns: 1fr 4fr;
         }
+
+        #listSection {
+            padding:1em;
+            background-color:#e5e5a0;
+            box-shadow:grey 0.25em 0.25em;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        #listSection h1 {
+            font-size:3em;
+        }
+
+        #list {
+            list-style:circle;
+            font-size:2em;
+        }
+
         .crossedOff {
             text-decoration:line-through;
         }
@@ -20,7 +37,7 @@
     <script src="script/foods.js"></script>
     <script src="script/game.js"></script>
     <section id="listSection">
-        <h1 id="listHeader">Shopping List:</h1>
+        <h1>Shopping List:</h1>
         <ul id="list"></ul>
     </section>
     <div id="my-game"></div>
