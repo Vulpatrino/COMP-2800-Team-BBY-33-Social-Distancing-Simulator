@@ -42,7 +42,6 @@ function preload() {
     this.load.image('wall1', 'images/wall1.png');
     this.load.image('wall2', 'images/wall2.png');
     this.load.image('aisle1', 'images/aisle1.png');
-    this.load.image('bannana', 'images/bannana.png');
     this.load.spritesheet('dude',
         'images/mario.png', {
         frameWidth: 32,
