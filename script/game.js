@@ -3,7 +3,9 @@
  * Contains all Phaser functions
  * @author Sam Shannon
  * @author Jaedon Braun
+ * @author Eddy Wu
  */
+
 
 /** Phaser configuration. */
 var config = {
@@ -48,6 +50,7 @@ function preload() {
     this.load.image('dpad4', 'images/dpad4.png');
     this.load.image('dpad5', 'images/dpad5.png');
     this.load.image('dpad6', 'images/dpad6.png');
+    this.load.audio('background-music', ['audio/1.mp3', 'audio/1.ogg']);
     this.load.spritesheet('dude',
         'images/mario.png', {
             frameWidth: 32,
@@ -89,6 +92,8 @@ var moveLeft = false;
 var moveDown = false;
 var moveRight = false;
 var dpad;
+var music;
+
 
 /** Called once at the start of the game. Use this to build objects. */
 function create() {
@@ -112,6 +117,10 @@ function create() {
             stepX: 120
         }
     });
+    
+    
+
+    
 
     player = this.physics.add.sprite(40, 700, 'dude');
 
@@ -172,7 +181,7 @@ function create() {
     for (let i = 0; i < foodChildren.length; i++) {
         foodChildren[i].setDataEnabled();
         let food = new Food(i);
-        console.log(" " + food.getName());
+        //console.log(" " + food.getName());
         foodChildren[i].setData("food", food);
 
     }
@@ -244,12 +253,15 @@ function create() {
         fontSize: "50px",
         fill: "#000"
     });
+    
+    
     gameOverText.setOrigin(0.5);
     gameOverText.visible = false;
 
     dpad = this.physics.add.group();
     createDpad();
-
+    
+    
 }
 
 var count = 0;
@@ -265,7 +277,11 @@ function update() {
         enemyMove();
         count = 0;
     }
+    
+
 }
+
+
 
 function createDpad() {
 
