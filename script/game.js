@@ -6,10 +6,7 @@
  * @author Eddy Wu
  */
 
-<<<<<<< HEAD
-=======
 
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
 /** Phaser configuration. */
 var config = {
     type: Phaser.AUTO,
@@ -61,15 +58,9 @@ function preload() {
         }
     );
     this.load.spritesheet('enemy',
-<<<<<<< HEAD
         'images/trump_run_resized_smaller.png', {
             frameWidth: 50,
             frameHeight: 50,
-=======
-        'images/trump_run_resized.png', {
-            frameWidth: 66.66666666666666,
-            frameHeight: 66.75,
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
         }
     );
 
@@ -88,12 +79,10 @@ var walls;
 var score = 0;
 var scoreText;
 var gameOverText;
-<<<<<<< HEAD
 var circle;
 var infectBar;
 var health = 0;
 var max = 195;
-=======
 var dpadUp;
 var dpadRight;
 var dpadDown;
@@ -109,7 +98,6 @@ var moveRight = false;
 var dpad;
 var music;
 
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
 
 /** Called once at the start of the game. Use this to build objects. */
 function create() {
@@ -192,8 +180,6 @@ function create() {
         h = 45;
     }
 
-<<<<<<< HEAD
-=======
     // Adds a Food object to the food collectibles.
     let foodChildren = food.getChildren();
     let foodLimit = foodNames.length;
@@ -212,7 +198,6 @@ function create() {
 
     }
 
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
     enemies = this.physics.add.group();
     enemies.enableBody = true;
     this.physics.add.collider(enemies, walls, hitWallMove, null, this);
@@ -267,20 +252,6 @@ function create() {
         x += 120;
     }
 
-    // Adds a Food object to the food collectibles.
-    let foodChildren = food.getChildren();
-    for (let i = 0; i < foodChildren.length; i++) {
-        foodChildren[i].setDataEnabled();
-        let food = new Food(i);
-        console.log(" " + food.getName());
-        foodChildren[i].setData("food", food);
-
-    }
-
-    enemies = this.physics.add.group();
-    this.physics.add.collider(enemies, walls);
-    this.physics.add.collider(enemies, aisles);
-
     this.physics.add.overlap(player, food, collectFood, null, this);
 
     scoreText = this.add.text(20, 20, 'Score: 0', {
@@ -309,34 +280,32 @@ function create() {
     infectBar.fillRect(22, 82, health, 25);
 
 
-<<<<<<< HEAD
     initialMove();
-=======
     dpad = this.physics.add.group();
     createDpad();
     
     
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
 }
 
 var count = 0;
 
 /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
 function update() {
-<<<<<<< HEAD
     Phaser.Actions.SetAlpha(enemyArray, 0.5);
-=======
     showDpad();
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
     cursors = this.input.keyboard.createCursorKeys();
     playerMove();
 
-
-    if (count++ == 100) {
-        enemyMove();
-        count = 0;
+    circle.setPosition(player.x, player.y);
+    var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, false);
+    var inCirc = bodies.map((body) => body.gameObject.texture.key);
+    for (var i = 0; i < inCirc.length; i++) {
+        if (inCirc[i] === "enemy") {
+            healthIncrease();
+            infect();
+        }
     }
-    
+    Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
 
 }
 
@@ -518,25 +487,12 @@ function playerMove() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(0);
     }
-<<<<<<< HEAD
 
     if (count++ == 300) {
         changeMove();
         count = 0;
     }
-    circle.setPosition(player.x, player.y);
-    var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, false);
-    var inCirc = bodies.map((body) => body.gameObject.texture.key);
-    for (var i = 0; i < inCirc.length; i++) {
-        if (inCirc[i] === "enemy") {
-            healthIncrease();
-            infect();
-        }
-    }
-    Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
     
-=======
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
 }
 
 function initialMove() {
@@ -545,7 +501,6 @@ function initialMove() {
         var choice = Math.floor(Math.random() * 2)
         var choice2 = Math.floor(Math.random() * 2);
         if (choice == 0) {
-<<<<<<< HEAD
             enemyArray[i].setVelocityX(0);
             enemyArray[i].setVelocityY(speed[choice2]);
             if (speed[choice2] > 0) {
@@ -557,18 +512,10 @@ function initialMove() {
             enemyArray[i].setVelocityY(0);
             enemyArray[i].setVelocityX(speed[choice2]);
             if (speed[choice2] > 0) {
-=======
-            enemyArray[i].setVelocityX(speed);
-            enemyArray[i].setVelocityY(0);
-            if (speed < 0) {
-                enemyArray[i].anims.play('eLeft');
-            } else if (speed > 0) {
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
                 enemyArray[i].anims.play('eRight');
             } else if (speed[choice2] < 0) {
                 enemyArray[i].anims.play('eLeft');
             }
-<<<<<<< HEAD
         }
     }
 }
@@ -580,17 +527,12 @@ function changeMove() {
         var choice = Math.floor(Math.random() * 2)
         var eKey = enemyArray[i].anims.getCurrentKey();
         if (eKey === 'eLeft' || eKey === 'eRight') {
-=======
-        } else if (choice == 1) {
-            enemyArray[i].setVelocityY(speed);
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
             enemyArray[i].setVelocityX(0);
             enemyArray[i].setVelocityY(speed[choice]);
             if (speed[choice] > 0) {
                 enemyArray[i].anims.play('eDown');
             } else if (speed[choice] < 0) {
                 enemyArray[i].anims.play('eUp');
-<<<<<<< HEAD
             }
         } else if (eKey === 'eUp' || eKey === 'eDown') {
             enemyArray[i].setVelocityY(0);
@@ -599,10 +541,6 @@ function changeMove() {
                 enemyArray[i].anims.play('eRight');
             } else if (speed[choice] < 0) {
                 enemyArray[i].anims.play('eLeft');
-=======
-            } else if (speed > 0) {
-                enemyArray[i].anims.play('eDown');
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
             }
         }
     }
@@ -664,11 +602,9 @@ function infect() {
     }
 }
 
-<<<<<<< HEAD
 function healthIncrease() {
     health += 0.5;
 }
-=======
 
 $(document).ready(function () {
     $("#playgame").click(function () {
@@ -677,4 +613,3 @@ $(document).ready(function () {
 
     });
 });
->>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
