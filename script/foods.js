@@ -4,7 +4,7 @@
  * @author: Jaedon Braun
  */
 
-/** Array of all food names. EACH NAME SHOULD CORRESPOND TO THE SAME IMAGE ABOVE.*/
+/** Array of all food names. */
 let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
 "watermelon", "cherry", "orange", "cinnamon roll", "t-bone steak", "beer", "milk",
 "cup", "mug", "wine", "cocktail", "cheese", "green pepper", "orange juice", "roast beef",
