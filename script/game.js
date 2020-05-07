@@ -178,10 +178,18 @@ function create() {
 
     // Adds a Food object to the food collectibles.
     let foodChildren = food.getChildren();
+    let foodLimit = foodNames.length;
+    let foodIndex = 0;
     for (let i = 0; i < foodChildren.length; i++) {
         foodChildren[i].setDataEnabled();
-        let food = new Food(i);
-        //console.log(" " + food.getName());
+        let food = new Food(foodIndex);
+
+        foodIndex++;
+        if (foodIndex >= foodLimit) {
+            foodIndex = 0;
+        }
+
+        console.log(" " + food.getName());
         foodChildren[i].setData("food", food);
 
     }
