@@ -3,8 +3,13 @@
  * Contains all Phaser functions
  * @author Sam Shannon
  * @author Jaedon Braun
+ * @author Eddy Wu
  */
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
 /** Phaser configuration. */
 var config = {
     type: Phaser.AUTO,
@@ -42,6 +47,13 @@ function preload() {
     this.load.image('wall1', 'images/wall1.png');
     this.load.image('wall2', 'images/wall2.png');
     this.load.image('aisle1', 'images/aisle1.png');
+    this.load.image('dpad1', 'images/dpad1.png');
+    this.load.image('dpad2', 'images/dpad2.png');
+    this.load.image('dpad3', 'images/dpad3.png');
+    this.load.image('dpad4', 'images/dpad4.png');
+    this.load.image('dpad5', 'images/dpad5.png');
+    this.load.image('dpad6', 'images/dpad6.png');
+    this.load.audio('background-music', ['audio/1.mp3', 'audio/1.ogg']);
     this.load.spritesheet('dude',
         'images/mario.png', {
             frameWidth: 32,
@@ -49,9 +61,15 @@ function preload() {
         }
     );
     this.load.spritesheet('enemy',
+<<<<<<< HEAD
         'images/trump_run_resized_smaller.png', {
             frameWidth: 50,
             frameHeight: 50,
+=======
+        'images/trump_run_resized.png', {
+            frameWidth: 66.66666666666666,
+            frameHeight: 66.75,
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
         }
     );
 
@@ -70,10 +88,28 @@ var walls;
 var score = 0;
 var scoreText;
 var gameOverText;
+<<<<<<< HEAD
 var circle;
 var infectBar;
 var health = 0;
 var max = 195;
+=======
+var dpadUp;
+var dpadRight;
+var dpadDown;
+var dpadLeft;
+var dpadUpRight;
+var dpadDownRight;
+var dpadDownLeft;
+var dpadUpLeft;
+var moveUp = false;
+var moveLeft = false;
+var moveDown = false;
+var moveRight = false;
+var dpad;
+var music;
+
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
 
 /** Called once at the start of the game. Use this to build objects. */
 function create() {
@@ -97,6 +133,10 @@ function create() {
             stepX: 120
         }
     });
+    
+    
+
+    
 
     player = this.physics.add.sprite(40, 700, 'dude');
 
@@ -152,6 +192,27 @@ function create() {
         h = 45;
     }
 
+<<<<<<< HEAD
+=======
+    // Adds a Food object to the food collectibles.
+    let foodChildren = food.getChildren();
+    let foodLimit = foodNames.length;
+    let foodIndex = 0;
+    for (let i = 0; i < foodChildren.length; i++) {
+        foodChildren[i].setDataEnabled();
+        let food = new Food(foodIndex);
+
+        foodIndex++;
+        if (foodIndex >= foodLimit) {
+            foodIndex = 0;
+        }
+
+        console.log(" " + food.getName());
+        foodChildren[i].setData("food", food);
+
+    }
+
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
     enemies = this.physics.add.group();
     enemies.enableBody = true;
     this.physics.add.collider(enemies, walls, hitWallMove, null, this);
@@ -231,6 +292,8 @@ function create() {
         fontSize: "50px",
         fill: "#000"
     });
+    
+    
     gameOverText.setOrigin(0.5);
     gameOverText.visible = false;
     var colour = 0xffffff;
@@ -246,20 +309,197 @@ function create() {
     infectBar.fillRect(22, 82, health, 25);
 
 
+<<<<<<< HEAD
     initialMove();
+=======
+    dpad = this.physics.add.group();
+    createDpad();
+    
+    
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
 }
 
 var count = 0;
 
 /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
 function update() {
+<<<<<<< HEAD
     Phaser.Actions.SetAlpha(enemyArray, 0.5);
+=======
+    showDpad();
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
     cursors = this.input.keyboard.createCursorKeys();
-    if (cursors.left.isDown) {
+    playerMove();
+
+
+    if (count++ == 100) {
+        enemyMove();
+        count = 0;
+    }
+    
+
+}
+
+
+
+function createDpad() {
+
+    dpadUp = dpad.create(150, 550, 'dpad2');
+    dpadRight = dpad.create(225, 625, 'dpad1');
+    dpadDown = dpad.create(150, 700, 'dpad2');
+    dpadLeft = dpad.create(75, 625, 'dpad1');
+    dpadUpRight = dpad.create(235, 540, 'dpad3');
+    dpadDownRight = dpad.create(235, 710, 'dpad4');
+    dpadDownLeft = dpad.create(65, 710, 'dpad5');
+    dpadUpLeft = dpad.create(65, 540, 'dpad6');
+
+    dpadUp.setInteractive();
+    dpadUp.on("pointerover", function () {
+        moveUp = true;
+    });
+    dpadUp.on("pointerout", function () {
+        moveUp = false;
+    });
+    dpadUp.on("pointerdown", function () {
+        moveUp = true;
+    });
+    dpadUp.on("pointerup", function () {
+        moveUp = false;
+    });
+
+    dpadRight.setInteractive();
+    dpadRight.on("pointerover", function () {
+        moveRight = true;
+    });
+    dpadRight.on("pointerout", function () {
+        moveRight = false;
+    });
+    dpadRight.on("pointerdown", function () {
+        moveRight = true;
+    });
+    dpadRight.on("pointerup", function () {
+        moveRight = false;
+    });
+
+    dpadDown.setInteractive();
+    dpadDown.on("pointerover", function () {
+        moveDown = true;
+    });
+    dpadDown.on("pointerout", function () {
+        moveDown = false;
+    });
+    dpadDown.on("pointerdown", function () {
+        moveDown = true;
+    });
+    dpadDown.on("pointerup", function () {
+        moveDown = false;
+    });
+
+    dpadLeft.setInteractive();
+    dpadLeft.on("pointerover", function () {
+        moveLeft = true;
+    });
+    dpadLeft.on("pointerout", function () {
+        moveLeft = false;
+    });
+    dpadLeft.on("pointerdown", function () {
+        moveLeft = true;
+    });
+    dpadLeft.on("pointerup", function () {
+        moveLeft = false;
+    });
+    dpadUpRight.setInteractive();
+    dpadUpRight.on("pointerover", function () {
+        moveUp = true;
+        moveRight = true;
+    });
+    dpadUpRight.on("pointerout", function () {
+        moveUp = false;
+        moveRight = false;
+    });
+    dpadUpRight.on("pointerdown", function () {
+        moveUp = true;
+        moveRight = true;
+    });
+    dpadUpRight.on("pointerup", function () {
+        moveUp = false;
+        moveRight = false;
+    });
+
+    dpadDownRight.setInteractive();
+    dpadDownRight.on("pointerover", function () {
+        moveDown = true;
+        moveRight = true;
+    });
+    dpadDownRight.on("pointerout", function () {
+        moveDown = false;
+        moveRight = false;
+    });
+    dpadDownRight.on("pointerdown", function () {
+        moveDown = true;
+        moveRight = true;
+    });
+    dpadDownRight.on("pointerup", function () {
+        moveDown = false;
+        moveRight = false;
+    });
+
+    dpadDownLeft.setInteractive();
+    dpadDownLeft.on("pointerover", function () {
+        moveDown = true;
+        moveLeft = true;
+    });
+    dpadDownLeft.on("pointerout", function () {
+        moveDown = false;
+        moveLeft = false;
+    });
+    dpadDownLeft.on("pointerdown", function () {
+        moveDown = true;
+        moveLeft = true;
+    });
+    dpadDownLeft.on("pointerup", function () {
+        moveDown = false;
+        moveLeft = false;
+    });
+
+    dpadUpLeft.setInteractive();
+    dpadUpLeft.on("pointerover", function () {
+        moveUp = true;
+        moveLeft = true;
+    });
+    dpadUpLeft.on("pointerout", function () {
+        moveUp = false;
+        moveLeft = false;
+    });
+    dpadUpLeft.on("pointerdown", function () {
+        moveUp = true;
+        moveLeft = true;
+    });
+    dpadUpLeft.on("pointerup", function () {
+        moveUp = false;
+        moveLeft = false;
+    });
+}
+
+function showDpad() {
+
+    if (window.innerWidth > 500) {
+        dpad.getChildren().forEach((dpad) => {
+            dpad.visible = false;
+        });
+    } else {
+        dpad.getChildren().forEach((dpad) => {
+            dpad.visible = true;
+        });
+    }
+}
+
+function playerMove() {
+    if (cursors.left.isDown || moveLeft) {
         player.setVelocityX(-300);
 
         player.anims.play('left', true);
-    } else if (cursors.right.isDown) {
+    } else if (cursors.right.isDown || moveRight) {
         player.setVelocityX(300);
 
         player.anims.play('right', true);
@@ -268,17 +508,17 @@ function update() {
 
         player.anims.play('turn');
     }
-    if (cursors.up.isDown) {
+    if (cursors.up.isDown || moveUp) {
         player.setVelocityY(-300);
-    } else if (cursors.down.isDown) {
+    } else if (cursors.down.isDown || moveDown) {
         player.setVelocityY(300);
     } else {
         player.setVelocityY(0);
     }
-
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(0);
     }
+<<<<<<< HEAD
 
     if (count++ == 300) {
         changeMove();
@@ -295,6 +535,8 @@ function update() {
     }
     Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
     
+=======
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
 }
 
 function initialMove() {
@@ -303,6 +545,7 @@ function initialMove() {
         var choice = Math.floor(Math.random() * 2)
         var choice2 = Math.floor(Math.random() * 2);
         if (choice == 0) {
+<<<<<<< HEAD
             enemyArray[i].setVelocityX(0);
             enemyArray[i].setVelocityY(speed[choice2]);
             if (speed[choice2] > 0) {
@@ -314,10 +557,18 @@ function initialMove() {
             enemyArray[i].setVelocityY(0);
             enemyArray[i].setVelocityX(speed[choice2]);
             if (speed[choice2] > 0) {
+=======
+            enemyArray[i].setVelocityX(speed);
+            enemyArray[i].setVelocityY(0);
+            if (speed < 0) {
+                enemyArray[i].anims.play('eLeft');
+            } else if (speed > 0) {
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
                 enemyArray[i].anims.play('eRight');
             } else if (speed[choice2] < 0) {
                 enemyArray[i].anims.play('eLeft');
             }
+<<<<<<< HEAD
         }
     }
 }
@@ -329,12 +580,17 @@ function changeMove() {
         var choice = Math.floor(Math.random() * 2)
         var eKey = enemyArray[i].anims.getCurrentKey();
         if (eKey === 'eLeft' || eKey === 'eRight') {
+=======
+        } else if (choice == 1) {
+            enemyArray[i].setVelocityY(speed);
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
             enemyArray[i].setVelocityX(0);
             enemyArray[i].setVelocityY(speed[choice]);
             if (speed[choice] > 0) {
                 enemyArray[i].anims.play('eDown');
             } else if (speed[choice] < 0) {
                 enemyArray[i].anims.play('eUp');
+<<<<<<< HEAD
             }
         } else if (eKey === 'eUp' || eKey === 'eDown') {
             enemyArray[i].setVelocityY(0);
@@ -343,6 +599,10 @@ function changeMove() {
                 enemyArray[i].anims.play('eRight');
             } else if (speed[choice] < 0) {
                 enemyArray[i].anims.play('eLeft');
+=======
+            } else if (speed > 0) {
+                enemyArray[i].anims.play('eDown');
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69
             }
         }
     }
@@ -404,6 +664,17 @@ function infect() {
     }
 }
 
+<<<<<<< HEAD
 function healthIncrease() {
     health += 0.5;
 }
+=======
+
+$(document).ready(function () {
+    $("#playgame").click(function () {
+        $("#main").hide(400);
+        $("#my-game").css("display", "flex");
+
+    });
+});
+>>>>>>> c17a976a50ebe0266e7e02ea153b73e87c4f2b69

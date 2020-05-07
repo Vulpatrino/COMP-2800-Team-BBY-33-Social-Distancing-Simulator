@@ -4,7 +4,7 @@
  * @author: Jaedon Braun
  */
 
-/** Array of all food names. EACH NAME SHOULD CORRESPOND TO THE SAME IMAGE ABOVE.*/
+/** Array of all food names. */
 let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
 "watermelon", "cherry", "orange", "cinnamon roll", "t-bone steak", "beer", "milk",
 "cup", "mug", "wine", "cocktail", "cheese", "green pepper", "orange juice", "roast beef",
@@ -18,7 +18,7 @@ let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
 "tomato", "cake slice", "kiwi", "lettuce wrap", "chocolate donut", "lemon", "pumpkin",
 "potato", "crepe", "taco", "steak", "bacon", "grape", "strawberry", "ice cream sundae",
 "shrimp", "french fry", "salad roll", "candy", "burrito", "lollipop", "pink lemonade",
-"olives", "lobster", "toast", "white radish", "bok choy", "chilli pepper"];
+"olives", "lobster", "toast", "white radish", "bok choy", "chili pepper"];
 
 /**
  * Current shopping list.
@@ -104,6 +104,8 @@ function initList() {
 
         // Since we broke the "is already on the list" loop, the item can be added.
         list[i] = new Food(newItem);
+        let listHTML = "<li>" + list[i].getName() + "</li>";
+        document.getElementById("list").innerHTML += listHTML;
         console.log("Added " + list[i].getName() + " to shopping list.");
 
     }
@@ -116,7 +118,7 @@ function initList() {
  */
 function CheckList(shelfFood) {
     let isOnList = false;
-    console.log("Checking our shopping list...");
+    //console.log("Checking our shopping list...");
     for (let i = 0; i < list.length; i++) {
         // Check if Food on shelf is on the shopping list, and has not already been collected.
         if (list[i].getValue() == shelfFood.getValue() && !list[i].getCollected()) {
@@ -134,8 +136,13 @@ function CheckList(shelfFood) {
  */
 function UpdateList(index) {
     list[index].setCollected();
-    console.log("Crossed off " + list[index].getName());
+    //console.log("Crossed off " + list[index].getName());
 
+    // Cross off item on HTML list.
+    let listHTML = document.getElementById("list").children;
+    listHTML[index].className = "crossedOff";
+
+    // Repeats back your shopping list. Remove after debugging.
     let uncrossedList = "";
     for (let i = 0; i < list.length; i++) {
         if (!list[i].getCollected()) {
@@ -143,6 +150,6 @@ function UpdateList(index) {
         }
     }
 
-    console.log("Your shopping list: " + uncrossedList);
+    //console.log("Your shopping list: " + uncrossedList);
     //TODO: Cross off item from visual/HTML version of shopping list.
 }
