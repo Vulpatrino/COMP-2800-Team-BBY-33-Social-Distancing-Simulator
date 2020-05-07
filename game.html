@@ -78,6 +78,7 @@
         var graphics;
         var enemies;
         var speed;
+        var circle;
 
         function create() {
 
@@ -222,16 +223,20 @@
             });
             gameOverText.setOrigin(0.5);
             gameOverText.visible = false;
-            graphics = this.add.graphics();
-            this.physics.add.existing(graphics);
+
+            var colour = 0xffffff;
+            var thickness = 4;
+            var alpha = 1;
+            circle = this.add.circle(player.x, player.y, 50).setStrokeStyle(thickness, colour);
+
             changeMove();
         }
 
         var count = 0;
-        var colour = 0xffffff;
-        var thickness = 4;
-        var alpha = 1;
+        
+        
         function update() {
+            Phaser.Actions.SetAlpha(enemyArray, 0.5);
             cursors = this.input.keyboard.createCursorKeys();
             if (cursors.left.isDown) {
                 player.setVelocityX(-300);
@@ -257,13 +262,13 @@
             if (cursors.up.isDown && player.body.touching.down) {
                 player.setVelocityY(0);
             }
-            graphics.clear();
-            graphics.lineStyle(thickness, colour, alpha);
-            graphics.strokeCircle(player.x, player.y, 50);
-            if (count++== 300) {
+            if (count++== 100) {
                 changeMove();
                 count = 0;
             }
+            circle.setPosition(player.x, player.y);
+            var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, true);
+            Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
         }
         
         function changeMove() {
