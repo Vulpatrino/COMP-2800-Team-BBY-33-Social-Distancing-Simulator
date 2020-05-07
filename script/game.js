@@ -50,7 +50,8 @@ function preload() {
     this.load.image('dpad4', 'images/dpad4.png');
     this.load.image('dpad5', 'images/dpad5.png');
     this.load.image('dpad6', 'images/dpad6.png');
-    
+    this.load.audio('1', ['audio/1.mp3','audio/1.ogg']);
+    this.load.audio('2', ['audio/2.mp3','audio/2.ogg']);
     this.load.spritesheet('dude',
         'images/mario.png', {
             frameWidth: 32,
@@ -93,14 +94,15 @@ var moveDown = false;
 var moveRight = false;
 var dpad;
 var music;
-
+var sfx;
 
 /** Called once at the start of the game. Use this to build objects. */
 function create() {
     
     // Initializes the shopping list.
     initList();
-
+    
+    
     this.add.image(600, 400, 'background').setScale(6);
     walls = this.physics.add.staticGroup();
 
@@ -119,7 +121,12 @@ function create() {
     });
     
     
-
+    let music = this.sound.add('1');
+    music.setVolume(0.5);
+    music.setLoop(true);
+    music.play();
+    
+    this.pickupSound = this.sound.add('2');
     
 
     player = this.physics.add.sprite(40, 700, 'dude');
@@ -494,6 +501,7 @@ function collectFood(player, food) {
         food.disableBody(true, true);
         score += 10;
         scoreText.setText('Score: ' + score);
+        this.pickupSound.play();
     }
 
 
