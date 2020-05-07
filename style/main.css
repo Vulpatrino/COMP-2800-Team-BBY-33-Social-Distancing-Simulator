@@ -84,10 +84,9 @@ footer {
     border-radius: 3px;
 }
 #my-game{
-    margin: 0 auto;
 	display: none;
 	flex-direction: column;
-	justify-content: center;
+    justify-content: center;
 }
 #menu{
     display:flex;

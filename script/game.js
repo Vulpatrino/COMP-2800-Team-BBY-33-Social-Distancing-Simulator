@@ -172,7 +172,7 @@ function create() {
     for (let i = 0; i < foodChildren.length; i++) {
         foodChildren[i].setDataEnabled();
         let food = new Food(i);
-        console.log(" " + food.getName());
+        //console.log(" " + food.getName());
         foodChildren[i].setData("food", food);
 
     }

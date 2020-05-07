@@ -104,7 +104,7 @@ function initList() {
 
         // Since we broke the "is already on the list" loop, the item can be added.
         list[i] = new Food(newItem);
-        console.log("Added " + list[i].getName() + " to shopping list.");
+        //console.log("Added " + list[i].getName() + " to shopping list.");
 
     }
 }
@@ -116,7 +116,7 @@ function initList() {
  */
 function CheckList(shelfFood) {
     let isOnList = false;
-    console.log("Checking our shopping list...");
+    //console.log("Checking our shopping list...");
     for (let i = 0; i < list.length; i++) {
         // Check if Food on shelf is on the shopping list, and has not already been collected.
         if (list[i].getValue() == shelfFood.getValue() && !list[i].getCollected()) {
@@ -134,7 +134,7 @@ function CheckList(shelfFood) {
  */
 function UpdateList(index) {
     list[index].setCollected();
-    console.log("Crossed off " + list[index].getName());
+    //console.log("Crossed off " + list[index].getName());
 
     let uncrossedList = "";
     for (let i = 0; i < list.length; i++) {
@@ -143,6 +143,6 @@ function UpdateList(index) {
         }
     }
 
-    console.log("Your shopping list: " + uncrossedList);
+    //console.log("Your shopping list: " + uncrossedList);
     //TODO: Cross off item from visual/HTML version of shopping list.
 }
