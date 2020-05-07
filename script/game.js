@@ -34,9 +34,9 @@ var config = {
 };
 
 /** Phaser instance. */
-var game = new Phaser.Game(config);
+let game = new Phaser.Game(config);
 /** Array of all enemies. */
-var enemyArray = [];
+let enemyArray = [];
 
 /** Pre-loads necessary resources, like images. */
 function preload() {
@@ -189,7 +189,6 @@ function create() {
             foodIndex = 0;
         }
 
-        console.log(" " + food.getName());
         foodChildren[i].setData("food", food);
 
     }
@@ -504,12 +503,12 @@ function collectFood(player, food) {
         scoreText.setText('Score: ' + score);
     }
 
+}
 
-    if (score >= 1300) {
-
-        gameOverText.visible = true;
-    }
-
+/** Called when the player completes their shopping list. */
+function win() {
+    gameOverText.visible = true;
+    game.scene.pause("default");
 }
 
 
