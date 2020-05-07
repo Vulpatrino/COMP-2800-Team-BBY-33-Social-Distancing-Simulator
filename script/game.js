@@ -5,7 +5,7 @@
  * @author Jaedon Braun
  */
 
- /** Phaser configuration. */
+/** Phaser configuration. */
 var config = {
     type: Phaser.AUTO,
     width: 1200,
@@ -42,25 +42,31 @@ function preload() {
     this.load.image('wall1', 'images/wall1.png');
     this.load.image('wall2', 'images/wall2.png');
     this.load.image('aisle1', 'images/aisle1.png');
+    this.load.image('dpad1', 'images/dpad1.png');
+    this.load.image('dpad2', 'images/dpad2.png');
+    this.load.image('dpad3', 'images/dpad3.png');
+    this.load.image('dpad4', 'images/dpad4.png');
+    this.load.image('dpad5', 'images/dpad5.png');
+    this.load.image('dpad6', 'images/dpad6.png');
     this.load.spritesheet('dude',
         'images/mario.png', {
-        frameWidth: 32,
-        frameHeight: 48
-    }
+            frameWidth: 32,
+            frameHeight: 48
+        }
     );
     this.load.spritesheet('enemy',
         'images/trump_run_resized.png', {
-        frameWidth: 66.66666666666666,
-        frameHeight: 66.75,
-    }
+            frameWidth: 66.66666666666666,
+            frameHeight: 66.75,
+        }
     );
 
     this.load.spritesheet('food',
         'images/food.png', {
-        frameWidth: 49,
-        frameHeight: 49
+            frameWidth: 49,
+            frameHeight: 49
 
-    }
+        }
     );
 
 }
@@ -70,6 +76,19 @@ var walls;
 var score = 0;
 var scoreText;
 var gameOverText;
+var dpadUp;
+var dpadRight;
+var dpadDown;
+var dpadLeft;
+var dpadUpRight;
+var dpadDownRight;
+var dpadDownLeft;
+var dpadUpLeft;
+var moveUp = false;
+var moveLeft = false;
+var moveDown = false;
+var moveRight = false;
+var dpad;
 
 /** Called once at the start of the game. Use this to build objects. */
 function create() {
@@ -155,7 +174,7 @@ function create() {
         let food = new Food(i);
         console.log(" " + food.getName());
         foodChildren[i].setData("food", food);
-        
+
     }
 
     enemies = this.physics.add.group();
@@ -228,18 +247,184 @@ function create() {
     gameOverText.setOrigin(0.5);
     gameOverText.visible = false;
 
+    dpad = this.physics.add.group();
+    createDpad();
+
 }
 
 var count = 0;
 
 /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
 function update() {
+    showDpad();
     cursors = this.input.keyboard.createCursorKeys();
-    if (cursors.left.isDown) {
+    playerMove();
+
+
+    if (count++ == 100) {
+        enemyMove();
+        count = 0;
+    }
+}
+
+function createDpad() {
+
+    dpadUp = dpad.create(150, 550, 'dpad2');
+    dpadRight = dpad.create(225, 625, 'dpad1');
+    dpadDown = dpad.create(150, 700, 'dpad2');
+    dpadLeft = dpad.create(75, 625, 'dpad1');
+    dpadUpRight = dpad.create(235, 540, 'dpad3');
+    dpadDownRight = dpad.create(235, 710, 'dpad4');
+    dpadDownLeft = dpad.create(65, 710, 'dpad5');
+    dpadUpLeft = dpad.create(65, 540, 'dpad6');
+
+    dpadUp.setInteractive();
+    dpadUp.on("pointerover", function () {
+        moveUp = true;
+    });
+    dpadUp.on("pointerout", function () {
+        moveUp = false;
+    });
+    dpadUp.on("pointerdown", function () {
+        moveUp = true;
+    });
+    dpadUp.on("pointerup", function () {
+        moveUp = false;
+    });
+
+    dpadRight.setInteractive();
+    dpadRight.on("pointerover", function () {
+        moveRight = true;
+    });
+    dpadRight.on("pointerout", function () {
+        moveRight = false;
+    });
+    dpadRight.on("pointerdown", function () {
+        moveRight = true;
+    });
+    dpadRight.on("pointerup", function () {
+        moveRight = false;
+    });
+
+    dpadDown.setInteractive();
+    dpadDown.on("pointerover", function () {
+        moveDown = true;
+    });
+    dpadDown.on("pointerout", function () {
+        moveDown = false;
+    });
+    dpadDown.on("pointerdown", function () {
+        moveDown = true;
+    });
+    dpadDown.on("pointerup", function () {
+        moveDown = false;
+    });
+
+    dpadLeft.setInteractive();
+    dpadLeft.on("pointerover", function () {
+        moveLeft = true;
+    });
+    dpadLeft.on("pointerout", function () {
+        moveLeft = false;
+    });
+    dpadLeft.on("pointerdown", function () {
+        moveLeft = true;
+    });
+    dpadLeft.on("pointerup", function () {
+        moveLeft = false;
+    });
+    dpadUpRight.setInteractive();
+    dpadUpRight.on("pointerover", function () {
+        moveUp = true;
+        moveRight = true;
+    });
+    dpadUpRight.on("pointerout", function () {
+        moveUp = false;
+        moveRight = false;
+    });
+    dpadUpRight.on("pointerdown", function () {
+        moveUp = true;
+        moveRight = true;
+    });
+    dpadUpRight.on("pointerup", function () {
+        moveUp = false;
+        moveRight = false;
+    });
+
+    dpadDownRight.setInteractive();
+    dpadDownRight.on("pointerover", function () {
+        moveDown = true;
+        moveRight = true;
+    });
+    dpadDownRight.on("pointerout", function () {
+        moveDown = false;
+        moveRight = false;
+    });
+    dpadDownRight.on("pointerdown", function () {
+        moveDown = true;
+        moveRight = true;
+    });
+    dpadDownRight.on("pointerup", function () {
+        moveDown = false;
+        moveRight = false;
+    });
+
+    dpadDownLeft.setInteractive();
+    dpadDownLeft.on("pointerover", function () {
+        moveDown = true;
+        moveLeft = true;
+    });
+    dpadDownLeft.on("pointerout", function () {
+        moveDown = false;
+        moveLeft = false;
+    });
+    dpadDownLeft.on("pointerdown", function () {
+        moveDown = true;
+        moveLeft = true;
+    });
+    dpadDownLeft.on("pointerup", function () {
+        moveDown = false;
+        moveLeft = false;
+    });
+
+    dpadUpLeft.setInteractive();
+    dpadUpLeft.on("pointerover", function () {
+        moveUp = true;
+        moveLeft = true;
+    });
+    dpadUpLeft.on("pointerout", function () {
+        moveUp = false;
+        moveLeft = false;
+    });
+    dpadUpLeft.on("pointerdown", function () {
+        moveUp = true;
+        moveLeft = true;
+    });
+    dpadUpLeft.on("pointerup", function () {
+        moveUp = false;
+        moveLeft = false;
+    });
+}
+
+function showDpad() {
+
+    if (window.innerWidth > 500) {
+        dpad.getChildren().forEach((dpad) => {
+            dpad.visible = false;
+        });
+    } else {
+        dpad.getChildren().forEach((dpad) => {
+            dpad.visible = true;
+        });
+    }
+}
+
+function playerMove() {
+    if (cursors.left.isDown || moveLeft) {
         player.setVelocityX(-300);
 
         player.anims.play('left', true);
-    } else if (cursors.right.isDown) {
+    } else if (cursors.right.isDown || moveRight) {
         player.setVelocityX(300);
 
         player.anims.play('right', true);
@@ -248,21 +433,15 @@ function update() {
 
         player.anims.play('turn');
     }
-    if (cursors.up.isDown) {
+    if (cursors.up.isDown || moveUp) {
         player.setVelocityY(-300);
-    } else if (cursors.down.isDown) {
+    } else if (cursors.down.isDown || moveDown) {
         player.setVelocityY(300);
     } else {
         player.setVelocityY(0);
     }
-
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(0);
-    }
-
-    if (count++ == 100) {
-        enemyMove();
-        count = 0;
     }
 }
 
@@ -276,18 +455,15 @@ function enemyMove() {
             enemyArray[i].setVelocityY(0);
             if (speed < 0) {
                 enemyArray[i].anims.play('eLeft');
-            }
-            else if (speed > 0) {
+            } else if (speed > 0) {
                 enemyArray[i].anims.play('eRight');
             }
-        }
-        else if (choice == 1) {
+        } else if (choice == 1) {
             enemyArray[i].setVelocityY(speed);
             enemyArray[i].setVelocityX(0);
             if (speed < 0) {
                 enemyArray[i].anims.play('eUp');
-            }
-            else if (speed > 0) {
+            } else if (speed > 0) {
                 enemyArray[i].anims.play('eDown');
             }
         }
@@ -319,3 +495,12 @@ function stopMove(player, enemies) {
     player.setVelocityX(0);
     player.setVelocityY(0);
 }
+
+
+$(document).ready(function () {
+    $("#playgame").click(function () {
+        $("#main").hide(400);
+        $("#my-game").css("display", "flex");
+
+    });
+});
