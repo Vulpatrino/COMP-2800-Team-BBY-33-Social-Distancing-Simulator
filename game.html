@@ -29,7 +29,7 @@
                     gravity: {
                         y: 0
                     },
-                    debug: true
+                    debug: false
                 }
             },
             scene: {
@@ -158,8 +158,7 @@
             enemies = this.physics.add.group();
             enemies.enableBody = true;
             this.physics.add.collider(enemies, walls, hitWallMove, null, this);
-            this.physics.add.collider(enemies, aisles, hitWallMove, null, this);
-
+            this.physics.add.collider(enemies, aisles);
             this.anims.create({
                 key: 'eRight',
                 frames: this.anims.generateFrameNumbers('enemy', {
@@ -229,7 +228,7 @@
             var alpha = 1;
             circle = this.add.circle(player.x, player.y, 50).setStrokeStyle(thickness, colour);
 
-            changeMove();
+            initialMove();
         }
 
         var count = 0;
@@ -262,7 +261,7 @@
             if (cursors.up.isDown && player.body.touching.down) {
                 player.setVelocityY(0);
             }
-            if (count++== 100) {
+            if (count++== 300) {
                 changeMove();
                 count = 0;
             }
@@ -270,25 +269,55 @@
             var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, true);
             Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
         }
-        
-        function changeMove() {
+
+        function initialMove() {
             var speed = [-100, 100];
             for (var i = 0; i < enemyArray.length; i++) {
                 var choice = Math.floor(Math.random()*2)
-                var choice2 = Math.floor(Math.random()*2)
+                var choice2 = Math.floor(Math.random()*2);
                 if (choice == 0) {
-                    enemyArray[i].setVelocity(speed[choice2], 0);
-                    if (speed[choice2] > 0) {
-                    enemyArray[i].anims.play('eRight');
-                    } else if (speed[choice2] < 0) {
-                        enemyArray[i].anims.play('eLeft');
-                    }
-                } else if (choice == 1) {
-                    enemyArray[i].setVelocity(0, speed[choice2]);
+                    enemyArray[i].setVelocityX(0);
+                    enemyArray[i].setVelocityY(speed[choice2]);
                     if (speed[choice2] > 0) {
                         enemyArray[i].anims.play('eDown');
                     } else if (speed[choice2] < 0) {
                         enemyArray[i].anims.play('eUp');
+                    }
+                }
+                else if (choice == 1) {
+                    enemyArray[i].setVelocityY(0);
+                    enemyArray[i].setVelocityX(speed[choice2]);
+                    if (speed[choice2] > 0) {
+                        enemyArray[i].anims.play('eRight');
+                    } else if (speed[choice2] < 0) {
+                        enemyArray[i].anims.play('eLeft');
+                    }
+                }
+            }
+        }
+        
+        function changeMove() {
+            var speed = [-100, 100];
+            var vel;
+            for (var i = 0; i < enemyArray.length; i++) {
+                var choice = Math.floor(Math.random()*2)
+                var eKey = enemyArray[i].anims.getCurrentKey();
+                if (eKey === 'eLeft' || eKey === 'eRight') {
+                    enemyArray[i].setVelocityX(0);
+                    enemyArray[i].setVelocityY(speed[choice]);
+                    if (speed[choice] > 0) {
+                        enemyArray[i].anims.play('eDown');
+                    } else if (speed[choice] < 0) {
+                        enemyArray[i].anims.play('eUp');
+                    }
+                }
+                else if (eKey === 'eUp' || eKey === 'eDown') {
+                    enemyArray[i].setVelocityY(0);
+                    enemyArray[i].setVelocityX(speed[choice]);
+                    if (speed[choice] > 0) {
+                        enemyArray[i].anims.play('eRight');
+                    } else if (speed[choice] < 0) {
+                        enemyArray[i].anims.play('eLeft');
                     }
                 }
             }
