@@ -50,7 +50,7 @@ function preload() {
     this.load.image('dpad4', 'images/dpad4.png');
     this.load.image('dpad5', 'images/dpad5.png');
     this.load.image('dpad6', 'images/dpad6.png');
-    this.load.audio('background-music', ['audio/1.mp3', 'audio/1.ogg']);
+    
     this.load.spritesheet('dude',
         'images/mario.png', {
             frameWidth: 32,
@@ -97,7 +97,7 @@ var music;
 
 /** Called once at the start of the game. Use this to build objects. */
 function create() {
-
+    
     // Initializes the shopping list.
     initList();
 
