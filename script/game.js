@@ -71,6 +71,9 @@ var score = 0;
 var scoreText;
 var gameOverText;
 var circle;
+var infectBar;
+var health = 0;
+var max = 195;
 
 /** Called once at the start of the game. Use this to build objects. */
 function create() {
@@ -214,60 +217,8 @@ function create() {
     }
 
     enemies = this.physics.add.group();
-    this.physics.add.collider(player, enemies);
-    this.physics.add.collider(enemies, enemies);
     this.physics.add.collider(enemies, walls);
     this.physics.add.collider(enemies, aisles);
-
-    var i;
-    for (i = 0; i < 11; i++) {
-        var x = Phaser.Math.Between(100, 700);
-        var y = Phaser.Math.Between(100, 500);
-        var enemy = enemies.create(x, y, 'enemy');
-        enemy.setCollideWorldBounds(true);
-        enemyArray.push(enemy);
-    }
-
-    this.anims.create({
-        key: 'eRight',
-        frames: this.anims.generateFrameNumbers('enemy', {
-            start: 6,
-            end: 11
-        }),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    this.anims.create({
-        key: 'eLeft',
-        frames: this.anims.generateFrameNumbers('enemy', {
-            start: 18,
-            end: 23
-        }),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    this.anims.create({
-        key: 'eUp',
-        frames: this.anims.generateFrameNumbers('enemy', {
-            start: 12,
-            end: 17
-        }),
-        frameRate: 10,
-        repeat: -1
-    });
-
-    this.anims.create({
-        key: 'eDown',
-        frames: this.anims.generateFrameNumbers('enemy', {
-            start: 0,
-            end: 5
-        }),
-        frameRate: 10,
-        repeat: -1
-    });
-
 
     this.physics.add.overlap(player, food, collectFood, null, this);
 
@@ -283,9 +234,17 @@ function create() {
     gameOverText.setOrigin(0.5);
     gameOverText.visible = false;
     var colour = 0xffffff;
-    var thickness = 4;
-    var alpha = 1;
+    var thickness = 1;
     circle = this.add.circle(player.x, player.y, 50).setStrokeStyle(thickness, colour);
+
+    infectBar = this.add.graphics();
+    infectBar.fillStyle(0x000000);
+    infectBar.fillRect(20, 80, 200, 30);
+    infectBar.fillStyle(0xffffff);
+    infectBar.fillRect(22, 82, 195, 25);
+    infectBar.fillStyle(0x00ff00);
+    infectBar.fillRect(22, 82, health, 25);
+
 
     initialMove();
 }
@@ -326,8 +285,16 @@ function update() {
         count = 0;
     }
     circle.setPosition(player.x, player.y);
-    var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, true);
+    var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, false);
+    var inCirc = bodies.map((body) => body.gameObject.texture.key);
+    for (var i = 0; i < inCirc.length; i++) {
+        if (inCirc[i] === "enemy") {
+            healthIncrease();
+            infect();
+        }
+    }
     Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
+    
 }
 
 function initialMove() {
@@ -422,10 +389,21 @@ function collectFood(player, food) {
 
 }
 
+function infect() {
+    infectBar.clear();
+    infectBar.fillStyle(0x000000);
+    infectBar.fillRect(20, 80, 200, 30);
+    infectBar.fillStyle(0xffffff);
+    infectBar.fillRect(22, 82, 195, 25);
+    infectBar.fillStyle(0x00ff00);
+    if (health <= max) {
+        infectBar.fillRect(22, 82, health, 25);
+    }
+    else {
+        infectBar.fillRect(22, 82, max, 25);
+    }
+}
 
-function stopMove(player, enemies) {
-    enemies.setVelocityX(0);
-    enemies.setVelocityY(0);
-    player.setVelocityX(0);
-    player.setVelocityY(0);
+function healthIncrease() {
+    health += 0.5;
 }
