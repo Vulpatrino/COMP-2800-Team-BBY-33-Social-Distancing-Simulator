@@ -467,12 +467,3 @@ function stopMove(player, enemies) {
     player.setVelocityY(0);
 }
 
-
-$(document).ready(function () {
-    $("input").click(function () {
-        console.log("test");
-        $("#main").hide(400);
-        $("#my-game").css("display", "flex");
-
-    });
-});
