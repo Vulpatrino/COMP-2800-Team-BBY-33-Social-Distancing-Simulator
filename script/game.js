@@ -5,15 +5,16 @@
  * @author Jaedon Braun
  */
 
+/** Phaser configuration. */
 var config = {
     type: Phaser.AUTO,
     width: 1200,
     height: 800,
     scale: {
         mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_HORIZONTALLY
+        autoCenter: Phaser.Scale.CENTER_BOTH
     },
-    parent: 'my-game',
+    parent: "my-game",
     physics: {
         default: 'arcade',
         arcade: {
@@ -30,10 +31,12 @@ var config = {
     }
 };
 
+/** Phaser instance. */
 var game = new Phaser.Game(config);
+/** Array of all enemies. */
 var enemyArray = [];
 
-
+/** Pre-loads necessary resources, like images. */
 function preload() {
     this.load.image('background', 'images/floor.jpg');
     this.load.image('wall1', 'images/wall1.png');
@@ -85,8 +88,13 @@ var moveUp = false;
 var moveLeft = false;
 var moveDown = false;
 var moveRight = false;
+var dpad;
 
+/** Called once at the start of the game. Use this to build objects. */
 function create() {
+
+    // Initializes the shopping list.
+    initList();
 
     this.add.image(600, 400, 'background').setScale(6);
     walls = this.physics.add.staticGroup();
@@ -141,36 +149,44 @@ function create() {
     this.physics.add.collider(player, walls);
     this.physics.add.collider(player, aisles);
 
+    // Section that adds food to the map.
     food = this.physics.add.staticGroup();
-    var i;
-    var j;
     var h = 45;
     var w = 60;
     var foodcount = 0;
-    for (i = 0; i < 10; i++) {
-        for (j = 0; j < 13; j++) {
+    for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 13; j++) {
             food.create(w, h, 'food', foodcount);
             foodcount += 1;
             h += 50;
             if (foodcount > 99) {
                 foodcount = 0;
             }
-            foodcount += 1;
         }
         w += 120;
         h = 45;
     }
 
+    // Adds a Food object to the food collectibles.
+    let foodChildren = food.getChildren();
+    for (let i = 0; i < foodChildren.length; i++) {
+        foodChildren[i].setDataEnabled();
+        let food = new Food(i);
+        console.log(" " + food.getName());
+        foodChildren[i].setData("food", food);
+
+    }
+
     enemies = this.physics.add.group();
-    //this.physics.add.collider(player, enemies);
+    this.physics.add.collider(player, enemies);
     this.physics.add.collider(enemies, enemies);
     this.physics.add.collider(enemies, walls);
-    //this.physics.add.collider(enemies, aisles);
+    this.physics.add.collider(enemies, aisles);
 
     var i;
     for (i = 0; i < 11; i++) {
-        var x = Phaser.Math.Between(100, 1100);
-        var y = Phaser.Math.Between(100, 700);
+        var x = Phaser.Math.Between(100, 700);
+        var y = Phaser.Math.Between(100, 500);
         var enemy = enemies.create(x, y, 'enemy');
         enemy.setCollideWorldBounds(true);
         enemyArray.push(enemy);
@@ -228,8 +244,30 @@ function create() {
         fontSize: "50px",
         fill: "#000"
     });
+    gameOverText.setOrigin(0.5);
+    gameOverText.visible = false;
 
     dpad = this.physics.add.group();
+    createDpad();
+
+}
+
+var count = 0;
+
+/** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
+function update() {
+    showDpad();
+    cursors = this.input.keyboard.createCursorKeys();
+    playerMove();
+
+
+    if (count++ == 100) {
+        enemyMove();
+        count = 0;
+    }
+}
+
+function createDpad() {
 
     dpadUp = dpad.create(150, 550, 'dpad2');
     dpadRight = dpad.create(225, 625, 'dpad1');
@@ -295,7 +333,6 @@ function create() {
     dpadLeft.on("pointerup", function () {
         moveLeft = false;
     });
-
     dpadUpRight.setInteractive();
     dpadUpRight.on("pointerover", function () {
         moveUp = true;
@@ -367,24 +404,22 @@ function create() {
         moveUp = false;
         moveLeft = false;
     });
-    gameOverText.setOrigin(0.5);
-    gameOverText.visible = false;
-
 }
 
-var count = 0;
+function showDpad() {
 
-function update() {
-    if (window.innerWidth > 450) {
-        dpad.getChildren().forEach((dpad)=>{
+    if (window.innerWidth > 500) {
+        dpad.getChildren().forEach((dpad) => {
             dpad.visible = false;
         });
     } else {
-        dpad.getChildren().forEach((dpad)=>{
+        dpad.getChildren().forEach((dpad) => {
             dpad.visible = true;
         });
     }
-    cursors = this.input.keyboard.createCursorKeys();
+}
+
+function playerMove() {
     if (cursors.left.isDown || moveLeft) {
         player.setVelocityX(-300);
 
@@ -405,14 +440,8 @@ function update() {
     } else {
         player.setVelocityY(0);
     }
-
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(0);
-    }
-
-    if (count++ == 100) {
-        enemyMove();
-        count = 0;
     }
 }
 
@@ -441,15 +470,15 @@ function enemyMove() {
     }
 }
 
-function collectStar(player, star) {
-    star.disableBody(true, true);
-}
-
+/** Called when the player touches a food object. */
 function collectFood(player, food) {
-    food.disableBody(true, true);
-    score += 10;
-    scoreText.setText('Score: ' + score);
+    let foodType = food.getData("food");
 
+    if (foodType != undefined && CheckList(foodType)) {
+        food.disableBody(true, true);
+        score += 10;
+        scoreText.setText('Score: ' + score);
+    }
 
 
     if (score >= 1300) {
@@ -467,3 +496,11 @@ function stopMove(player, enemies) {
     player.setVelocityY(0);
 }
 
+
+$(document).ready(function () {
+    $("#playgame").click(function () {
+        $("#main").hide(400);
+        $("#my-game").css("display", "flex");
+
+    });
+});

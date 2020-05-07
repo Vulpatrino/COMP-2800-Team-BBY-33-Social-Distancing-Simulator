@@ -4,10 +4,21 @@
  * @author: Jaedon Braun
  */
 
-/** Array of all food frames.*/
-let foodImages = [0];
 /** Array of all food names. EACH NAME SHOULD CORRESPOND TO THE SAME IMAGE ABOVE.*/
-let foodNames = ["Banana"];
+let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
+"watermelon", "cherry", "orange", "cinnamon roll", "t-bone steak", "beer", "milk",
+"cup", "mug", "wine", "cocktail", "cheese", "green pepper", "orange juice", "roast beef",
+"waffle", "long john", "bread loaf", "croissant", "pie", "pancake", "pretzel", "pea",
+"martini", "turkey", "ice cream sandwich", "jam toast", "cucumber", "radish", "carrot",
+"mashed potato", "english muffin", "popsicle", "coke", "prune", "eggplant", "ice cream cone",
+"spaghetti", "soup", "mushroom", "chocolate bar", "cookie", "onion", "bbq sauce", "ginger",
+"burger", "cupcake", "corn", "club sandwich", "hotdog", "broccoli", "drumstick", "garlic",
+"peanut", "squash", "ham", "turnip", "pizza", "avacodo", "egg", "portabello mushroom",
+"cabbage", "chocolate popsicle", "cauliflower", "blueberry muffin", "rocket popsicles",
+"tomato", "cake slice", "kiwi", "lettuce wrap", "chocolate donut", "lemon", "pumpkin",
+"potato", "crepe", "taco", "steak", "bacon", "grape", "strawberry", "ice cream sundae",
+"shrimp", "french fry", "salad roll", "candy", "burrito", "lollipop", "pink lemonade",
+"olives", "lobster", "toast", "white radish", "bok choy", "chilli pepper"];
 
 /**
  * Current shopping list.
@@ -29,7 +40,6 @@ class Food {
      * @param {number} value Index of image and value to use for this Food.
      */
     constructor(value) {
-        this.image = foodImages[value];
         this.name = foodNames[value];
         this.value = value;
         this.isCollected = false;
@@ -74,12 +84,12 @@ class Food {
 function initList() {
     for (let i = 0; i < listLength; i++) {
 
-        let newItem;
+        let newItem = Math.floor(Math.random * foodNames.length);;
         let itemAlreadyContained = true;
 
         do {
             // Generate a random (valid) item index.
-            newItem = Math.floor(Math.random * foodNames.length);
+            newItem = Math.floor(Math.random() * foodNames.length);
             // Assume this random item isn't already on the list.
             itemAlreadyContained = false;
 
@@ -94,7 +104,7 @@ function initList() {
 
         // Since we broke the "is already on the list" loop, the item can be added.
         list[i] = new Food(newItem);
-        console.log("Added " + foodNames[newItem] + " to shopping list.");
+        console.log("Added " + list[i].getName() + " to shopping list.");
 
     }
 }
@@ -102,15 +112,20 @@ function initList() {
 /**
  * Behavior when the player touches a shelf.
  * @param {Food} shelfFood Food attached to the shelf that was touched.
+ * @returns true if the Food is on the list.
  */
 function CheckList(shelfFood) {
+    let isOnList = false;
+    console.log("Checking our shopping list...");
     for (let i = 0; i < list.length; i++) {
         // Check if Food on shelf is on the shopping list, and has not already been collected.
         if (list[i].getValue() == shelfFood.getValue() && !list[i].getCollected()) {
             UpdateList(i);
+            isOnList = true;
             break;
         }
     }
+    return isOnList;
 }
 
 /**
@@ -119,6 +134,15 @@ function CheckList(shelfFood) {
  */
 function UpdateList(index) {
     list[index].setCollected();
-    console.log("Crossed off " + list[index].getName);
+    console.log("Crossed off " + list[index].getName());
+
+    let uncrossedList = "";
+    for (let i = 0; i < list.length; i++) {
+        if (!list[i].getCollected()) {
+            uncrossedList += list[i].getName() + ", ";
+        }
+    }
+
+    console.log("Your shopping list: " + uncrossedList);
     //TODO: Cross off item from visual/HTML version of shopping list.
 }
