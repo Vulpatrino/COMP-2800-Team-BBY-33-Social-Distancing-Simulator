@@ -1,0 +1,10 @@
+.profile-container {
+    display: grid;
+    grid-template-columns: auto 85%;
+    grid-template-rows: auto;
+    grid-gap:10px;
+}
+img {
+    max-width: 100%;
+    
+}
