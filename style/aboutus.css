@@ -2,6 +2,8 @@ body {
     overflow-x:hidden;
     position:absolute;
     font-family:Arial, Helvetica, sans-serif;
+    background-color: aliceblue;
+    margin:0;
 }
 
 nav {
@@ -23,15 +25,25 @@ nav a {
 
 .quoteContainer {
     display:block;
+    position:relative;
     width:50vw;
+    padding:1em;
     margin:auto;
     text-align:center;
 }
 
-.profile-container {
-    display: flex;
-    flex-flow:row;
-    width:90vw;
+#logo {
+    max-width:45vw;
+    margin-top:0.5em;
+    margin-bottom:0;
+}
+
+.profileContainer {
+    display:grid;
+    position:relative;
+    grid-template-columns:repeat(2, 1fr);
+    grid-template-rows:repeat(2, 1fr);
+    width:80vw;
     margin:auto;
 }
 
@@ -42,12 +54,29 @@ nav a {
 }
 
 .profile img {
-    display:block;
-    max-width:20vw;
+    margin:auto;
+    max-width:30vw;
+    max-height:30vw;
+    object-fit:cover;
 }
 
 .profile p {
     font-size:1.5em;
     font-weight:bold;
     text-align:center;
+}
+
+/* DESKTOP STYLES */
+
+@media screen and (min-width:1200px) {
+    .profileContainer {
+        grid-template-columns:repeat(4, 1fr);
+        grid-template-rows:1fr;
+        width:90vw;
+        margin:auto;
+    }
+
+    .profile img {
+        width:20vw;
+    }
 }
