@@ -132,7 +132,7 @@ function create() {
     this.music.play();
     
     this.pickupSound = this.sound.add('2');
-    
+    this.pickupSound.setVolume(0.5);
     volumeControl = this.input.keyboard.addKey('M');
     leavingPage = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
@@ -314,10 +314,12 @@ function update() {
         }
     }
     Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
+    
     if (count++ == 300) {
         changeMove();
         count = 0;
     }
+
     if (Phaser.Input.Keyboard.JustDown(volumeControl)){
         if (mute == false){
         this.sound.setMute(true);
