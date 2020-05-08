@@ -59,6 +59,8 @@
             this.load.image('wall1', 'images/wall1.png');
             this.load.image('wall2', 'images/wall2.png');
             this.load.image('bannana', 'images/bannana.png');
+            this.load.audio('1', ['audio/1.mp3','audio/1.ogg']);
+            this.load.audio('2', ['audio/2.mp3','audio/2.ogg']);
             this.load.spritesheet('dude',
                 'images/mario.png', {
                     frameWidth: 32,
@@ -90,6 +92,8 @@
         var tutorialText;
         var tutWall;
         var button;
+        var music;
+        var volumeControl;
         
         function create() {
 
@@ -106,6 +110,16 @@
             walls.create(1200, 400, 'wall2').setScale(.5);
             tutWall = walls.create(350, 400, 'wall2').setScale(.5);
             walls.create(0, 400, 'wall2').setScale(.5);
+            
+            this.music = this.sound.add('1');
+            this.music.setVolume(0.5);
+            this.music.setLoop(true);
+            this.music.play();
+
+            this.pickupSound = this.sound.add('2');
+
+            volumeControl = this.input.keyboard.addKey('M');
+            leavingPage = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
 
             player = this.physics.add.sprite(40, 400, 'dude');
@@ -192,6 +206,7 @@
         var tutFood;
         var button;
         var tutFinished =false;
+        var mute = false;
         function update() {
             cursors = this.input.keyboard.createCursorKeys();
             if (cursors.left.isDown) {
@@ -301,6 +316,19 @@
                 });
 
                 }
+                if (Phaser.Input.Keyboard.JustDown(volumeControl)){
+                if (mute == false){
+                this.sound.setMute(true);
+                mute = true;
+                } else{
+                    this.sound.setMute(false);
+                    mute = false;
+                }
+                }
+                if (Phaser.Input.Keyboard.JustDown(leavingPage)){
+
+                    window.open('main.html','_self');
+                }
         }
 
         function enemyMove () {
@@ -337,6 +365,9 @@
         function collectFood(player, food) {
             food.disableBody(true, true);
             tutorialText.setText("Congratulation you passed the tutorial!");
+            if(mute == false){
+                this.pickupSound.play();
+            }
             tutFinished = true;
             var menuButton = document.createElement("button");
             menuButton.innerHTML = "Back to main menu";
