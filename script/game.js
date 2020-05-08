@@ -127,7 +127,7 @@ function create() {
     
     
     this.music = this.sound.add('1');
-    this.music.setVolume(0.5);
+    this.music.setVolume(0.15);
     this.music.setLoop(true);
     this.music.play();
     
