@@ -314,6 +314,7 @@ function update() {
         }
     }
     Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
+    
     if (count++ == 300) {
         changeMove();
         count = 0;
