@@ -1,3 +1,4 @@
+
 body {
     display:grid;
     grid-template-columns: 1fr 4fr;
@@ -22,3 +23,9 @@ body {
 .crossedOff {
     text-decoration:line-through;
 }
+#player{
+    position: absolute;
+    top:0px;
+    left:0px;
+}
+

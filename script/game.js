@@ -51,7 +51,8 @@ function preload() {
     this.load.image('dpad4', 'images/dpad4.png');
     this.load.image('dpad5', 'images/dpad5.png');
     this.load.image('dpad6', 'images/dpad6.png');
-    this.load.audio('background-music', ['audio/1.mp3', 'audio/1.ogg']);
+    this.load.audio('1', ['audio/1.mp3','audio/1.ogg']);
+    this.load.audio('2', ['audio/2.mp3','audio/2.ogg']);
     this.load.spritesheet('dude',
         'images/mario.png', {
             frameWidth: 32,
@@ -98,14 +99,15 @@ var moveDown = false;
 var moveRight = false;
 var dpad;
 var music;
-
+var volumeControl;
 
 /** Called once at the start of the game. Use this to build objects. */
 function create() {
-
+    
     // Initializes the shopping list.
     initList();
-
+    
+    
     this.add.image(600, 400, 'background').setScale(6);
     walls = this.physics.add.staticGroup();
 
@@ -124,8 +126,15 @@ function create() {
     });
     
     
-
+    this.music = this.sound.add('1');
+    this.music.setVolume(0.5);
+    this.music.setLoop(true);
+    this.music.play();
     
+    this.pickupSound = this.sound.add('2');
+    
+    volumeControl = this.input.keyboard.addKey('M');
+    leavingPage = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
     player = this.physics.add.sprite(40, 700, 'dude');
 
@@ -288,14 +297,13 @@ function create() {
 }
 
 var count = 0;
-
+var mute = false;
 /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
 function update() {
     Phaser.Actions.SetAlpha(enemyArray, 0.5);
     showDpad();
     cursors = this.input.keyboard.createCursorKeys();
     playerMove();
-
     circle.setPosition(player.x, player.y);
     var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, false);
     var inCirc = bodies.map((body) => body.gameObject.texture.key);
@@ -310,6 +318,25 @@ function update() {
         changeMove();
         count = 0;
     }
+    
+    if (count++ == 100) {
+        enemyMove();
+        count = 0;
+    }
+    if (Phaser.Input.Keyboard.JustDown(volumeControl)){
+        if (mute == false){
+        this.sound.setMute(true);
+        mute = true;
+        } else{
+            this.sound.setMute(false);
+            mute = false;
+        }
+    }
+    if (Phaser.Input.Keyboard.JustDown(leavingPage)){
+        
+        window.open('main.html','_self');
+    }
+
 }
 
 
@@ -575,6 +602,9 @@ function collectFood(player, food) {
         food.disableBody(true, true);
         score += 10;
         scoreText.setText('Score: ' + score);
+        if(mute == false){
+        this.pickupSound.play();
+        }
     }
 
 }
