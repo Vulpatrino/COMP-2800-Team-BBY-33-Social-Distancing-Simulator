@@ -319,10 +319,6 @@ function update() {
         count = 0;
     }
     
-    if (count++ == 100) {
-        enemyMove();
-        count = 0;
-    }
     if (Phaser.Input.Keyboard.JustDown(volumeControl)){
         if (mute == false){
         this.sound.setMute(true);
