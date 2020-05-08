@@ -4,6 +4,7 @@
  * @author Sam Shannon
  * @author Jaedon Braun
  * @author Eddy Wu
+ * @author Eric Dam
  */
 
 
@@ -201,7 +202,7 @@ function create() {
     enemies = this.physics.add.group();
     enemies.enableBody = true;
     this.physics.add.collider(enemies, walls, hitWallMove, null, this);
-    this.physics.add.collider(enemies, aisles);
+    this.physics.add.collider(enemies, aisles, hitWallMove, null, this);
     this.anims.create({
         key: 'eRight',
         frames: this.anims.generateFrameNumbers('enemy', {
@@ -273,11 +274,11 @@ function create() {
 
     infectBar = this.add.graphics();
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(20, 80, 200, 30);
+    infectBar.fillRect(970, 740, 200, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(22, 82, 195, 25);
+    infectBar.fillRect(972, 742, 195, 25);
     infectBar.fillStyle(0x00ff00);
-    infectBar.fillRect(22, 82, health, 25);
+    infectBar.fillRect(972, 742, health, 25);
 
 
     initialMove();
@@ -306,7 +307,10 @@ function update() {
         }
     }
     Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
-
+    if (count++ == 300) {
+        changeMove();
+        count = 0;
+    }
 }
 
 
@@ -487,11 +491,6 @@ function playerMove() {
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(0);
     }
-
-    if (count++ == 300) {
-        changeMove();
-        count = 0;
-    }
     
 }
 
@@ -590,15 +589,15 @@ function collectFood(player, food) {
 function infect() {
     infectBar.clear();
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(20, 80, 200, 30);
+    infectBar.fillRect(970, 740, 200, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(22, 82, 195, 25);
+    infectBar.fillRect(972, 742, 195, 25);
     infectBar.fillStyle(0x00ff00);
     if (health <= max) {
-        infectBar.fillRect(22, 82, health, 25);
+        infectBar.fillRect(972, 742, health, 25);
     }
     else {
-        infectBar.fillRect(22, 82, max, 25);
+        infectBar.fillRect(972, 742, max, 25);
     }
 }
 
