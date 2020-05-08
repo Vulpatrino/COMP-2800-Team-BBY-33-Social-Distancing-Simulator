@@ -294,7 +294,7 @@ function create() {
     infectBar.fillRect(970, 740, 200, 30);
     infectBar.fillStyle(0xffffff);
     infectBar.fillRect(972, 742, 195, 25);
-    infectBar.fillStyle(0x00ff00);
+    infectBar.fillStyle(0xff0000);
     infectBar.fillRect(972, 742, health, 25);
 
 
@@ -630,7 +630,7 @@ function infect() {
     infectBar.fillRect(970, 740, 200, 30);
     infectBar.fillStyle(0xffffff);
     infectBar.fillRect(972, 742, 195, 25);
-    infectBar.fillStyle(0x00ff00);
+    infectBar.fillStyle(0xff0000);
     if (health <= max) {
         infectBar.fillRect(972, 742, health, 25);
     }
