@@ -127,12 +127,12 @@ function create() {
     
     
     this.music = this.sound.add('1');
-    this.music.setVolume(0.5);
+    this.music.setVolume(0.15);
     this.music.setLoop(true);
     this.music.play();
     
     this.pickupSound = this.sound.add('2');
-    
+    this.pickupSound.setVolume(0.5);
     volumeControl = this.input.keyboard.addKey('M');
     leavingPage = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
@@ -272,10 +272,19 @@ function create() {
         fontSize: "50px",
         fill: "#000"
     });
+
+    gameLostText = this.add.text(600, 400, "You Lose", {
+        fontSize: "50px",
+        fill: "#000"
+    });
     
     
     gameOverText.setOrigin(0.5);
     gameOverText.visible = false;
+
+    gameLostText.setOrigin(0.5);
+    gameLostText.visible = false;
+
     var colour = 0xffffff;
     var thickness = 1;
     circle = this.add.circle(player.x, player.y, 50).setStrokeStyle(thickness, colour);
@@ -285,7 +294,7 @@ function create() {
     infectBar.fillRect(970, 740, 200, 30);
     infectBar.fillStyle(0xffffff);
     infectBar.fillRect(972, 742, 195, 25);
-    infectBar.fillStyle(0x00ff00);
+    infectBar.fillStyle(0xff0000);
     infectBar.fillRect(972, 742, health, 25);
 
 
@@ -300,7 +309,7 @@ var count = 0;
 var mute = false;
 /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
 function update() {
-    Phaser.Actions.SetAlpha(enemyArray, 0.5);
+    Phaser.Actions.SetAlpha(enemyArray, 0.7);
     showDpad();
     cursors = this.input.keyboard.createCursorKeys();
     playerMove();
@@ -333,7 +342,10 @@ function update() {
         
         window.open('main.html','_self');
     }
-
+    if (health === max) {
+        gameLostText.visible = true;
+        game.scene.pause("default");
+    }
 }
 
 
@@ -618,7 +630,7 @@ function infect() {
     infectBar.fillRect(970, 740, 200, 30);
     infectBar.fillStyle(0xffffff);
     infectBar.fillRect(972, 742, 195, 25);
-    infectBar.fillStyle(0x00ff00);
+    infectBar.fillStyle(0xff0000);
     if (health <= max) {
         infectBar.fillRect(972, 742, health, 25);
     }
