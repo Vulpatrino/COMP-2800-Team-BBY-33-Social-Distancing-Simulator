@@ -94,7 +94,7 @@ var moveDown = false;
 var moveRight = false;
 var dpad;
 var music;
-var sfx;
+var volumeControl;
 
 /** Called once at the start of the game. Use this to build objects. */
 function create() {
@@ -121,13 +121,15 @@ function create() {
     });
     
     
-    let music = this.sound.add('1');
-    music.setVolume(0.5);
-    music.setLoop(true);
-    music.play();
+    this.music = this.sound.add('1');
+    this.music.setVolume(0.5);
+    this.music.setLoop(true);
+    this.music.play();
     
     this.pickupSound = this.sound.add('2');
     
+    volumeControl = this.input.keyboard.addKey('M');
+    leavingPage = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
     player = this.physics.add.sprite(40, 700, 'dude');
 
@@ -272,19 +274,30 @@ function create() {
 }
 
 var count = 0;
-
+var mute = false;
 /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
 function update() {
     showDpad();
     cursors = this.input.keyboard.createCursorKeys();
     playerMove();
-
-
+    
     if (count++ == 100) {
         enemyMove();
         count = 0;
     }
-    
+    if (Phaser.Input.Keyboard.JustDown(volumeControl)){
+        if (mute == false){
+        this.sound.setMute(true);
+        mute = true;
+        } else{
+            this.sound.setMute(false);
+            mute = false;
+        }
+    }
+    if (Phaser.Input.Keyboard.JustDown(leavingPage)){
+        
+        window.open('main.html','_self');
+    }
 
 }
 
@@ -501,7 +514,9 @@ function collectFood(player, food) {
         food.disableBody(true, true);
         score += 10;
         scoreText.setText('Score: ' + score);
+        if(mute == false){
         this.pickupSound.play();
+        }
     }
 
 
