@@ -242,7 +242,7 @@ class SceneA extends Phaser.Scene {
 
     /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
     update() {
-        showDpad();
+
         cursors = this.input.keyboard.createCursorKeys();
         playerMove();
 
@@ -264,7 +264,7 @@ class SceneB extends Phaser.Scene {
         });
     }
 
-    preload(){
+    preload() {
         this.load.image('dpad1', 'images/dpad1.png');
         this.load.image('dpad2', 'images/dpad2.png');
         this.load.image('dpad3', 'images/dpad3.png');
@@ -286,13 +286,13 @@ class SceneB extends Phaser.Scene {
         gameOverText.setOrigin(0.5);
         gameOverText.visible = false;
 
-        dpad = this.physics.add.group();
-        if (window.innerWidth < 600){
-        createDpad();
-        }
+        //if (window.innerWidth < 600) {
+            dpad = this.physics.add.group();
+            createDpad();
+        //}
     }
 
-    
+
 }
 
 
@@ -308,7 +308,7 @@ function createDpad() {
     dpadUpRight = dpad.create(200, h - 200, 'dpad4');
     dpadDownRight = dpad.create(200, h - 50, 'dpad3');
     dpadDownLeft = dpad.create(50, h - 50, 'dpad4');
-    dpadUpLeft = dpad.create(50, h- 200, 'dpad3');
+    dpadUpLeft = dpad.create(50, h - 200, 'dpad3');
 
     dpadUp.setInteractive();
     dpadUp.on("pointerover", function () {
