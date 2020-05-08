@@ -85,8 +85,13 @@ footer {
 }
 #my-game{
 	display: none;
-	flex-direction: column;
-    justify-content: center;
+	
+}
+#game-layout{
+    margin: 0;
+    padding:0;
+    display:flex;
+    align-content: center;
 }
 #menu{
     display:flex;
