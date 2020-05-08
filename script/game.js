@@ -314,15 +314,12 @@ function update() {
         }
     }
     Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
+    
     if (count++ == 300) {
         changeMove();
         count = 0;
     }
-    
-    if (count++ == 100) {
-        enemyMove();
-        count = 0;
-    }
+
     if (Phaser.Input.Keyboard.JustDown(volumeControl)){
         if (mute == false){
         this.sound.setMute(true);
