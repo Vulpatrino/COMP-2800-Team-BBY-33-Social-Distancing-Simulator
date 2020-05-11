@@ -10,8 +10,8 @@
 
 
 /** Array of all enemies. */
-var gameHeight = document.documentElement.clientHeight;
-var gameWidth = document.documentElement.clientWidth;
+var gameHeight = 600;
+var gameWidth = 600;
 var circle;
 var cursors;
 var aisles;
@@ -645,16 +645,17 @@ function win() {
 }
 
 function infect() {
+    let w = gameWidth;
     infectBar.clear();
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(970, 740, 200, 30);
+    infectBar.fillRect(w -300, 60, 200, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(972, 742, 195, 25);
+    infectBar.fillRect(w - 298, 62, 195, 25);
     infectBar.fillStyle(0xff0000);
     if (health <= max) {
-        infectBar.fillRect(972, 742, health, 25);
+        infectBar.fillRect(w - 298, 62, health, 25);
     } else {
-        infectBar.fillRect(972, 742, max, 25);
+        infectBar.fillRect(w -298, 62, max, 25);
     }
 }
 
