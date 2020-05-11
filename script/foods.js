@@ -26,9 +26,6 @@ let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
  */
 let list = [];
 
-/** Number of items on shopping list. */
-let listLength = 10;
-
 /**
  * FOOD OBJECT
  */
@@ -81,8 +78,8 @@ class Food {
  * Populates the shopping list with random food items.
  * CALL ON GAME START/RESTART!!
  */
-function initList() {
-    for (let i = 0; i < listLength; i++) {
+function initList(newLength) {
+    for (let i = 0; i < newLength; i++) {
 
         let newItem = Math.floor(Math.random * foodNames.length);;
         let itemAlreadyContained = true;

@@ -100,12 +100,14 @@ var moveRight = false;
 var dpad;
 var music;
 var volumeControl;
+/** Number of items on shopping list. */
+let listLength = 10;
 
 /** Called once at the start of the game. Use this to build objects. */
 function create() {
     
     // Initializes the shopping list.
-    initList();
+    initList(listLength);
     
     
     this.add.image(600, 400, 'background').setScale(6);
