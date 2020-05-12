@@ -82,6 +82,9 @@ var restartKey;
 // Whether or not the music is muted.
 var mute = false;
 
+// Turning points for enemies
+var turnPoints;
+
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
 
@@ -244,7 +247,7 @@ class SceneA extends Phaser.Scene {
         enemies = this.physics.add.group();
         enemies.enableBody = true;
         this.physics.add.collider(enemies, walls, hitWallMove, null, this);
-        this.physics.add.collider(enemies, aisles, hitWallMove, null, this);
+        this.physics.add.collider(enemies, aisles);
         this.anims.create({
             key: 'eRight',
             frames: this.anims.generateFrameNumbers('enemy', {
@@ -309,6 +312,16 @@ class SceneA extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 1200, 800);
         this.cameras.main.startFollow(player);
         initialMove();
+
+        turnPoints = this.physics.add.staticGroup();
+        var spriteY = enemies.getChildren()[0].height;
+        for (var i = 0; i < aisles.getChildren().length-1; i++) {
+            var diffX = (aisles.getChildren()[i+1].x - aisles.getChildren()[i].x)/2;
+            var x = aisles.getChildren()[i].x;
+            var topY = aisles.getChildren()[i].getTopCenter().y;
+            var botY = aisles.getChildren()[i].getBottomCenter().y;
+            var rect = turnPoints.create()
+        }
     }
 
     // Reset enemy movement timer to 0.
@@ -759,6 +772,19 @@ function infect() {
     }
 }
 
+function moveChange(enemy) {
+    var choice = Math.floor(Math.random() * 4);
+    if (choice === 0) {
+        enemy.setVelocityX(100);
+    } else if (choice === 1) {
+        enemy.setVelocityX(-100);
+    } else if (choice === 2) {
+        enemy.setVelocityY(100);
+    } else if (choice === 3) {
+        enemy.setVelocityY(-100);
+    }
+}
+
 /** Phaser configuration. */
 var config = {
     type: Phaser.AUTO,
@@ -775,7 +801,7 @@ var config = {
             gravity: {
                 y: 0
             },
-            debug: false
+            debug: true
         }
     },
     scene: [SceneA, SceneB]
