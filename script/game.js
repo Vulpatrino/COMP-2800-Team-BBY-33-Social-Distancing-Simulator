@@ -419,14 +419,14 @@ class SceneB extends Phaser.Scene {
 function createDpad() {
 
     // Create D-pad buttons.
-    dpadUp = dpad.create(125, gameHeight - 200, 'dpad1');
-    dpadRight = dpad.create(200, gameHeight - 125, 'dpad2');
-    dpadDown = dpad.create(125, gameHeight - 50, 'dpad1');
-    dpadLeft = dpad.create(50, gameHeight - 125, 'dpad2');
-    dpadUpRight = dpad.create(200, gameHeight - 200, 'dpad4');
-    dpadDownRight = dpad.create(200, gameHeight - 50, 'dpad3');
+    dpadUp = dpad.create(80, gameHeight - 110, 'dpad1');
+    dpadRight = dpad.create(110, gameHeight - 80, 'dpad2');
+    dpadDown = dpad.create(80, gameHeight - 50, 'dpad1');
+    dpadLeft = dpad.create(50, gameHeight - 80, 'dpad2');
+    dpadUpRight = dpad.create(110, gameHeight - 110, 'dpad4');
+    dpadDownRight = dpad.create(110, gameHeight - 50, 'dpad3');
     dpadDownLeft = dpad.create(50, gameHeight - 50, 'dpad4');
-    dpadUpLeft = dpad.create(50, gameHeight - 200, 'dpad3');
+    dpadUpLeft = dpad.create(50, gameHeight - 110, 'dpad3');
 
     // Add D-pad functionality to:
     // D-pad up
