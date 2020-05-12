@@ -10,7 +10,7 @@
 // Height of the game window.
 var gameHeight = 600;
 // Width of the game window.
-var gameWidth = 600;
+var gameWidth = 1000;
 // Circle that surrounds the player character.
 var circle;
 // Cursor keys.
@@ -84,7 +84,10 @@ var mute = false;
 class SceneA extends Phaser.Scene {
 
     constructor() {
-        super('GameScene');
+        super({
+            key: 'GameScene',
+            active: true
+        });
     }
     /** Pre-loads necessary resources, like images. */
     preload() {
@@ -357,7 +360,7 @@ class SceneA extends Phaser.Scene {
         // Lose the game if player's infection level maxes out.
         if (infectLevel === infectMax) {
             gameLostText.visible = true;
-            game.scene.pause("default");
+            game.scene.pause("GameScene");
         }
     }
 }
@@ -418,14 +421,14 @@ class SceneB extends Phaser.Scene {
 function createDpad() {
 
     // Create D-pad buttons.
-    dpadUp = dpad.create(125, gameHeight - 200, 'dpad1');
-    dpadRight = dpad.create(200, gameHeight - 125, 'dpad2');
-    dpadDown = dpad.create(125, gameHeight - 50, 'dpad1');
-    dpadLeft = dpad.create(50, gameHeight - 125, 'dpad2');
-    dpadUpRight = dpad.create(200, gameHeight - 200, 'dpad4');
-    dpadDownRight = dpad.create(200, gameHeight - 50, 'dpad3');
+    dpadUp = dpad.create(80, gameHeight - 110, 'dpad1');
+    dpadRight = dpad.create(110, gameHeight - 80, 'dpad2');
+    dpadDown = dpad.create(80, gameHeight - 50, 'dpad1');
+    dpadLeft = dpad.create(50, gameHeight - 80, 'dpad2');
+    dpadUpRight = dpad.create(110, gameHeight - 110, 'dpad4');
+    dpadDownRight = dpad.create(110, gameHeight - 50, 'dpad3');
     dpadDownLeft = dpad.create(50, gameHeight - 50, 'dpad4');
-    dpadUpLeft = dpad.create(50, gameHeight - 200, 'dpad3');
+    dpadUpLeft = dpad.create(50, gameHeight - 110, 'dpad3');
 
     // Add D-pad functionality to:
     // D-pad up
@@ -722,7 +725,7 @@ function collectFood(player, foodCollided) {
 /** Called when the player completes their shopping list. */
 function win() {
     gameOverText.visible = true;
-    game.scene.pause("default");
+    game.scene.pause(SceneA);
 }
 
 /** Called when a player becomes more infected. */
