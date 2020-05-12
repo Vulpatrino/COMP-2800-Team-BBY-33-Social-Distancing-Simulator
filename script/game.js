@@ -23,8 +23,6 @@ var player;
 var food;
 // Group that contains all enemies.
 var enemies;
-// Array of all enemies (?) --We can probably just get all children of the "enemies" group instead of building an array.
-let enemyArray = [];
 // Group that contains all walls.
 var walls;
 // Player score (?) --Will we remove this?
@@ -222,14 +220,14 @@ class SceneA extends Phaser.Scene {
         let foodIndex = 0;
         for (let i = 0; i < foodChildren.length; i++) {
             foodChildren[i].setDataEnabled();
-            let food = new Food(foodIndex);
+            let newFood = new Food(foodIndex);
 
             foodIndex++;
             if (foodIndex >= foodLimit) {
                 foodIndex = 0;
             }
 
-            foodChildren[i].setData("food", food);
+            foodChildren[i].setData("food", newFood);
 
         }
 
@@ -284,8 +282,8 @@ class SceneA extends Phaser.Scene {
         for (let i = 0; i < 11; i++) {
             var enemy = enemies.create(enemyX, enemyY, 'enemy');
             enemy.setCollideWorldBounds(true);
-            enemyArray.push(enemy);
-            x += 120;
+            enemies.add(enemy);
+            enemyX += 120;
         }
 
         // Add collision to food
@@ -652,6 +650,7 @@ function initialMove() {
 /** Causes the enemies to change movement direction. */
 function changeMove() {
     var speed = [-100, 100];
+    let enemyArray = enemies.getChildren();
     for (var i = 0; i < enemyArray.length; i++) {
         var choice = Math.floor(Math.random() * 2)
         var eKey = enemyArray[i].anims.getCurrentKey();
@@ -700,9 +699,10 @@ function hitWallMove(enemy) {
 }
 
 /** Called when the player touches a food object. */
-function collectFood(player, food) {
+function collectFood(player, foodCollided) {
     // Get the pickup's food data.
-    let foodType = food.getData("food");
+    let foodType = foodCollided.getData("food");
+    console.log("Calling CheckList() method...");
 
     // Check the pickup's food data against the shopping list.
     if (foodType != undefined && CheckList(foodType)) {

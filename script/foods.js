@@ -112,10 +112,12 @@ function initList(newLength) {
  * @returns true if the Food is on the list.
  */
 function CheckList(shelfFood) {
+    console.log("CheckList called successfully.");
     let isOnList = false;
     for (let i = 0; i < list.length; i++) {
         // Check if Food on shelf is on the shopping list, and has not already been collected.
         if (list[i].getValue() == shelfFood.getValue() && !list[i].getCollected()) {
+            console.log("Updating list...");
             UpdateList(i);
             isOnList = true;
             break;
