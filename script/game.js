@@ -21,6 +21,8 @@ var aisles;
 var player;
 // Group that contains all food objects.
 var food;
+// Length of the shopping list.
+var listLength = 10;
 // Group that contains all enemies.
 var enemies;
 // Group that contains all walls.
@@ -124,7 +126,7 @@ class SceneA extends Phaser.Scene {
     create() {
 
         // Create a shopping list
-        initList();
+        initList(listLength);
 
         this.add.image(600, 400, 'background').setScale(6);
 
@@ -702,11 +704,10 @@ function hitWallMove(enemy) {
 function collectFood(player, foodCollided) {
     // Get the pickup's food data.
     let foodType = foodCollided.getData("food");
-    console.log("Calling CheckList() method...");
 
     // Check the pickup's food data against the shopping list.
     if (foodType != undefined && CheckList(foodType)) {
-        food.disableBody(true, true);
+        foodCollided.disableBody(true, true);
         score += 10;
         scoreText.setText('Score: ' + score);
 
