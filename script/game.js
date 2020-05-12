@@ -11,7 +11,7 @@
 
 /** Array of all enemies. */
 var gameHeight = 600;
-var gameWidth = 600;
+var gameWidth = 1000;
 var circle;
 var cursors;
 var aisles;
@@ -49,7 +49,10 @@ var mute = false;
 class SceneA extends Phaser.Scene {
 
     constructor() {
-        super('GameScene');
+        super({
+            key: 'GameScene',
+            active: true
+        });
     }
     /** Pre-loads necessary resources, like images. */
     preload() {
@@ -297,7 +300,7 @@ class SceneA extends Phaser.Scene {
         }
         if (health === max) {
             gameLostText.visible = true;
-            game.scene.pause("default");
+            game.scene.pause("GameScene");
         }
 
 
@@ -360,14 +363,14 @@ class SceneB extends Phaser.Scene {
 function createDpad() {
 
     let h = gameHeight;
-    dpadUp = dpad.create(125, h - 200, 'dpad1');
-    dpadRight = dpad.create(200, h - 125, 'dpad2');
-    dpadDown = dpad.create(125, h - 50, 'dpad1');
-    dpadLeft = dpad.create(50, h - 125, 'dpad2');
-    dpadUpRight = dpad.create(200, h - 200, 'dpad4');
-    dpadDownRight = dpad.create(200, h - 50, 'dpad3');
+    dpadUp = dpad.create(80, h - 110, 'dpad1');
+    dpadRight = dpad.create(110, h - 80, 'dpad2');
+    dpadDown = dpad.create(80, h - 50, 'dpad1');
+    dpadLeft = dpad.create(50, h - 80, 'dpad2');
+    dpadUpRight = dpad.create(110, h - 110, 'dpad4');
+    dpadDownRight = dpad.create(110, h - 50, 'dpad3');
     dpadDownLeft = dpad.create(50, h - 50, 'dpad4');
-    dpadUpLeft = dpad.create(50, h - 200, 'dpad3');
+    dpadUpLeft = dpad.create(50, h - 110, 'dpad3');
 
     dpadUp.setInteractive();
     dpadUp.on("pointerover", function () {
@@ -641,7 +644,7 @@ function collectFood(player, food) {
 /** Called when the player completes their shopping list. */
 function win() {
     gameOverText.visible = true;
-    game.scene.pause("default");
+    game.scene.pause(SceneA);
 }
 
 function infect() {
