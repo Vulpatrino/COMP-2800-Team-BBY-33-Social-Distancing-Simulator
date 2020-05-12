@@ -73,10 +73,12 @@ var moveRight = false;
 var dpad;
 // Background music.
 var music;
-// Mute button.
+// Mute key.
 var volumeControl;
-// Leaving page.
+// Quit key.
 var leavingPage;
+// Restart key.
+var restartKey;
 // Whether or not the music is muted.
 var mute = false;
 
@@ -163,6 +165,8 @@ class SceneA extends Phaser.Scene {
         volumeControl = this.input.keyboard.addKey('M');
         // Add the quit button
         leavingPage = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+        // Add the restart button.
+        restartKey = this.input.keyboard.addKey('R');
 
         // Create the player and their animations
         player = this.physics.add.sprite(40, 700, 'dude');
@@ -355,6 +359,11 @@ class SceneA extends Phaser.Scene {
         if (Phaser.Input.Keyboard.JustDown(leavingPage)) {
 
             window.open('main.html', '_self');
+        }
+
+        // Reload the page if the restart key is pressed.
+        if (Phaser.Input.Keyboard.JustDown(restartKey)) {
+            location.reload();
         }
 
         // Lose the game if player's infection level maxes out.
@@ -703,7 +712,9 @@ function hitWallMove(enemy) {
     }
 }
 
-/** Called when the player touches a food object. */
+/** Called when the player touches a food object. 
+ * Note: "player" argument is needed for the overlap event to work.
+*/
 function collectFood(player, foodCollided) {
     // Get the pickup's food data.
     let foodType = foodCollided.getData("food");
