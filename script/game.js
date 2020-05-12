@@ -77,6 +77,7 @@ var volumeControl;
 var leavingPage;
 // Whether or not the music is muted.
 var mute = false;
+var pauseButton;
 
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
@@ -379,6 +380,10 @@ class SceneB extends Phaser.Scene {
         this.load.image('dpad2', 'images/dpad2.png');
         this.load.image('dpad3', 'images/dpad3.png');
         this.load.image('dpad4', 'images/dpad4.png');
+        this.load.spritesheet('checkbox', 'images/checkbox.png', {
+            frameWidth: 60,
+            frameHeight: 60,
+        });
     }
 
     // Called once when the scene loads.
@@ -405,6 +410,7 @@ class SceneB extends Phaser.Scene {
         gameLostText.setOrigin(0.5);
         gameLostText.visible = false;
 
+
         // Create the infection meter.
         infectBar = this.add.graphics();
         createInfectBar();
@@ -412,9 +418,46 @@ class SceneB extends Phaser.Scene {
         // Create the mobile D-pad.
         dpad = this.physics.add.group();
         createDpad();
+
+        pauseButton = this.physics.add.sprite(gameWidth - 50, 50,"checkbox").setInteractive();
+        createPauseButton();
     }
 }
 
+class SceneC extends Phaser.Scene {
+
+    constructor() {
+        super({
+            key: 'pause',
+            active: true
+        });
+    }
+    preload(){
+        
+    }
+    create(){
+
+    }
+    update(){
+
+    }
+}
+function createPauseButton(){
+    pauseButton.on('pointerover',function(){
+        pauseButton.setFrame(1);
+    })
+    
+    pauseButton.on('pointerout',function(){
+        pauseButton.setFrame(0);
+    })
+    pauseButton.on('pointerdown',function(){
+        if(!game.scene.isPaused("GameScene")){
+            game.scene.pause("GameScene");
+        } else{
+            game.scene.resume("GameScene");
+        }
+    })
+}
 /** Creates the mobile D-pad. */
 function createDpad() {
 
