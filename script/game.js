@@ -10,7 +10,7 @@
 // Height of the game window.
 var gameHeight = 600;
 // Width of the game window.
-var gameWidth = 1000;
+var gameWidth = 800;
 // Circle that surrounds the player character.
 var circle;
 // Cursor keys.
@@ -25,14 +25,10 @@ var food;
 var enemies;
 // Group that contains all walls.
 var walls;
-// Player score (?) --Will we remove this?
-var score = 0;
 // Timer for when enemies change position.
 var enemyMoveTimer = 0;
 // Maximum value for enemy move timer.
 var enemyMoveTimerMax = 300;
-// Text object that displays player score.
-var scoreText;
 // Text object that displays "You Win!"
 var gameOverText;
 // Text object that displays "You Lose!"
@@ -78,6 +74,13 @@ var leavingPage;
 // Whether or not the music is muted.
 var mute = false;
 var pauseButton;
+var time = 0;
+var timer;
+var timerText;
+var soundButton;
+var mobileControlsButton;
+var mobileControls = false;
+
 
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
@@ -207,6 +210,7 @@ class SceneA extends Phaser.Scene {
         var foodcount = 0;
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 13; j++) {
+                
                 food.create(w, h, 'food', foodcount);
                 foodcount += 1;
                 h += 50;
@@ -282,7 +286,7 @@ class SceneA extends Phaser.Scene {
 
         // Enemy creation loop
         var enemyX = 60;
-        var enemyY = 45;
+        var enemyY = 70;
         for (let i = 0; i < 11; i++) {
             var enemy = enemies.create(enemyX, enemyY, 'enemy');
             enemy.setCollideWorldBounds(true);
@@ -304,6 +308,7 @@ class SceneA extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 1200, 800);
         this.cameras.main.startFollow(player);
         initialMove();
+        game.scene.sleep("pause");
     }
 
     // Reset enemy movement timer to 0.
@@ -314,8 +319,6 @@ class SceneA extends Phaser.Scene {
 
         // Set all enemies to be slightly transparent.
         Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
-        // Show the mobile D-pad. (?) --Why is this being called every single frame?
-        showDpad();
         // Create cursor keys. (?) --Why is this being called every single frame?
         cursors = this.input.keyboard.createCursorKeys();
         // Make the player move.
@@ -388,11 +391,12 @@ class SceneB extends Phaser.Scene {
 
     // Called once when the scene loads.
     create() {
-        // Add score text.
-        scoreText = this.add.text(20, 20, 'Score: 0', {
-            fontSize: '32px',
-            fill: '#000'
-        });
+
+        // Add timer text;
+        timerText = this.add.text(30, 30, '0', {
+            fontSize: "32px",
+            fill: "#000"
+        })
         // Add game win text.
         gameOverText = this.add.text(600, 400, "You Win!", {
             fontSize: "50px",
@@ -419,8 +423,14 @@ class SceneB extends Phaser.Scene {
         dpad = this.physics.add.group();
         createDpad();
 
-        pauseButton = this.physics.add.sprite(gameWidth - 50, 50,"checkbox").setInteractive();
+        pauseButton = this.physics.add.sprite(gameWidth - 50, 50, "checkbox").setInteractive();
         createPauseButton();
+
+        timer = this.time.addEvent({
+            delay: 1000,                
+            callback: updateTime,
+            loop: true
+        });
     }
 }
 
@@ -432,29 +442,112 @@ class SceneC extends Phaser.Scene {
             active: true
         });
     }
-    preload(){
-        
+    preload() {
+        this.load.spritesheet('sound', 'images/sound.jpg', {
+            frameWidth: 100,
+            frameHeight: 99,
+        });
+        this.load.spritesheet('dpadIcon', 'images/dpadIcon.png', {
+            frameWidth: 100,
+            frameHeight: 99,
+        });
+        this.load.image('menu', 'images/menu.png');
     }
-    create(){
-
+    create() {
+        this.add.image(gameWidth/2, gameHeight/2, 'menu');
+        this.add.text(gameWidth/2 - 120, gameHeight/6, "Game Paused", {
+            fontSize: "35px",
+            fill: "#000"
+        });
+        soundButton = this.physics.add.sprite(gameWidth/2, gameHeight/3, "sound").setInteractive();
+        createSoundButton();
+        mobileControlsButton = this.physics.add.sprite(gameWidth/2, gameHeight/3 + 100, "dpadIcon").setInteractive();
+        createMobileControlsButton();
     }
-    update(){
+    update() {
 
     }
 }
-function createPauseButton(){
-    pauseButton.on('pointerover',function(){
+function updateTime(){
+    timerText.setText(++time);
+}
+function createSoundButton(){
+    soundButton.on('pointerover', function () {
+        if (!mute) {
+            soundButton.setFrame(1);
+        } else {
+            soundButton.setFrame(3)
+        }
+    })
+
+    soundButton.on('pointerout', function () {
+        if (!mute) {
+            soundButton.setFrame(0);
+        } else {
+            soundButton.setFrame(2)
+        }
+    })
+    soundButton.on('pointerdown', function () {
+        if (!mute) {
+            soundButton.setFrame(3);
+            game.sound.setMute(true);
+            mute = true;
+        } else {
+            soundButton.setFrame(1)
+            game.sound.setMute(false);
+            mute = false;
+        }
+
+    })
+}
+function createMobileControlsButton(){
+    
+    mobileControlsButton.on('pointerover', function () {
+        if (!mobileControls) {
+            mobileControlsButton.setFrame(1);
+        } else {
+            mobileControlsButton.setFrame(3)
+        }
+    })
+
+    mobileControlsButton.on('pointerout', function () {
+        if (!mobileControls) {
+            mobileControlsButton.setFrame(0);
+        } else {
+            mobileControlsButton.setFrame(2)
+        }
+    })
+    mobileControlsButton.on('pointerdown', function () {
+        if (!mobileControls) {
+            mobileControlsButton.setFrame(3);
+            mobileControls = true;
+            dpad.visible = true;
+        } else {
+            mobileControlsButton.setFrame(1)
+            mobileControls = false;
+            dpad.visivle= false;
+        }
+
+    })
+}
+
+function createPauseButton() {
+    pauseButton.on('pointerover', function () {
         pauseButton.setFrame(1);
     })
-    
-    pauseButton.on('pointerout',function(){
+
+    pauseButton.on('pointerout', function () {
         pauseButton.setFrame(0);
     })
-    pauseButton.on('pointerdown',function(){
-        if(!game.scene.isPaused("GameScene")){
+    pauseButton.on('pointerdown', function () {
+        if (!game.scene.isPaused("GameScene")) {
+            timer.paused = true;
             game.scene.pause("GameScene");
-        } else{
+            game.scene.run("pause");
+        } else {
+            timer.paused = false;
             game.scene.resume("GameScene");
+            game.scene.sleep("pause");
         }
     })
 }
@@ -462,14 +555,14 @@ function createPauseButton(){
 function createDpad() {
 
     // Create D-pad buttons.
-    dpadUp = dpad.create(125, gameHeight - 200, 'dpad1');
-    dpadRight = dpad.create(200, gameHeight - 125, 'dpad2');
-    dpadDown = dpad.create(125, gameHeight - 50, 'dpad1');
-    dpadLeft = dpad.create(50, gameHeight - 125, 'dpad2');
-    dpadUpRight = dpad.create(200, gameHeight - 200, 'dpad4');
-    dpadDownRight = dpad.create(200, gameHeight - 50, 'dpad3');
+    dpadUp = dpad.create(80, gameHeight - 110, 'dpad1');
+    dpadRight = dpad.create(110, gameHeight - 80, 'dpad2');
+    dpadDown = dpad.create(80, gameHeight - 50, 'dpad1');
+    dpadLeft = dpad.create(50, gameHeight - 80, 'dpad2');
+    dpadUpRight = dpad.create(110, gameHeight - 110, 'dpad4');
+    dpadDownRight = dpad.create(110, gameHeight - 50, 'dpad3');
     dpadDownLeft = dpad.create(50, gameHeight - 50, 'dpad4');
-    dpadUpLeft = dpad.create(50, gameHeight - 200, 'dpad3');
+    dpadUpLeft = dpad.create(50, gameHeight - 110, 'dpad3');
 
     // Add D-pad functionality to:
     // D-pad up
@@ -615,26 +708,13 @@ function createDpad() {
 }
 
 /** Creates the infection meter. */
-function createInfectBar(){
+function createInfectBar() {
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(gameWidth -300, 60, 200, 30);
+    infectBar.fillRect(gameWidth - 300, 60, 200, 30);
     infectBar.fillStyle(0xffffff);
     infectBar.fillRect(gameWidth - 298, 62, 195, 25);
     infectBar.fillStyle(0xff0000);
     infectBar.fillRect(gameWidth - 298, 62, infectLevel, 25);
-}
-
-/** Makes the D-pad visible if the user is on mobile. */
-function showDpad() {
-    if (window.innerWidth > 500) {
-        dpad.getChildren().forEach((dpad) => {
-            dpad.setScrollFactor(0);
-        });
-    } else {
-        dpad.getChildren().forEach((dpad) => {
-            dpad.visible = true;
-        });
-    }
 }
 
 /** Moves the player. */
@@ -753,8 +833,6 @@ function collectFood(player, foodCollided) {
     // Check the pickup's food data against the shopping list.
     if (foodType != undefined && CheckList(foodType)) {
         food.disableBody(true, true);
-        score += 10;
-        scoreText.setText('Score: ' + score);
 
         // Play sound effect if the music isn't muted.
         if (mute == false) {
@@ -767,7 +845,7 @@ function collectFood(player, foodCollided) {
 /** Called when the player completes their shopping list. */
 function win() {
     gameOverText.visible = true;
-    game.scene.pause(SceneA);
+    game.scene.pause("GameScene");
 }
 
 /** Called when a player becomes more infected. */
@@ -786,7 +864,7 @@ function infect() {
     if (infectLevel <= infectMax) {
         infectBar.fillRect(gameWidth - 298, 62, infectLevel, 25);
     } else {
-        infectBar.fillRect(gameWidth -298, 62, infectMax, 25);
+        infectBar.fillRect(gameWidth - 298, 62, infectMax, 25);
     }
 }
 
@@ -809,7 +887,7 @@ var config = {
             debug: false
         }
     },
-    scene: [SceneA, SceneB]
+    scene: [SceneA, SceneB, SceneC]
 
 };
 
