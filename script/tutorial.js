@@ -310,8 +310,8 @@ class SceneA extends Phaser.Scene {
         });
 
         // Enemy creation loop
-        var enemyX = 60;
-        var enemyY = 45;
+        var enemyX = 180;
+        var enemyY = 150;
         for (let i = 0; i < 3; i++) {
             var enemy = enemies.create(enemyX, enemyY, 'enemy');
             enemy.setCollideWorldBounds(true);
