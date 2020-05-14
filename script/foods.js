@@ -20,6 +20,7 @@ let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
 "shrimp", "french fry", "salad roll", "candy", "burrito", "lollipop", "pink lemonade",
 "olives", "lobster", "toast", "white radish", "bok choy", "chili pepper"];
 
+
 /**
  * Current shopping list.
  * Will be populated with Food objects.
@@ -81,12 +82,12 @@ class Food {
 function initList(newLength) {
     for (let i = 0; i < newLength; i++) {
 
-        let newItem = Math.floor(Math.random * foodNames.length);;
+        let newItem = i
         let itemAlreadyContained = true;
 
         do {
             // Generate a random (valid) item index.
-            newItem = Math.floor(Math.random() * foodNames.length);
+            newItem = i;
             // Assume this random item isn't already on the list.
             itemAlreadyContained = false;
 

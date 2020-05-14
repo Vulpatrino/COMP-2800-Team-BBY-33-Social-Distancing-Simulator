@@ -3,32 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="style/tutorial.css">
-    
-    
-    <style>
-        @font-face{
-            src:url(../fonts/EUROSTIB.ttf);
-            font-family: eurostilebold;
-        }
-        button{
-            position: absolute;
-            left: 45%;
-            top: 50%;
-            font-family: eurostilebold;
-            font-size: 16pt;
-            padding:15pt;
-        }
-    </style>
     <title>Tutorial</title>
+    <link rel="stylesheet" type="text/css" href="style/gameStyle.css">
 </head>
 
 <body>
     <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
-    <script src="script/tutorial.js"></script>
-    <script src="script/foods.js"></script>
 
+    <script src="script/foods.js"></script>
+    <script src="script/tutorial.js"></script>
+    <section id="listSection">
+        <h1>Shopping List:</h1>
+        <ul id="list"></ul>
+    </section>
     <div id="my-game"></div>
 </body>
 
