@@ -784,12 +784,3 @@ var config = {
 
 /** Phaser instance. */
 let game = new Phaser.Game(config);
-
-/** Adds game div to main page. */
-$(document).ready(function () {
-    $("#playgame").click(function () {
-        $("#main").hide(400);
-        $("#my-game").css("display", "flex");
-
-    });
-});
