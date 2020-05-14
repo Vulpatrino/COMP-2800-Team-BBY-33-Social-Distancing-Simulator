@@ -74,12 +74,41 @@ class Food {
         return this.name;
     }
 }
-
 /**
  * Populates the shopping list with random food items.
  * CALL ON GAME START/RESTART!!
  */
 function initList(newLength) {
+    for (let i = 0; i < newLength; i++) {
+
+        let newItem = Math.floor(Math.random * foodNames.length);;
+        let itemAlreadyContained = true;
+
+        do {
+            // Generate a random (valid) item index.
+            newItem = Math.floor(Math.random() * foodNames.length);
+            // Assume this random item isn't already on the list.
+            itemAlreadyContained = false;
+
+            // Iterate through the list to make sure it's not already there.
+            for (let j = 0; j < list.length; j++) {
+                if (list[j] == newItem) {
+                    itemAlreadyContained = true;
+                    break;
+                }
+            }
+        } while (itemAlreadyContained);
+
+        // Since we broke the "is already on the list" loop, the item can be added.
+        list[i] = new Food(newItem);
+        let listHTML = "<li>" + list[i].getName() + "</li>";
+        document.getElementById("list").innerHTML += listHTML;
+    }
+}
+/**
+ * Populates the shopping list for tutorial
+ */
+function initTutList(newLength) {
     for (let i = 0; i < newLength; i++) {
 
         let newItem = i

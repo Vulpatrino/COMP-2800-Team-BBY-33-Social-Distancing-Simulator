@@ -82,7 +82,21 @@ var restartKey;
 // Whether or not the music is muted.
 var mute = false;
 // Tutorial Text
-var tutText;
+var tutorialText;
+var tutLeft = false;
+var tutRight = false;
+var tutUp = false;
+var tutDown = false;
+var tutMoving = false;
+var tutFood;
+var button;
+var tutFinished =false;
+var tutWall;
+var pauseCount = 0;
+var arrow;
+var arrow2;
+var arrow3;
+var arrow4;
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
 
@@ -98,9 +112,15 @@ class SceneA extends Phaser.Scene {
         this.load.image('wall1', 'images/wall1.png');
         this.load.image('wall2', 'images/wall2.png');
         this.load.image('aisle1', 'images/aisle1.png');
-
+        
         this.load.audio('1', ['audio/1.mp3', 'audio/1.ogg']);
         this.load.audio('2', ['audio/2.mp3', 'audio/2.ogg']);
+        this.load.spritesheet('arrow',
+                              'images/arrow.png', {
+            frameWidth: 241,
+            frameHeight: 209
+        }
+                              );
         // Player spritesheet
         this.load.spritesheet('dude',
                               'images/mario.png', {
@@ -132,15 +152,25 @@ class SceneA extends Phaser.Scene {
     create() {
 
         // Create a shopping list
-        initList(listLength);
+        initTutList(listLength);
 
         this.add.image(600, 400, 'background').setScale(6);
-
+        arrow = this.add.image(50,400,'arrow').setScale(.25);
+        arrow2 = this.add.image(50,425,'arrow').setScale(.25);
+        arrow3 = this.add.image(700,50,'arrow').setScale(.25);
+        arrow4 = this.add.image(725,50,'arrow').setScale(.25);
+        arrow3.angle = 90;
+        arrow4.angle = 90;
+        arrow.visible = false;
+        arrow2.visible = false;
+        arrow3.visible = false;
+        arrow4.visible = false;
         // Create all four walls
         walls = this.physics.add.staticGroup();
         walls.create(600, 790, 'wall1');
         walls.create(600, 10, 'wall1');
         walls.create(1190, 400, 'wall2');
+        tutWall = walls.create(600, 650, 'wall1');
         walls.create(10, 400, 'wall2');
         aisles = this.physics.add.staticGroup({
             key: 'aisle1',
@@ -365,6 +395,13 @@ update() {
         gameLostText.visible = true;
         game.scene.pause("GameScene");
     }
+    if(gameOverText.visible == true){
+        pauseCount +=1;
+        console.log(pauseCount);
+        if (pauseCount >10){
+            this.scene.pause();
+        }
+    }
 }
 }
 
@@ -388,10 +425,12 @@ class SceneB extends Phaser.Scene {
 
     // Called once when the scene loads.
     create() {
-         tutText = this.add.text(100,100, "Use the arrows keys to move your character. Try pressing the up arrow key.",{
-             color : "#000000",
-             
-         });
+        tutorialText = this.add.text(100,100, "Welcome to our game Tutorial. In this tutorial you will be trying to get all the \ningredients on the shopping list while social distancing. First of all is \nlearning the movement. Use the arrow keys for movement. Try the up arrow key.",{
+            fill : "#000",
+            lineSpacing: 10,
+            fontSize: '17px'
+        });
+        tutorialText.lineSpacing = 10;
         // Add score text.
         scoreText = this.add.text(20, 20, 'Score: 0', {
             fontSize: '32px',
@@ -423,7 +462,7 @@ class SceneB extends Phaser.Scene {
         dpad = this.physics.add.group();
         createDpad();
     }
-    
+
 }
 
 /** Creates the mobile D-pad. */
@@ -612,9 +651,17 @@ function playerMove() {
     if (cursors.left.isDown || moveLeft) {
         player.setVelocityX(-300);
         player.anims.play('left', true);
+        if(tutLeft == false && tutRight == true && tutUp == true){
+            tutorialText.setText("Now try using the down arrow key.");
+            tutLeft = true;
+        }
     } else if (cursors.right.isDown || moveRight) {
         player.setVelocityX(300);
         player.anims.play('right', true);
+        if(tutRight == false && tutUp == true){
+            tutorialText.setText("Now try using the left arrow key.");
+            tutRight = true;
+        }
     } else {
         player.setVelocityX(0);
         player.anims.play('turn');
@@ -623,164 +670,191 @@ function playerMove() {
     // Set player Y velocity.
     if (cursors.up.isDown || moveUp) {
         player.setVelocityY(-300);
+        if(tutUp == false){
+            tutorialText.setText("Now try using the right arrow key.");
+            tutUp = true;
+        }
     } else if (cursors.down.isDown || moveDown) {
         player.setVelocityY(300);
+        if(tutDown == false && tutLeft == true && tutRight == true && tutUp == true){
+            tutorialText.setText("Now that you know how to move, try to get the food without getting too close\nto the enemies just like social distancing. If you get too close the to the \nenemy your infection bar will get filled up. If the infection meter fills\nup you lose the game. Also, try to get the food before the timer runs out.\nGood Luck!");
+            tutDown = true;
+        }
     } else {
         player.setVelocityY(0);
     }
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(0);
     }
-
-}
-
-/** Causes the enemies to move once. */
-function initialMove() {
-    var speed = [-100, 100];
-    let enemyArray = enemies.getChildren();
-    for (var i = 0; i < enemyArray.length; i++) {
-        var choice = Math.floor(Math.random() * 2)
-        var choice2 = Math.floor(Math.random() * 2);
-        if (choice == 0) {
-            enemyArray[i].setVelocityX(0);
-            enemyArray[i].setVelocityY(speed[choice2]);
-            if (speed[choice2] > 0) {
-                enemyArray[i].anims.play('eDown');
-            } else if (speed[choice2] < 0) {
-                enemyArray[i].anims.play('eUp');
-            }
-        } else if (choice == 1) {
-            enemyArray[i].setVelocityY(0);
-            enemyArray[i].setVelocityX(speed[choice2]);
-            if (speed[choice2] > 0) {
-                enemyArray[i].anims.play('eRight');
-            } else if (speed[choice2] < 0) {
-                enemyArray[i].anims.play('eLeft');
-            }
-        }
+    if(tutUp == true && tutLeft == true && tutRight == true && tutDown == true && tutMoving == false){
+        tutMoving = true;
+        console.log("break");
+        tutWall.destroy();
+        arrow.visible = true;
+        arrow2.visible = true;
+        arrow3.visible = true;
+        arrow4.visible = true;
     }
 }
 
-/** Causes the enemies to change movement direction. */
-function changeMove() {
-    var speed = [-100, 100];
-    let enemyArray = enemies.getChildren();
-    for (var i = 0; i < enemyArray.length; i++) {
+    /** Causes the enemies to move once. */
+    function initialMove() {
+        var speed = [-100, 100];
+        let enemyArray = enemies.getChildren();
+        for (var i = 0; i < enemyArray.length; i++) {
+            var choice = Math.floor(Math.random() * 2)
+            var choice2 = Math.floor(Math.random() * 2);
+            if (choice == 0) {
+                enemyArray[i].setVelocityX(0);
+                enemyArray[i].setVelocityY(speed[choice2]);
+                if (speed[choice2] > 0) {
+                    enemyArray[i].anims.play('eDown');
+                } else if (speed[choice2] < 0) {
+                    enemyArray[i].anims.play('eUp');
+                }
+            } else if (choice == 1) {
+                enemyArray[i].setVelocityY(0);
+                enemyArray[i].setVelocityX(speed[choice2]);
+                if (speed[choice2] > 0) {
+                    enemyArray[i].anims.play('eRight');
+                } else if (speed[choice2] < 0) {
+                    enemyArray[i].anims.play('eLeft');
+                }
+            }
+        }
+    }
+
+    /** Causes the enemies to change movement direction. */
+    function changeMove() {
+        var speed = [-100, 100];
+        let enemyArray = enemies.getChildren();
+        for (var i = 0; i < enemyArray.length; i++) {
+            var choice = Math.floor(Math.random() * 2)
+            var eKey = enemyArray[i].anims.getCurrentKey();
+            if (eKey === 'eLeft' || eKey === 'eRight') {
+                enemyArray[i].setVelocityX(0);
+                enemyArray[i].setVelocityY(speed[choice]);
+                if (speed[choice] > 0) {
+                    enemyArray[i].anims.play('eDown');
+                } else if (speed[choice] < 0) {
+                    enemyArray[i].anims.play('eUp');
+                }
+            } else if (eKey === 'eUp' || eKey === 'eDown') {
+                enemyArray[i].setVelocityY(0);
+                enemyArray[i].setVelocityX(speed[choice]);
+                if (speed[choice] > 0) {
+                    enemyArray[i].anims.play('eRight');
+                } else if (speed[choice] < 0) {
+                    enemyArray[i].anims.play('eLeft');
+                }
+            }
+        }
+    }
+
+    /** Causes an enemy to change directions when they hit a wall. */
+    function hitWallMove(enemy) {
+        var speed = [-100, 100];
         var choice = Math.floor(Math.random() * 2)
-        var eKey = enemyArray[i].anims.getCurrentKey();
+        var eKey = enemy.anims.getCurrentKey();
         if (eKey === 'eLeft' || eKey === 'eRight') {
-            enemyArray[i].setVelocityX(0);
-            enemyArray[i].setVelocityY(speed[choice]);
+            enemy.setVelocityX(0);
+            enemy.setVelocityY(speed[choice]);
             if (speed[choice] > 0) {
-                enemyArray[i].anims.play('eDown');
+                enemy.anims.play('eDown');
             } else if (speed[choice] < 0) {
-                enemyArray[i].anims.play('eUp');
+                enemy.anims.play('eUp');
             }
         } else if (eKey === 'eUp' || eKey === 'eDown') {
-            enemyArray[i].setVelocityY(0);
-            enemyArray[i].setVelocityX(speed[choice]);
+            enemy.setVelocityY(0);
+            enemy.setVelocityX(speed[choice]);
             if (speed[choice] > 0) {
-                enemyArray[i].anims.play('eRight');
+                enemy.anims.play('eRight');
             } else if (speed[choice] < 0) {
-                enemyArray[i].anims.play('eLeft');
+                enemy.anims.play('eLeft');
             }
         }
     }
-}
 
-/** Causes an enemy to change directions when they hit a wall. */
-function hitWallMove(enemy) {
-    var speed = [-100, 100];
-    var choice = Math.floor(Math.random() * 2)
-    var eKey = enemy.anims.getCurrentKey();
-    if (eKey === 'eLeft' || eKey === 'eRight') {
-        enemy.setVelocityX(0);
-        enemy.setVelocityY(speed[choice]);
-        if (speed[choice] > 0) {
-            enemy.anims.play('eDown');
-        } else if (speed[choice] < 0) {
-            enemy.anims.play('eUp');
-        }
-    } else if (eKey === 'eUp' || eKey === 'eDown') {
-        enemy.setVelocityY(0);
-        enemy.setVelocityX(speed[choice]);
-        if (speed[choice] > 0) {
-            enemy.anims.play('eRight');
-        } else if (speed[choice] < 0) {
-            enemy.anims.play('eLeft');
-        }
-    }
-}
-
-/** Called when the player touches a food object. 
+    /** Called when the player touches a food object. 
  * Note: "player" argument is needed for the overlap event to work.
 */
-function collectFood(player, foodCollided) {
-    // Get the pickup's food data.
-    let foodType = foodCollided.getData("food");
+    function collectFood(player, foodCollided) {
+        // Get the pickup's food data.
+        let foodType = foodCollided.getData("food");
 
-    // Check the pickup's food data against the shopping list.
-    if (foodType != undefined && CheckList(foodType)) {
-        foodCollided.disableBody(true, true);
-        score += 10;
-        scoreText.setText('Score: ' + score);
+        // Check the pickup's food data against the shopping list.
+        if (foodType != undefined && CheckList(foodType)) {
+            foodCollided.disableBody(true, true);
+            score += 10;
+            scoreText.setText('Score: ' + score);
 
-        // Play sound effect if the music isn't muted.
-        if (mute == false) {
-            this.pickupSound.play();
+            // Play sound effect if the music isn't muted.
+            if (mute == false) {
+                this.pickupSound.play();
+            }
         }
+
     }
 
-}
-
-/** Called when the player completes their shopping list. */
-function win() {
-    gameOverText.visible = true;
-    game.scene.pause(SceneA);
-}
-
-/** Called when a player becomes more infected. */
-function infect() {
-
-    // Increase infection level.
-    infectLevel += 0.5;
-
-    // Rebuild infection meter.
-    infectBar.clear();
-    infectBar.fillStyle(0x000000);
-    infectBar.fillRect(gameWidth - 300, 60, 200, 30);
-    infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(gameWidth - 298, 62, 195, 25);
-    infectBar.fillStyle(0xff0000);
-    if (infectLevel <= infectMax) {
-        infectBar.fillRect(gameWidth - 298, 62, infectLevel, 25);
-    } else {
-        infectBar.fillRect(gameWidth -298, 62, infectMax, 25);
+    /** Called when the player completes their shopping list. */
+    function win() {
+        tutorialFinished();
+        gameOverText.visible = true;
+        tutorialFinished();
+        
+        
     }
-}
 
-/** Phaser configuration. */
-var config = {
-    type: Phaser.AUTO,
-    width: gameWidth,
-    height: gameHeight,
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
-    },
-    parent: "my-game",
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: {
-                y: 0
-            },
-            debug: false
+    /** Called when a player becomes more infected. */
+    function infect() {
+
+        // Increase infection level.
+        infectLevel += 0.5;
+
+        // Rebuild infection meter.
+        infectBar.clear();
+        infectBar.fillStyle(0x000000);
+        infectBar.fillRect(gameWidth - 300, 60, 200, 30);
+        infectBar.fillStyle(0xffffff);
+        infectBar.fillRect(gameWidth - 298, 62, 195, 25);
+        infectBar.fillStyle(0xff0000);
+        if (infectLevel <= infectMax) {
+            infectBar.fillRect(gameWidth - 298, 62, infectLevel, 25);
+        } else {
+            infectBar.fillRect(gameWidth -298, 62, infectMax, 25);
         }
-    },
-    scene: [SceneA, SceneB]
+    }
+    function tutorialFinished(){
+        tutFinished = true;
+        tutorialText.visible = false;
+        var menuButton = document.createElement("button");
+        menuButton.innerHTML = "Back to main menu";
+        var body = document.getElementsByTagName("body")[0];
+        body.appendChild(menuButton);
+        menuButton.onclick = function(){ window.open('main.html','_self')};
+    }
+    /** Phaser configuration. */
+    var config = {
+        type: Phaser.AUTO,
+        width: gameWidth,
+        height: gameHeight,
+        scale: {
+            mode: Phaser.Scale.FIT,
+            autoCenter: Phaser.Scale.CENTER_BOTH
+        },
+        parent: "my-game",
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: {
+                    y: 0
+                },
+                debug: false
+            }
+        },
+        scene: [SceneA, SceneB]
 
-};
+    };
 
-/** Phaser instance. */
-let game = new Phaser.Game(config);
+    /** Phaser instance. */
+    let game = new Phaser.Game(config);
