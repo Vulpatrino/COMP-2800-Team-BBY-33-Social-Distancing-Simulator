@@ -293,7 +293,7 @@ class SceneA extends Phaser.Scene {
         // Enemy creation loop
         var enemyX = 60;
         var enemyY = 45;
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < 11; i++) {
             var enemy = enemies.create(enemyX, enemyY, 'enemy');
             enemy.setCollideWorldBounds(true);
             enemies.add(enemy);
@@ -329,6 +329,8 @@ class SceneA extends Phaser.Scene {
         // Adds an action that happens when enemies touch these points
         this.physics.add.overlap(enemies, turnPoints, turn);
 
+        // Makes the turning points invisibile
+        Phaser.Actions.SetAlpha(turnPoints.getChildren(), 0);
     }
 
     // Reset enemy movement timer to 0.
@@ -679,7 +681,7 @@ function turn(enemy, turnPoint) {
     // Checks if the sprite is touching something
     var touch = !enemy.body.touching.none;
     var wasTouch = !enemy.body.wasTouching.none;
-    
+
     var speed = [-100, 100];
     var choice = Math.floor(Math.random() * 2);
     var rand = Math.floor(Math.random() * 2);
@@ -784,7 +786,7 @@ var config = {
             gravity: {
                 y: 0
             },
-            debug: true
+            debug: false
         }
     },
     scene: [SceneA, SceneB]
