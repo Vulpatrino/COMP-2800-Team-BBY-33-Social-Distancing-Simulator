@@ -85,6 +85,8 @@ var mute = false;
 // Turning points for enemies
 var turnPoints;
 
+var eneRectOverlap;
+
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
 
@@ -128,7 +130,7 @@ class SceneA extends Phaser.Scene {
 
     }
 
-
+    
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
@@ -291,7 +293,7 @@ class SceneA extends Phaser.Scene {
         // Enemy creation loop
         var enemyX = 60;
         var enemyY = 45;
-        for (let i = 0; i < 11; i++) {
+        for (let i = 0; i < 1; i++) {
             var enemy = enemies.create(enemyX, enemyY, 'enemy');
             enemy.setCollideWorldBounds(true);
             enemies.add(enemy);
@@ -313,15 +315,20 @@ class SceneA extends Phaser.Scene {
         this.cameras.main.startFollow(player);
         initialMove();
 
+        // Creates areas that would change the enemy movement
         turnPoints = this.physics.add.staticGroup();
-        var spriteY = enemies.getChildren()[0].height;
-        for (var i = 0; i < aisles.getChildren().length-1; i++) {
-            var diffX = (aisles.getChildren()[i+1].x - aisles.getChildren()[i].x)/2;
+        for (var i = 0; i < aisles.getChildren().length; i++) {
             var x = aisles.getChildren()[i].x;
             var topY = aisles.getChildren()[i].getTopCenter().y;
             var botY = aisles.getChildren()[i].getBottomCenter().y;
-            var rect = turnPoints.create()
+            var rect = this.add.rectangle(x, topY - (topY - 10)/2, aisles.getChildren()[i].width + 5, topY-10).setStrokeStyle(2, 0xff0000);
+            turnPoints.add(rect)
+            rect = this.add.rectangle(x, (790-botY)/2 + botY, aisles.getChildren()[i].width + 5, 790 - botY).setStrokeStyle(2, 0xff0000);
+            turnPoints.add(rect);
         }
+        // Adds an action that happens when enemies touch these points
+        this.physics.add.overlap(enemies, turnPoints, turn);
+
     }
 
     // Reset enemy movement timer to 0.
@@ -329,7 +336,6 @@ class SceneA extends Phaser.Scene {
 
     /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
     update() {
-
         // Set all enemies to be slightly transparent.
         Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
         // Show the mobile D-pad. (?) --Why is this being called every single frame?
@@ -350,12 +356,6 @@ class SceneA extends Phaser.Scene {
             }
         }
         Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
-
-        // Tick the enemy move timer, and check if it's at the limit.
-        if (enemyMoveTimer++ == enemyMoveTimerMax) {
-            changeMove();
-            enemyMoveTimer = 0;
-        }
 
         // Mute the music if the mute key is pressed.
         if (Phaser.Input.Keyboard.JustDown(volumeControl)) {
@@ -674,28 +674,24 @@ function initialMove() {
     }
 }
 
-/** Causes the enemies to change movement direction. */
-function changeMove() {
+// Makes the enemy turn at certain turning points
+function turn(enemy, turnPoint) {
+    // Checks if the sprite is touching something
+    var touch = !enemy.body.touching.none;
+    var wasTouch = !enemy.body.wasTouching.none;
+    
     var speed = [-100, 100];
-    let enemyArray = enemies.getChildren();
-    for (var i = 0; i < enemyArray.length; i++) {
-        var choice = Math.floor(Math.random() * 2)
-        var eKey = enemyArray[i].anims.getCurrentKey();
-        if (eKey === 'eLeft' || eKey === 'eRight') {
-            enemyArray[i].setVelocityX(0);
-            enemyArray[i].setVelocityY(speed[choice]);
-            if (speed[choice] > 0) {
-                enemyArray[i].anims.play('eDown');
-            } else if (speed[choice] < 0) {
-                enemyArray[i].anims.play('eUp');
+    var choice = Math.floor(Math.random() * 2);
+    var rand = Math.floor(Math.random() * 2);
+    if (touch && !wasTouch) {
+        if (choice == 0) {
+            enemy.setVelocityX(0);
+            enemy.setVelocityY(speed[rand]);
+            if (speed[rand] > 0) {
+                enemy.anims.play('eDown');
             }
-        } else if (eKey === 'eUp' || eKey === 'eDown') {
-            enemyArray[i].setVelocityY(0);
-            enemyArray[i].setVelocityX(speed[choice]);
-            if (speed[choice] > 0) {
-                enemyArray[i].anims.play('eRight');
-            } else if (speed[choice] < 0) {
-                enemyArray[i].anims.play('eLeft');
+            else if (speed[rand] < 0) {
+                enemy.anims.play('eUp');
             }
         }
     }
@@ -769,19 +765,6 @@ function infect() {
         infectBar.fillRect(gameWidth - 298, 62, infectLevel, 25);
     } else {
         infectBar.fillRect(gameWidth -298, 62, infectMax, 25);
-    }
-}
-
-function moveChange(enemy) {
-    var choice = Math.floor(Math.random() * 4);
-    if (choice === 0) {
-        enemy.setVelocityX(100);
-    } else if (choice === 1) {
-        enemy.setVelocityX(-100);
-    } else if (choice === 2) {
-        enemy.setVelocityY(100);
-    } else if (choice === 3) {
-        enemy.setVelocityY(-100);
     }
 }
 
