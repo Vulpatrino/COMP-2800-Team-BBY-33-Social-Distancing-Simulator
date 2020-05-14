@@ -8,9 +8,11 @@
  */
 
 // Height of the game window.
-var gameHeight = 600;
+var gameHeight = window.innerHeight;
+if(gameHeight > 800) gameHeight = 800;
 // Width of the game window.
-var gameWidth = 800;
+var gameWidth = window.innerWidth;
+if(gameWidth > 1200) gameWidth  = 1200;
 // Circle that surrounds the player character.
 var circle;
 // Cursor keys.
@@ -425,7 +427,7 @@ class SceneB extends Phaser.Scene {
         dpad = this.physics.add.group();
         createDpad();
 
-        pausePlayButton = this.physics.add.sprite(gameWidth - 50, 50, "pausePlayIcon").setInteractive();
+        pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive();
         createPausePlayButton();
 
         timer = this.time.addEvent({
@@ -446,36 +448,32 @@ class SceneC extends Phaser.Scene {
     }
     preload() {
         this.load.spritesheet('soundIcon', 'images/soundIcon.png', {
-            frameWidth: 100,
-            frameHeight: 99,
+            frameWidth: 75,
+            frameHeight: 75,
         });
         this.load.spritesheet('dpadIcon', 'images/dpadIcon.png', {
-            frameWidth: 100,
-            frameHeight: 99,
+            frameWidth: 75,
+            frameHeight: 75,
         });
         this.load.spritesheet('restartIcon', 'images/restartIcon.png', {
-            frameWidth: 60,
-            frameHeight: 60,
+            frameWidth: 45,
+            frameHeight: 45,
         });
         this.load.spritesheet('homeIcon', 'images/homeIcon.png', {
-            frameWidth: 100,
-            frameHeight: 99,
+            frameWidth: 75,
+            frameHeight: 75,
         });
         this.load.image('menu', 'images/menu.png');
     }
     create() {
-        this.add.image(gameWidth / 2, gameHeight / 2, 'menu');
-        this.add.text(gameWidth / 2 - 120, gameHeight / 6, "Game Paused", {
-            fontSize: "35px",
-            fill: "#000"
-        });
-        soundButton = this.physics.add.sprite(gameWidth / 2, gameHeight / 3, "soundIcon").setInteractive();
+        this.add.image(gameWidth / 2, gameHeight / 2 + 40, 'menu');
+        soundButton = this.physics.add.sprite(gameWidth / 2 + 75, gameHeight / 3 +60, "soundIcon").setInteractive();
         createSoundButton();
-        mobileControlsButton = this.physics.add.sprite(gameWidth / 2, gameHeight / 3 + 100, "dpadIcon").setInteractive();
+        mobileControlsButton = this.physics.add.sprite(gameWidth / 2 + 75, gameHeight / 3 + 140, "dpadIcon").setInteractive();
         createMobileControlsButton();
-        restartButton = this.physics.add.sprite(gameWidth / 2, gameHeight / 3 + 200, "restartIcon").setInteractive();
+        restartButton = this.physics.add.sprite(gameWidth / 2 + 75, gameHeight / 3 + 230, "restartIcon").setInteractive();
         createRestartButton();
-        goHomeButton = this.physics.add.sprite(gameWidth / 2, gameHeight / 3 + 300, "homeIcon").setInteractive();
+        goHomeButton = this.physics.add.sprite(gameWidth / 2 + 75, gameHeight / 3 + 315, "homeIcon").setInteractive();
         createGoHomeButton();
     }
     update() {
@@ -770,11 +768,11 @@ function createDpad() {
 /** Creates the infection meter. */
 function createInfectBar() {
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(gameWidth - 300, 60, 200, 30);
+    infectBar.fillRect(25, 25, 200, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(gameWidth - 298, 62, 195, 25);
+    infectBar.fillRect(27, 27, 195, 25);
     infectBar.fillStyle(0xff0000);
-    infectBar.fillRect(gameWidth - 298, 62, infectLevel, 25);
+    infectBar.fillRect(27, 27, infectLevel, 25);
 }
 
 /** Moves the player. */
@@ -917,14 +915,14 @@ function infect() {
     // Rebuild infection meter.
     infectBar.clear();
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(gameWidth - 300, 60, 200, 30);
+    infectBar.fillRect(25, 25, 200, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(gameWidth - 298, 62, 195, 25);
+    infectBar.fillRect(27, 27, 195, 25);
     infectBar.fillStyle(0xff0000);
     if (infectLevel <= infectMax) {
-        infectBar.fillRect(gameWidth - 298, 62, infectLevel, 25);
+        infectBar.fillRect(27, 27, infectLevel, 25);
     } else {
-        infectBar.fillRect(gameWidth - 298, 62, infectMax, 25);
+        infectBar.fillRect(27, 27, infectMax, 25);
     }
 }
 
