@@ -73,13 +73,15 @@ var volumeControl;
 var leavingPage;
 // Whether or not the music is muted.
 var mute = false;
-var pauseButton;
+var pausePlayButton;
 var time = 0;
 var timer;
 var timerText;
 var soundButton;
 var mobileControlsButton;
-var mobileControls = false;
+var restartButton;
+var goHomeButton;
+var mobileControls = true;
 
 
 /** This scene contains the main game (player, enemies, aisles, food) */
@@ -210,7 +212,7 @@ class SceneA extends Phaser.Scene {
         var foodcount = 0;
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 13; j++) {
-                
+
                 food.create(w, h, 'food', foodcount);
                 foodcount += 1;
                 h += 50;
@@ -383,9 +385,9 @@ class SceneB extends Phaser.Scene {
         this.load.image('dpad2', 'images/dpad2.png');
         this.load.image('dpad3', 'images/dpad3.png');
         this.load.image('dpad4', 'images/dpad4.png');
-        this.load.spritesheet('checkbox', 'images/checkbox.png', {
-            frameWidth: 60,
-            frameHeight: 60,
+        this.load.spritesheet('pausePlayIcon', 'images/pausePlayIcon.png', {
+            frameWidth: 75,
+            frameHeight: 75,
         });
     }
 
@@ -423,11 +425,11 @@ class SceneB extends Phaser.Scene {
         dpad = this.physics.add.group();
         createDpad();
 
-        pauseButton = this.physics.add.sprite(gameWidth - 50, 50, "checkbox").setInteractive();
-        createPauseButton();
+        pausePlayButton = this.physics.add.sprite(gameWidth - 50, 50, "pausePlayIcon").setInteractive();
+        createPausePlayButton();
 
         timer = this.time.addEvent({
-            delay: 1000,                
+            delay: 1000,
             callback: updateTime,
             loop: true
         });
@@ -443,7 +445,7 @@ class SceneC extends Phaser.Scene {
         });
     }
     preload() {
-        this.load.spritesheet('sound', 'images/sound.jpg', {
+        this.load.spritesheet('soundIcon', 'images/soundIcon.png', {
             frameWidth: 100,
             frameHeight: 99,
         });
@@ -451,27 +453,69 @@ class SceneC extends Phaser.Scene {
             frameWidth: 100,
             frameHeight: 99,
         });
+        this.load.spritesheet('restartIcon', 'images/restartIcon.png', {
+            frameWidth: 60,
+            frameHeight: 60,
+        });
+        this.load.spritesheet('homeIcon', 'images/homeIcon.png', {
+            frameWidth: 100,
+            frameHeight: 99,
+        });
         this.load.image('menu', 'images/menu.png');
     }
     create() {
-        this.add.image(gameWidth/2, gameHeight/2, 'menu');
-        this.add.text(gameWidth/2 - 120, gameHeight/6, "Game Paused", {
+        this.add.image(gameWidth / 2, gameHeight / 2, 'menu');
+        this.add.text(gameWidth / 2 - 120, gameHeight / 6, "Game Paused", {
             fontSize: "35px",
             fill: "#000"
         });
-        soundButton = this.physics.add.sprite(gameWidth/2, gameHeight/3, "sound").setInteractive();
+        soundButton = this.physics.add.sprite(gameWidth / 2, gameHeight / 3, "soundIcon").setInteractive();
         createSoundButton();
-        mobileControlsButton = this.physics.add.sprite(gameWidth/2, gameHeight/3 + 100, "dpadIcon").setInteractive();
+        mobileControlsButton = this.physics.add.sprite(gameWidth / 2, gameHeight / 3 + 100, "dpadIcon").setInteractive();
         createMobileControlsButton();
+        restartButton = this.physics.add.sprite(gameWidth / 2, gameHeight / 3 + 200, "restartIcon").setInteractive();
+        createRestartButton();
+        goHomeButton = this.physics.add.sprite(gameWidth / 2, gameHeight / 3 + 300, "homeIcon").setInteractive();
+        createGoHomeButton();
     }
     update() {
 
     }
 }
-function updateTime(){
+
+function updateTime() {
     timerText.setText(++time);
 }
-function createSoundButton(){
+
+function createGoHomeButton() {
+    goHomeButton.on('pointerover', function () {
+        goHomeButton.setFrame(1);
+    });
+
+    goHomeButton.on('pointerout', function () {
+        goHomeButton.setFrame(0);
+    });
+
+    goHomeButton.on('pointerdown', function () {
+        // restart function call
+    });
+}
+
+function createRestartButton() {
+    restartButton.on('pointerover', function () {
+        restartButton.setFrame(1);
+    });
+
+    restartButton.on('pointerout', function () {
+        restartButton.setFrame(0);
+    });
+
+    restartButton.on('pointerdown', function () {
+        // restart function call
+    });
+}
+
+function createSoundButton() {
     soundButton.on('pointerover', function () {
         if (!mute) {
             soundButton.setFrame(1);
@@ -487,7 +531,7 @@ function createSoundButton(){
             soundButton.setFrame(2)
         }
     })
-    soundButton.on('pointerdown', function () {
+    soundButton.on('pointerup', function () {
         if (!mute) {
             soundButton.setFrame(3);
             game.sound.setMute(true);
@@ -500,51 +544,67 @@ function createSoundButton(){
 
     })
 }
-function createMobileControlsButton(){
-    
+
+function createMobileControlsButton() {
+
     mobileControlsButton.on('pointerover', function () {
         if (!mobileControls) {
-            mobileControlsButton.setFrame(1);
+            mobileControlsButton.setFrame(3);
         } else {
-            mobileControlsButton.setFrame(3)
+            mobileControlsButton.setFrame(1)
         }
     })
 
     mobileControlsButton.on('pointerout', function () {
         if (!mobileControls) {
-            mobileControlsButton.setFrame(0);
+            mobileControlsButton.setFrame(2);
         } else {
-            mobileControlsButton.setFrame(2)
+            mobileControlsButton.setFrame(0)
         }
     })
-    mobileControlsButton.on('pointerdown', function () {
+    mobileControlsButton.on('pointerup', function () {
         if (!mobileControls) {
-            mobileControlsButton.setFrame(3);
+            mobileControlsButton.setFrame(1);
             mobileControls = true;
-            dpad.visible = true;
+            dpad.getChildren().forEach((dpad) => {
+                dpad.visible = true;
+            });
         } else {
-            mobileControlsButton.setFrame(1)
+            mobileControlsButton.setFrame(3)
             mobileControls = false;
-            dpad.visivle= false;
+            dpad.getChildren().forEach((dpad) => {
+                dpad.visible = false;
+            });
         }
 
     })
 }
 
-function createPauseButton() {
-    pauseButton.on('pointerover', function () {
-        pauseButton.setFrame(1);
+function createPausePlayButton() {
+    pausePlayButton.on('pointerover', function () {
+
+        if (!game.scene.isPaused("GameScene")) {
+            pausePlayButton.setFrame(1);
+        } else {
+            pausePlayButton.setFrame(3);
+        }
     })
 
-    pauseButton.on('pointerout', function () {
-        pauseButton.setFrame(0);
-    })
-    pauseButton.on('pointerdown', function () {
+    pausePlayButton.on('pointerout', function () {
         if (!game.scene.isPaused("GameScene")) {
+            pausePlayButton.setFrame(0);
+        } else {
+            pausePlayButton.setFrame(2);
+        }
+    })
+    pausePlayButton.on('pointerup', function () {
+        if (!game.scene.isPaused("GameScene")) {
+            pausePlayButton.setFrame(3);
             timer.paused = true;
             game.scene.pause("GameScene");
             game.scene.run("pause");
         } else {
+            pausePlayButton.setFrame(1);
             timer.paused = false;
             game.scene.resume("GameScene");
             game.scene.sleep("pause");
