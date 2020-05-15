@@ -2,7 +2,7 @@ function getScore(){
     var count =0;
     console.log("Got score");
     firebase.auth().onAuthStateChanged(function (user){
-        db.collection("users").doc(user.uid).collection("Scores").orderBy("time", "desc").get().then(snapshot => {
+        db.collection("users").doc(user.uid).collection("Scores").orderBy("time", "asc").get().then(snapshot => {
             let scores = snapshot;
             scores.forEach(file => {
                 console.log(file.data().time)
