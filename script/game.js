@@ -871,23 +871,12 @@ function initialMove() {
     let enemyArray = enemies.getChildren();
     for (var i = 0; i < enemyArray.length; i++) {
         var choice = Math.floor(Math.random() * 2)
-        var choice2 = Math.floor(Math.random() * 2);
-        if (choice == 0) {
-            enemyArray[i].setVelocityX(0);
-            enemyArray[i].setVelocityY(speed[choice2]);
-            if (speed[choice2] > 0) {
-                enemyArray[i].anims.play('eDown');
-            } else if (speed[choice2] < 0) {
-                enemyArray[i].anims.play('eUp');
-            }
-        } else if (choice == 1) {
-            enemyArray[i].setVelocityY(0);
-            enemyArray[i].setVelocityX(speed[choice2]);
-            if (speed[choice2] > 0) {
-                enemyArray[i].anims.play('eRight');
-            } else if (speed[choice2] < 0) {
-                enemyArray[i].anims.play('eLeft');
-            }
+        enemyArray[i].setVelocityY(speed[choice]);
+        enemyArray[i].setVelocityX(speed[choice]);
+        if (speed[choice] > 0) {
+            enemyArray[i].anims.play('eDown');
+        } else if (speed[choice] < 0) {
+            enemyArray[i].anims.play('eUp');
         }
     }
 }
