@@ -82,17 +82,15 @@ function initList(newLength) {
     for (let i = 0; i < newLength; i++) {
 
         let newItem = Math.floor(Math.random * foodNames.length);;
-        let itemAlreadyContained = true;
+        let itemAlreadyContained = false;
 
         do {
             // Generate a random (valid) item index.
             newItem = Math.floor(Math.random() * foodNames.length);
-            // Assume this random item isn't already on the list.
-            itemAlreadyContained = false;
 
             // Iterate through the list to make sure it's not already there.
             for (let j = 0; j < list.length; j++) {
-                if (list[j] == newItem) {
+                if (list[j].getValue() == newItem) {
                     itemAlreadyContained = true;
                     break;
                 }

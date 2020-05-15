@@ -104,6 +104,9 @@ var gameOverMenu;
 // The win menu
 var winMenu;
 
+// Turning points for enemies
+var turnPoints;
+
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
 
@@ -129,11 +132,18 @@ class SceneA extends Phaser.Scene {
                 frameHeight: 48
             }
         );
+        // New Player spritesheet
+        this.load.spritesheet("player", "images/PlayerSprites.png",
+            {
+                frameWidth: 32,
+                frameHeight: 48
+            }
+        );
         // Enemy spritesheet
         this.load.spritesheet('enemy',
-            'images/trump_run_resized_smaller.png', {
-                frameWidth: 50,
-                frameHeight: 50,
+            'images/EnemySprites.png', {
+                frameWidth: 32,
+                frameHeight: 48,
             }
         );
         // Food spritesheet
@@ -147,7 +157,7 @@ class SceneA extends Phaser.Scene {
 
     }
 
-
+    
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
@@ -193,12 +203,22 @@ class SceneA extends Phaser.Scene {
         restartKey = this.input.keyboard.addKey('R');
 
         // Create the player and their animations
-        player = this.physics.add.sprite(40, 700, 'dude');
+        player = this.physics.add.sprite(40, 700, 'player');
         player.setCollideWorldBounds(true);
 
         this.anims.create({
             key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', {
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 12,
+                end: 15
+            }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'down',
+            frames: this.anims.generateFrameNumbers('player', {
                 start: 0,
                 end: 3
             }),
@@ -207,22 +227,32 @@ class SceneA extends Phaser.Scene {
         });
 
         this.anims.create({
-            key: 'turn',
-            frames: [{
-                key: 'dude',
-                frame: 4
-            }],
-            frameRate: 20
-        });
-
-        this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', {
-                start: 5,
-                end: 8
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 8,
+                end: 11
             }),
             frameRate: 10,
             repeat: -1
+        });
+
+        this.anims.create({
+            key: 'up',
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 4,
+                end: 7
+            }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'idle',
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 0,
+                end: 0
+            }),
+            frameRate: 10
         });
 
         // Add collision between the player, walls, and aisles.
@@ -269,11 +299,11 @@ class SceneA extends Phaser.Scene {
         enemies = this.physics.add.group();
         enemies.enableBody = true;
         this.physics.add.collider(enemies, walls, hitWallMove, null, this);
-        this.physics.add.collider(enemies, aisles, hitWallMove, null, this);
+        this.physics.add.collider(enemies, aisles);
         this.anims.create({
             key: 'eRight',
             frames: this.anims.generateFrameNumbers('enemy', {
-                start: 6,
+                start: 8,
                 end: 11
             }),
             frameRate: 10,
@@ -283,8 +313,8 @@ class SceneA extends Phaser.Scene {
         this.anims.create({
             key: 'eLeft',
             frames: this.anims.generateFrameNumbers('enemy', {
-                start: 18,
-                end: 23
+                start: 12,
+                end: 15
             }),
             frameRate: 10,
             repeat: -1
@@ -293,8 +323,8 @@ class SceneA extends Phaser.Scene {
         this.anims.create({
             key: 'eUp',
             frames: this.anims.generateFrameNumbers('enemy', {
-                start: 12,
-                end: 17
+                start: 4,
+                end: 7
             }),
             frameRate: 10,
             repeat: -1
@@ -304,7 +334,7 @@ class SceneA extends Phaser.Scene {
             key: 'eDown',
             frames: this.anims.generateFrameNumbers('enemy', {
                 start: 0,
-                end: 5
+                end: 3
             }),
             frameRate: 10,
             repeat: -1
@@ -334,6 +364,23 @@ class SceneA extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 1200, 800);
         this.cameras.main.startFollow(player);
         initialMove();
+
+        // Creates areas that would change the enemy movement
+        turnPoints = this.physics.add.staticGroup();
+        for (var i = 0; i < aisles.getChildren().length; i++) {
+            var x = aisles.getChildren()[i].x;
+            var topY = aisles.getChildren()[i].getTopCenter().y;
+            var botY = aisles.getChildren()[i].getBottomCenter().y;
+            var rect = this.add.rectangle(x, topY - (topY - 10)/2, aisles.getChildren()[i].width + 5, topY-10).setStrokeStyle(2, 0xff0000);
+            turnPoints.add(rect)
+            rect = this.add.rectangle(x, (790-botY)/2 + botY, aisles.getChildren()[i].width + 5, 790 - botY).setStrokeStyle(2, 0xff0000);
+            turnPoints.add(rect);
+        }
+        // Adds an action that happens when enemies touch these points
+        this.physics.add.overlap(enemies, turnPoints, turn)
+
+        // Makes the turning points invisibile
+        Phaser.Actions.SetAlpha(turnPoints.getChildren(), 0);
     }
 
     // Reset enemy movement timer to 0.
@@ -341,7 +388,6 @@ class SceneA extends Phaser.Scene {
 
     /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
     update() {
-
         // Set all enemies to be slightly transparent.
         Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
         // Create cursor keys. (?) --Why is this being called every single frame?
@@ -360,12 +406,6 @@ class SceneA extends Phaser.Scene {
             }
         }
         Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
-
-        // Tick the enemy move timer, and check if it's at the limit.
-        if (enemyMoveTimer++ == enemyMoveTimerMax) {
-            changeMove();
-            enemyMoveTimer = 0;
-        }
 
         // Mute the music if the mute key is pressed.
         if (Phaser.Input.Keyboard.JustDown(volumeControl)) {
@@ -833,19 +873,24 @@ function playerMove() {
         player.anims.play('right', true);
     } else {
         player.setVelocityX(0);
-        player.anims.play('turn');
     }
 
     // Set player Y velocity.
     if (cursors.up.isDown || moveUp) {
         player.setVelocityY(-300);
+        player.anims.play('up', true);
     } else if (cursors.down.isDown || moveDown) {
         player.setVelocityY(300);
+        player.anims.play('down', true);
     } else {
         player.setVelocityY(0);
     }
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(0);
+    }
+
+    if (player.body.velocity.x == 0 && player.body.velocity.y == 0) {
+        player.anims.play("idle", true);
     }
 
 }
@@ -856,49 +901,34 @@ function initialMove() {
     let enemyArray = enemies.getChildren();
     for (var i = 0; i < enemyArray.length; i++) {
         var choice = Math.floor(Math.random() * 2)
-        var choice2 = Math.floor(Math.random() * 2);
-        if (choice == 0) {
-            enemyArray[i].setVelocityX(0);
-            enemyArray[i].setVelocityY(speed[choice2]);
-            if (speed[choice2] > 0) {
-                enemyArray[i].anims.play('eDown');
-            } else if (speed[choice2] < 0) {
-                enemyArray[i].anims.play('eUp');
-            }
-        } else if (choice == 1) {
-            enemyArray[i].setVelocityY(0);
-            enemyArray[i].setVelocityX(speed[choice2]);
-            if (speed[choice2] > 0) {
-                enemyArray[i].anims.play('eRight');
-            } else if (speed[choice2] < 0) {
-                enemyArray[i].anims.play('eLeft');
-            }
+        enemyArray[i].setVelocityY(speed[choice]);
+        enemyArray[i].setVelocityX(0);
+        if (speed[choice] > 0) {
+            enemyArray[i].anims.play('eDown');
+        } else if (speed[choice] < 0) {
+            enemyArray[i].anims.play('eUp');
         }
     }
 }
 
-/** Causes the enemies to change movement direction. */
-function changeMove() {
+// Makes the enemy turn at certain turning points
+function turn(enemy, turnPoint) {
+    // Checks if the sprite is touching something
+    var touch = !enemy.body.touching.none;
+    var wasTouch = !enemy.body.wasTouching.none;
+
     var speed = [-100, 100];
-    let enemyArray = enemies.getChildren();
-    for (var i = 0; i < enemyArray.length; i++) {
-        var choice = Math.floor(Math.random() * 2)
-        var eKey = enemyArray[i].anims.getCurrentKey();
-        if (eKey === 'eLeft' || eKey === 'eRight') {
-            enemyArray[i].setVelocityX(0);
-            enemyArray[i].setVelocityY(speed[choice]);
-            if (speed[choice] > 0) {
-                enemyArray[i].anims.play('eDown');
-            } else if (speed[choice] < 0) {
-                enemyArray[i].anims.play('eUp');
+    var choice = Math.floor(Math.random() * 2);
+    var rand = Math.floor(Math.random() * 2);
+    if (touch && !wasTouch) {
+        if (choice == 0) {
+            enemy.setVelocityX(0);
+            enemy.setVelocityY(speed[rand]);
+            if (speed[rand] > 0) {
+                enemy.anims.play('eDown');
             }
-        } else if (eKey === 'eUp' || eKey === 'eDown') {
-            enemyArray[i].setVelocityY(0);
-            enemyArray[i].setVelocityX(speed[choice]);
-            if (speed[choice] > 0) {
-                enemyArray[i].anims.play('eRight');
-            } else if (speed[choice] < 0) {
-                enemyArray[i].anims.play('eLeft');
+            else if (speed[rand] < 0) {
+                enemy.anims.play('eUp');
             }
         }
     }
