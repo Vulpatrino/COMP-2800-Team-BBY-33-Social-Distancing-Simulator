@@ -129,13 +129,6 @@ class SceneA extends Phaser.Scene {
 
         this.load.audio('1', ['audio/1.mp3', 'audio/1.ogg']);
         this.load.audio('2', ['audio/2.mp3', 'audio/2.ogg']);
-        // Player spritesheet
-        this.load.spritesheet('dude',
-            'images/mario.png', {
-                frameWidth: 32,
-                frameHeight: 48
-            }
-        );
         // New Player spritesheet
         this.load.spritesheet("player", "images/PlayerSprites.png",
             {

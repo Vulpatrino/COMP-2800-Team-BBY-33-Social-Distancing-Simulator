@@ -2,9 +2,9 @@ sandwich -
 pear -
 banana -
 pineapple -
-peach
-apple
-watermelon
+peach -
+apple -
+watermelon -
 cherry
 orange
 cinnamon
