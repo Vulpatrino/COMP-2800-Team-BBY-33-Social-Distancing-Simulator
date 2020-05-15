@@ -158,7 +158,6 @@ class SceneA extends Phaser.Scene {
         );
 
     }
-
     
 
     /** Called once at the start of the game. Use this to build objects. */
@@ -557,6 +556,8 @@ class SceneD extends Phaser.Scene {
         createGoHomeButton(goHomeButton2);
     }
 }
+
+// Increase the timer.
 function updateTime() {
     timerText.setText(++time);
 }
@@ -1050,7 +1051,7 @@ var config = {
 
 /** Player tint update. */
 function updatePlayerTint() {
-    (currentTint == (playerTints.length - 1)) ? currentTint = 0 : currentTint++;
+    currentTint = (currentTint == (playerTints.length - 1)) ? 0 : (currentTint + 1);
     player.setTint(playerTints[currentTint]);
 }
 
