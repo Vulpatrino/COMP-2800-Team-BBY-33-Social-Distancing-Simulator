@@ -107,8 +107,6 @@ var winMenu;
 // Turning points for enemies
 var turnPoints;
 
-var eneRectOverlap;
-
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
 
@@ -379,7 +377,7 @@ class SceneA extends Phaser.Scene {
             turnPoints.add(rect);
         }
         // Adds an action that happens when enemies touch these points
-        this.physics.add.overlap(enemies, turnPoints, turn);
+        this.physics.add.overlap(enemies, turnPoints, turn)
 
         // Makes the turning points invisibile
         Phaser.Actions.SetAlpha(turnPoints.getChildren(), 0);
@@ -904,7 +902,7 @@ function initialMove() {
     for (var i = 0; i < enemyArray.length; i++) {
         var choice = Math.floor(Math.random() * 2)
         enemyArray[i].setVelocityY(speed[choice]);
-        enemyArray[i].setVelocityX(speed[choice]);
+        enemyArray[i].setVelocityX(0);
         if (speed[choice] > 0) {
             enemyArray[i].anims.play('eDown');
         } else if (speed[choice] < 0) {
