@@ -447,8 +447,8 @@ class SceneB extends Phaser.Scene {
         });
         tutorialText.lineSpacing = 10;
         // Add game win text.
-        gameOverText = this.add.text(500, 100, "You Passed Tutorial!", {
-            fontSize: "50px",
+        gameOverText = this.add.text(gameWidth/2, 200, "You Passed Tutorial!", {
+            fontSize: "28px",
             fill: "#000",
             color : "#FFFFFF"
         });
@@ -565,7 +565,7 @@ function createRestartButton(button) {
     });
 
     button.on('pointerup', function () {
-        window.open('game.html','_self');
+        window.open('tutorial.html','_self');
     });
 }
 
