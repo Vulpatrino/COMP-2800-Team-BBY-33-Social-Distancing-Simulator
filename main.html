@@ -13,6 +13,7 @@
         <script src="script/getScore.js"></script>
         <script src="script/getName.js"></script>
         <script src="script/addToLeaderboard.js"></script>
+        <script src="script/getLeaderBoard.js"></script>
 
         <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
@@ -63,26 +64,32 @@
             <section id="leaderboard">
                 <h3>Leaderboard</h3>
                 <table>
+                    <th>Top 5 Fastest Runs</th>
                     <tr>
-                        <th></th>
-                        <th id = "name 1">Header</th>
-                        <th>Header</th>
+                        <th >1.</th>
+                        <th id = "name1">Data</th>
+                        <th id = "time1">Data</th>
+                        
                     </tr>
                     <tr>
-                        <td>data</td>
-                        <td>data</td>
+                        <th>2.</th>
+                        <th id = "name2">Data</th>
+                        <th id = "time2">Data</th>
                     </tr>
                     <tr>
-                        <td>data</td>
-                        <td>data</td>
+                        <th>3.</th>
+                        <th id = "name3">Data</th>
+                        <th id = "time3">Data</th>
                     </tr>
                     <tr>
-                        <td>data</td>
-                        <td>data</td>
+                        <th>4.</th>
+                        <th id = "name4">Data</th>
+                        <th id = "time4">Data</th>
                     </tr>
                     <tr>
-                        <td>data</td>
-                        <td>data</td>
+                        <th>5.</th>
+                        <th id = "name5">Data</th>
+                        <th id = "time5">Data</th>
                     </tr>
                 </table>
             </section>
@@ -131,6 +138,7 @@
         <script>
             getName();
             getScore();
+            getLeaderBoard();
         </script>
         <!--<script src="script/foods.js"></script>-->
         <script src="script/game.js"></script>

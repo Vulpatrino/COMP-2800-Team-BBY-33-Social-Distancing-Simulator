@@ -1,8 +1,5 @@
 function getScore(){
-
-    var allScores = [];
-    var count = 0;
-    var top5Score = [];
+    var count =0;
     console.log("Got score");
     firebase.auth().onAuthStateChanged(function (user){
         db.collection("users").doc(user.uid).collection("Scores").orderBy("time", "desc").get().then(snapshot => {
@@ -28,7 +25,9 @@ function getScore(){
                 if (count == 4){
                     var score = file.data().time + " seconds";
                     document.getElementById("score5").innerHTML = score;
-                    
+                }
+                if (count >4){
+                    return 0;
                 }
                 console.log(count);
                 count++;
@@ -36,10 +35,5 @@ function getScore(){
         })
     })
 
-    console.log(allScores);
-    var top5Score = allScores.splice(0,5);
-    var hi = allScores.pop();
-    console.log(hi);
 
-    return top5Score;
 }
