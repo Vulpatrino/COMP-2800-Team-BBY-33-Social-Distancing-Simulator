@@ -134,11 +134,18 @@ class SceneA extends Phaser.Scene {
                 frameHeight: 48
             }
         );
+        // New Player spritesheet
+        this.load.spritesheet("player", "images/PlayerSprites.png",
+            {
+                frameWidth: 32,
+                frameHeight: 48
+            }
+        );
         // Enemy spritesheet
         this.load.spritesheet('enemy',
-            'images/trump_run_resized_smaller.png', {
-                frameWidth: 50,
-                frameHeight: 50,
+            'images/EnemySprites.png', {
+                frameWidth: 32,
+                frameHeight: 48,
             }
         );
         // Food spritesheet
@@ -198,12 +205,22 @@ class SceneA extends Phaser.Scene {
         restartKey = this.input.keyboard.addKey('R');
 
         // Create the player and their animations
-        player = this.physics.add.sprite(40, 700, 'dude');
+        player = this.physics.add.sprite(40, 700, 'player');
         player.setCollideWorldBounds(true);
 
         this.anims.create({
             key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', {
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 12,
+                end: 15
+            }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'down',
+            frames: this.anims.generateFrameNumbers('player', {
                 start: 0,
                 end: 3
             }),
@@ -212,22 +229,32 @@ class SceneA extends Phaser.Scene {
         });
 
         this.anims.create({
-            key: 'turn',
-            frames: [{
-                key: 'dude',
-                frame: 4
-            }],
-            frameRate: 20
-        });
-
-        this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', {
-                start: 5,
-                end: 8
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 8,
+                end: 11
             }),
             frameRate: 10,
             repeat: -1
+        });
+
+        this.anims.create({
+            key: 'up',
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 4,
+                end: 7
+            }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'idle',
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 0,
+                end: 0
+            }),
+            frameRate: 10
         });
 
         // Add collision between the player, walls, and aisles.
@@ -278,7 +305,7 @@ class SceneA extends Phaser.Scene {
         this.anims.create({
             key: 'eRight',
             frames: this.anims.generateFrameNumbers('enemy', {
-                start: 6,
+                start: 8,
                 end: 11
             }),
             frameRate: 10,
@@ -288,8 +315,8 @@ class SceneA extends Phaser.Scene {
         this.anims.create({
             key: 'eLeft',
             frames: this.anims.generateFrameNumbers('enemy', {
-                start: 18,
-                end: 23
+                start: 12,
+                end: 15
             }),
             frameRate: 10,
             repeat: -1
@@ -298,8 +325,8 @@ class SceneA extends Phaser.Scene {
         this.anims.create({
             key: 'eUp',
             frames: this.anims.generateFrameNumbers('enemy', {
-                start: 12,
-                end: 17
+                start: 4,
+                end: 7
             }),
             frameRate: 10,
             repeat: -1
@@ -309,7 +336,7 @@ class SceneA extends Phaser.Scene {
             key: 'eDown',
             frames: this.anims.generateFrameNumbers('enemy', {
                 start: 0,
-                end: 5
+                end: 3
             }),
             frameRate: 10,
             repeat: -1
@@ -848,19 +875,24 @@ function playerMove() {
         player.anims.play('right', true);
     } else {
         player.setVelocityX(0);
-        player.anims.play('turn');
     }
 
     // Set player Y velocity.
     if (cursors.up.isDown || moveUp) {
         player.setVelocityY(-300);
+        player.anims.play('up', true);
     } else if (cursors.down.isDown || moveDown) {
         player.setVelocityY(300);
+        player.anims.play('down', true);
     } else {
         player.setVelocityY(0);
     }
     if (cursors.up.isDown && player.body.touching.down) {
         player.setVelocityY(0);
+    }
+
+    if (player.body.velocity.x == 0 && player.body.velocity.y == 0) {
+        player.anims.play("idle", true);
     }
 
 }
