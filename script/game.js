@@ -81,6 +81,7 @@ var leavingPage;
 var restartKey;
 // Whether or not the music is muted.
 var mute = false;
+var name;
 
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
@@ -129,8 +130,6 @@ class SceneA extends Phaser.Scene {
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
-        addScore(score,600);
-        getScore();
         // Create a shopping list
         initList(listLength);
 
@@ -738,8 +737,9 @@ function collectFood(player, foodCollided) {
 function win() {
     gameOverText.visible = true;
     game.scene.pause(SceneA);
-    addScore(score, 10);
-    getScore();
+    addScore(score, time);
+    addToLeaderboard(time);
+    
 }
 
 /** Called when a player becomes more infected. */
