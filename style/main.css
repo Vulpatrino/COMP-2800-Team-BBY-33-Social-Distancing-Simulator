@@ -21,7 +21,7 @@ header {
     background-color: rgb(16, 24, 71);
 }
 header>img{
-    width: 50%;
+    width: 60%;
 }
 
 #play {
@@ -71,7 +71,7 @@ footer {
     max-width: 100%;
     margin:10px;
 }
-#play input{
+input{
     height:25px;
     width:100px;
     margin:10px;
@@ -82,7 +82,7 @@ footer {
     border:1px black solid;
     border-radius: 3px;;
 }
-#play input:hover{  
+input:hover{  
     background-color: rgb(22, 34, 102);
     color:white;
     border:1px black solid;

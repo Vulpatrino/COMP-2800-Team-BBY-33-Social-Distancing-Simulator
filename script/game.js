@@ -982,6 +982,10 @@ function infect() {
     }
 }
 
+function closeList(){
+    $("#listSection").css("display","none");
+}
+
 /** Phaser configuration. */
 var config = {
     type: Phaser.AUTO,
