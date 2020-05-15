@@ -8,9 +8,11 @@
  */
 
 // Height of the game window.
-var gameHeight = 600;
+var gameHeight = window.innerHeight;
+if(gameHeight > 800) gameHeight = 800;
 // Width of the game window.
-var gameWidth = 1000;
+var gameWidth = window.innerWidth;
+if(gameWidth > 1200) gameWidth  = 1200;
 // Circle that surrounds the player character.
 var circle;
 // Cursor keys.
@@ -27,18 +29,10 @@ var listLength = 10;
 var enemies;
 // Group that contains all walls.
 var walls;
-// Player score (?) --Will we remove this?
-var score = 0;
 // Timer for when enemies change position.
 var enemyMoveTimer = 0;
 // Maximum value for enemy move timer.
 var enemyMoveTimerMax = 300;
-// Text object that displays player score.
-var scoreText;
-// Text object that displays "You Win!"
-var gameOverText;
-// Text object that displays "You Lose!"
-var gameLostText;
 // Infection meter.
 var infectBar;
 // Level of infection.
@@ -81,6 +75,34 @@ var leavingPage;
 var restartKey;
 // Whether or not the music is muted.
 var mute = false;
+// Time elapsed
+var time = 0;
+// Timer object
+var timer;
+// Timer text
+var timerText;
+// Button to pause and play game
+var pausePlayButton;
+// Mute button
+var soundButton;
+// Disable mobile controls
+var mobileControlsButton;
+// Restart game button
+var restartButton;
+// Go to home page button
+var goHomeButton;
+// Restart game button 2
+var restartButton2;
+// Go to home page button 2
+var goHomeButton2;
+// View list button
+var listButton;
+// Whether or not mobile controls are visible
+var mobileControls = true;
+// The game over menu
+var gameOverMenu;
+// The win menu
+var winMenu;
 
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
@@ -129,6 +151,8 @@ class SceneA extends Phaser.Scene {
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
+        game.scene.sleep("pause");
+        game.scene.sleep("gameOver");
 
         // Create a shopping list
         initList(listLength);
@@ -212,6 +236,7 @@ class SceneA extends Phaser.Scene {
         var foodcount = 0;
         for (let i = 0; i < 10; i++) {
             for (let j = 0; j < 13; j++) {
+
                 food.create(w, h, 'food', foodcount);
                 foodcount += 1;
                 h += 50;
@@ -287,7 +312,7 @@ class SceneA extends Phaser.Scene {
 
         // Enemy creation loop
         var enemyX = 60;
-        var enemyY = 45;
+        var enemyY = 70;
         for (let i = 0; i < 11; i++) {
             var enemy = enemies.create(enemyX, enemyY, 'enemy');
             enemy.setCollideWorldBounds(true);
@@ -319,8 +344,6 @@ class SceneA extends Phaser.Scene {
 
         // Set all enemies to be slightly transparent.
         Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
-        // Show the mobile D-pad. (?) --Why is this being called every single frame?
-        showDpad();
         // Create cursor keys. (?) --Why is this being called every single frame?
         cursors = this.input.keyboard.createCursorKeys();
         // Make the player move.
@@ -368,8 +391,7 @@ class SceneA extends Phaser.Scene {
 
         // Lose the game if player's infection level maxes out.
         if (infectLevel === infectMax) {
-            gameLostText.visible = true;
-            game.scene.pause("GameScene");
+            lose();
         }
     }
 }
@@ -390,31 +412,21 @@ class SceneB extends Phaser.Scene {
         this.load.image('dpad2', 'images/dpad2.png');
         this.load.image('dpad3', 'images/dpad3.png');
         this.load.image('dpad4', 'images/dpad4.png');
+        this.load.spritesheet('pausePlayIcon', 'images/pausePlayIcon.png', {
+            frameWidth: 75,
+            frameHeight: 75,
+        });
     }
 
     // Called once when the scene loads.
     create() {
-        // Add score text.
-        scoreText = this.add.text(20, 20, 'Score: 0', {
-            fontSize: '32px',
-            fill: '#000'
-        });
-        // Add game win text.
-        gameOverText = this.add.text(600, 400, "You Win!", {
-            fontSize: "50px",
-            fill: "#000"
-        });
-        // Add game lose text.
-        gameLostText = this.add.text(600, 400, "You Lose", {
-            fontSize: "50px",
-            fill: "#000"
-        });
 
-        gameOverText.setOrigin(0.5);
-        gameOverText.visible = false;
+        // Add timer text;
+        timerText = this.add.text(30, 30, '0', {
+            fontSize: "32px",
+            fill: "#000"
+        })
 
-        gameLostText.setOrigin(0.5);
-        gameLostText.visible = false;
 
         // Create the infection meter.
         infectBar = this.add.graphics();
@@ -423,9 +435,237 @@ class SceneB extends Phaser.Scene {
         // Create the mobile D-pad.
         dpad = this.physics.add.group();
         createDpad();
+
+        pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive();
+        createPausePlayButton();
+
+        timer = this.time.addEvent({
+            delay: 1000,
+            callback: updateTime,
+            loop: true
+        });
     }
 }
 
+class SceneC extends Phaser.Scene {
+
+    constructor() {
+        super({
+            key: 'pause',
+            active: true
+        });
+    }
+    preload() {
+        this.load.spritesheet('listIcon', 'images/listIcon.png', {
+            frameWidth: 50,
+            frameHeight: 50,
+        });
+        this.load.spritesheet('soundIcon', 'images/soundIcon.png', {
+            frameWidth: 50,
+            frameHeight: 50,
+        });
+        this.load.spritesheet('dpadIcon', 'images/dpadIcon.png', {
+            frameWidth: 50,
+            frameHeight: 50,
+        });
+        this.load.spritesheet('restartIcon', 'images/restartIcon.png', {
+            frameWidth: 34,
+            frameHeight: 34,
+        });
+        this.load.spritesheet('homeIcon', 'images/homeIcon.png', {
+            frameWidth: 60,
+            frameHeight: 60,
+        });
+        this.load.image('menu', 'images/menu.png');
+    }
+    create() {
+        this.add.image(gameWidth / 2, gameHeight / 2 + 40, 'menu');
+        listButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 40, "listIcon").setInteractive();
+        createListButton();
+        soundButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 113, "soundIcon").setInteractive();
+        createSoundButton();
+        mobileControlsButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 187, "dpadIcon").setInteractive();
+        createMobileControlsButton();
+        restartButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 260, "restartIcon").setInteractive();
+        createRestartButton(restartButton);
+        goHomeButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 330, "homeIcon").setInteractive();
+        createGoHomeButton(goHomeButton);
+    }
+    update() {
+
+    }
+}
+
+class SceneD extends Phaser.Scene {
+
+    constructor() {
+        super({
+            key: 'gameOver',
+            active: true
+        });
+    }
+    preload() {
+        this.load.image('gameOver', 'images/gameOver.png');
+        this.load.image('win', 'images/win.png');
+    }
+    create() {
+        gameOverMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'gameOver');
+        winMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'win');
+        gameOverMenu.visible = false;
+        winMenu.visible = false;
+        restartButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 77, "restartIcon").setInteractive();
+        createRestartButton(restartButton2);
+        goHomeButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 175, "homeIcon").setInteractive();
+        createGoHomeButton(goHomeButton2);
+    }
+    update() {
+
+    }
+}
+function updateTime() {
+    timerText.setText(++time);
+}
+
+function createListButton(){
+    listButton.on('pointerover', function () {
+        listButton.setFrame(1);
+    });
+
+    listButton.on('pointerout', function () {
+        listButton.setFrame(0);
+    });
+
+    listButton.on('pointerup', function () {
+        $("#listSection").css("display","flex");
+        $("#listSection").css("height",gameHeight + "px");
+        $("#listSection").css("wdith",gameWidth + "px")
+        //$("#listSection").on("click").css("display","none");
+    });
+}
+function createGoHomeButton(button) {
+    button.on('pointerover', function () {
+        button.setFrame(1);
+    });
+
+    button.on('pointerout', function () {
+        button.setFrame(0);
+    });
+
+    button.on('pointerup', function () {
+        window.open('main.html','_self');
+    });
+}
+
+function createRestartButton(button) {
+    button.on('pointerover', function () {
+        button.setFrame(1);
+    });
+
+    button.on('pointerout', function () {
+        button.setFrame(0);
+    });
+
+    button.on('pointerup', function () {
+        // restart function call
+    });
+}
+
+function createSoundButton() {
+    soundButton.on('pointerover', function () {
+        if (!mute) {
+            soundButton.setFrame(1);
+        } else {
+            soundButton.setFrame(3)
+        }
+    })
+
+    soundButton.on('pointerout', function () {
+        if (!mute) {
+            soundButton.setFrame(0);
+        } else {
+            soundButton.setFrame(2)
+        }
+    })
+    soundButton.on('pointerup', function () {
+        if (!mute) {
+            soundButton.setFrame(3);
+            game.sound.setMute(true);
+            mute = true;
+        } else {
+            soundButton.setFrame(1)
+            game.sound.setMute(false);
+            mute = false;
+        }
+
+    })
+}
+
+function createMobileControlsButton() {
+
+    mobileControlsButton.on('pointerover', function () {
+        if (!mobileControls) {
+            mobileControlsButton.setFrame(3);
+        } else {
+            mobileControlsButton.setFrame(1)
+        }
+    })
+
+    mobileControlsButton.on('pointerout', function () {
+        if (!mobileControls) {
+            mobileControlsButton.setFrame(2);
+        } else {
+            mobileControlsButton.setFrame(0)
+        }
+    })
+    mobileControlsButton.on('pointerup', function () {
+        if (!mobileControls) {
+            mobileControlsButton.setFrame(1);
+            mobileControls = true;
+            dpad.getChildren().forEach((dpad) => {
+                dpad.visible = true;
+            });
+        } else {
+            mobileControlsButton.setFrame(3)
+            mobileControls = false;
+            dpad.getChildren().forEach((dpad) => {
+                dpad.visible = false;
+            });
+        }
+
+    })
+}
+
+function createPausePlayButton() {
+    pausePlayButton.on('pointerover', function () {
+
+        if (!game.scene.isPaused("GameScene")) {
+            pausePlayButton.setFrame(1);
+        } else {
+            pausePlayButton.setFrame(3);
+        }
+    })
+
+    pausePlayButton.on('pointerout', function () {
+        if (!game.scene.isPaused("GameScene")) {
+            pausePlayButton.setFrame(0);
+        } else {
+            pausePlayButton.setFrame(2);
+        }
+    })
+    pausePlayButton.on('pointerup', function () {
+        if (!game.scene.isPaused("GameScene")) {
+            pausePlayButton.setFrame(3);
+            timer.paused = true;
+            game.scene.pause("GameScene");
+            game.scene.run("pause");
+        } else {
+            pausePlayButton.setFrame(1);
+            timer.paused = false;
+            game.scene.resume("GameScene");
+            game.scene.sleep("pause");
+        }
+    })
+}
 /** Creates the mobile D-pad. */
 function createDpad() {
 
@@ -583,26 +823,13 @@ function createDpad() {
 }
 
 /** Creates the infection meter. */
-function createInfectBar(){
+function createInfectBar() {
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(gameWidth -300, 60, 200, 30);
+    infectBar.fillRect(25, 25, 200, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(gameWidth - 298, 62, 195, 25);
+    infectBar.fillRect(27, 27, 195, 25);
     infectBar.fillStyle(0xff0000);
-    infectBar.fillRect(gameWidth - 298, 62, infectLevel, 25);
-}
-
-/** Makes the D-pad visible if the user is on mobile. */
-function showDpad() {
-    if (window.innerWidth > 500) {
-        dpad.getChildren().forEach((dpad) => {
-            dpad.setScrollFactor(0);
-        });
-    } else {
-        dpad.getChildren().forEach((dpad) => {
-            dpad.visible = true;
-        });
-    }
+    infectBar.fillRect(27, 27, infectLevel, 25);
 }
 
 /** Moves the player. */
@@ -722,8 +949,6 @@ function collectFood(player, foodCollided) {
     // Check the pickup's food data against the shopping list.
     if (foodType != undefined && CheckList(foodType)) {
         foodCollided.disableBody(true, true);
-        score += 10;
-        scoreText.setText('Score: ' + score);
 
         // Play sound effect if the music isn't muted.
         if (mute == false) {
@@ -735,8 +960,17 @@ function collectFood(player, foodCollided) {
 
 /** Called when the player completes their shopping list. */
 function win() {
-    gameOverText.visible = true;
-    game.scene.pause(SceneA);
+    game.scene.run("gameOver");
+    winMenu.visible = true;
+    game.scene.pause("GameScene");
+    pausePlayButton.visible =false;
+}
+
+function lose(){
+    game.scene.run("gameOver");
+    gameOverMenu.visible = true;
+    game.scene.pause("GameScene");
+    pausePlayButton.visible =false;
 }
 
 /** Called when a player becomes more infected. */
@@ -748,14 +982,14 @@ function infect() {
     // Rebuild infection meter.
     infectBar.clear();
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(gameWidth - 300, 60, 200, 30);
+    infectBar.fillRect(25, 25, 200, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(gameWidth - 298, 62, 195, 25);
+    infectBar.fillRect(27, 27, 195, 25);
     infectBar.fillStyle(0xff0000);
     if (infectLevel <= infectMax) {
-        infectBar.fillRect(gameWidth - 298, 62, infectLevel, 25);
+        infectBar.fillRect(27, 27, infectLevel, 25);
     } else {
-        infectBar.fillRect(gameWidth -298, 62, infectMax, 25);
+        infectBar.fillRect(27, 27, infectMax, 25);
     }
 }
 
@@ -778,7 +1012,7 @@ var config = {
             debug: false
         }
     },
-    scene: [SceneA, SceneB]
+    scene: [SceneA, SceneB, SceneC, SceneD]
 
 };
 

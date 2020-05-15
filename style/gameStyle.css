@@ -5,10 +5,12 @@ body {
 }
 
 #listSection {
+    position: absolute;
     padding:1em;
     background-color:#e5e5a0;
     box-shadow:grey 0.25em 0.25em;
     font-family:Arial, Helvetica, sans-serif;
+    z-index: 5;
 }
 
 #listSection h1 {
