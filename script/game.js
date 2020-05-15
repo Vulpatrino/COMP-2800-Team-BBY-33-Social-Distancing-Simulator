@@ -103,7 +103,8 @@ var mobileControls = true;
 var gameOverMenu;
 // The win menu
 var winMenu;
-
+//
+var finalTimeText;
 // Turning points for enemies
 var turnPoints;
 
@@ -525,9 +526,6 @@ class SceneC extends Phaser.Scene {
         goHomeButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 330, "homeIcon").setInteractive();
         createGoHomeButton(goHomeButton);
     }
-    update() {
-
-    }
 }
 
 class SceneD extends Phaser.Scene {
@@ -545,15 +543,17 @@ class SceneD extends Phaser.Scene {
     create() {
         gameOverMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'gameOver');
         winMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'win');
+        finalTimeText = this.add.text(gameWidth/2 + 20, gameHeight/2 - 100, '', {
+            fontSize: "25px",
+            fill: "#000"
+        })
+        finalTimeText.visible = false;
         gameOverMenu.visible = false;
         winMenu.visible = false;
         restartButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 77, "restartIcon").setInteractive();
         createRestartButton(restartButton2);
         goHomeButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 175, "homeIcon").setInteractive();
         createGoHomeButton(goHomeButton2);
-    }
-    update() {
-
     }
 }
 function updateTime() {
@@ -573,7 +573,6 @@ function createListButton(){
         $("#listSection").css("display","flex");
         $("#listSection").css("height",gameHeight + "px");
         $("#listSection").css("wdith",gameWidth + "px")
-        //$("#listSection").on("click").css("display","none");
     });
 }
 function createGoHomeButton(button) {
@@ -988,6 +987,8 @@ function win() {
     addToLeaderboard(time);
     game.scene.run("gameOver");
     winMenu.visible = true;
+    finalTimeText.visible = true;
+    finalTimeText.setText(time + " seconds");
     game.scene.pause("GameScene");
     pausePlayButton.visible =false;
 }

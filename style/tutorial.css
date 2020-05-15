@@ -2,6 +2,16 @@
     margin: 0;
     padding: 0;
 }
+
+    #listSection {
+        flex-direction: column;
+        position: absolute;
+        padding:1em;
+        background-color:#e5e5a0;
+        box-shadow:grey 0.25em 0.25em;
+        font-family:Arial, Helvetica, sans-serif;
+        z-index: 1;
+    }
 @font-face{
     src:url(../fonts/EUROSTIB.ttf);
     font-family: eurostilebold;
