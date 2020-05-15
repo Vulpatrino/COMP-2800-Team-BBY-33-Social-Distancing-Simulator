@@ -129,7 +129,8 @@ class SceneA extends Phaser.Scene {
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
-
+        addScore(score,255);
+        getScore();
         // Create a shopping list
         initList(listLength);
 
@@ -737,6 +738,8 @@ function collectFood(player, foodCollided) {
 function win() {
     gameOverText.visible = true;
     game.scene.pause(SceneA);
+    addScore(score, 10);
+    getScore();
 }
 
 /** Called when a player becomes more infected. */
