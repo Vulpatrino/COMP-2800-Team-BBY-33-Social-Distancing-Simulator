@@ -90,7 +90,8 @@ function initList(newLength) {
         }
 
         listValues.push(newItem);
-        
+        console.log("Added value " + newItem);
+
         list.push(new Food(newItem));
         let listHTML = "<li>" + list[i].getName() + "</li>";
         document.getElementById("list").innerHTML += listHTML;

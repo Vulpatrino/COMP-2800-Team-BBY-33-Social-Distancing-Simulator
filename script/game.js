@@ -592,7 +592,7 @@ function createRestartButton(button) {
     });
 
     button.on('pointerup', function () {
-        window.open('game.html','_self');
+        location.reload();
     });
 }
 
