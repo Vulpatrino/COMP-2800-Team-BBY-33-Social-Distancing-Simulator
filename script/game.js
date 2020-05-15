@@ -861,7 +861,7 @@ function createInfectBar() {
 /** Moves the player. */
 function playerMove() {
 
-    // Set player X velocity.
+    // Set player X velocity and play related animations.
     if (cursors.left.isDown || moveLeft) {
         player.setVelocityX(-300);
         player.anims.play('left', true);
@@ -872,7 +872,7 @@ function playerMove() {
         player.setVelocityX(0);
     }
 
-    // Set player Y velocity.
+    // Set player Y velocity and play related animations.
     if (cursors.up.isDown || moveUp) {
         player.setVelocityY(-300);
         player.anims.play('up', true);
@@ -882,10 +882,8 @@ function playerMove() {
     } else {
         player.setVelocityY(0);
     }
-    if (cursors.up.isDown && player.body.touching.down) {
-        player.setVelocityY(0);
-    }
 
+    // If the player isn't moving at all, play idle animation.
     if (player.body.velocity.x == 0 && player.body.velocity.y == 0) {
         player.anims.play("idle", true);
     }
