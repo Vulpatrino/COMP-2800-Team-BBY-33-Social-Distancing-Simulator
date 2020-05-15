@@ -378,17 +378,6 @@ class SceneA extends Phaser.Scene {
             }
         }
 
-        // Quit to main page if the quit key is pressed.
-        if (Phaser.Input.Keyboard.JustDown(leavingPage)) {
-
-            window.open('main.html', '_self');
-        }
-
-        // Reload the page if the restart key is pressed.
-        if (Phaser.Input.Keyboard.JustDown(restartKey)) {
-            location.reload();
-        }
-
         // Lose the game if player's infection level maxes out.
         if (infectLevel === infectMax) {
             lose();
@@ -422,7 +411,7 @@ class SceneB extends Phaser.Scene {
     create() {
 
         // Add timer text;
-        timerText = this.add.text(30, 30, '0', {
+        timerText = this.add.text(30, 60, '0', {
             fontSize: "32px",
             fill: "#000"
         })
@@ -566,7 +555,7 @@ function createRestartButton(button) {
     });
 
     button.on('pointerup', function () {
-        // restart function call
+        window.open('game.html','_self');
     });
 }
 
