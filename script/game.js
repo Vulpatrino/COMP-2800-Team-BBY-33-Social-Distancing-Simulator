@@ -107,6 +107,9 @@ var winMenu;
 // Turning points for enemies
 var turnPoints;
 
+var name;
+
+
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
 
@@ -161,8 +164,10 @@ class SceneA extends Phaser.Scene {
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
+
         game.scene.sleep("pause");
         game.scene.sleep("gameOver");
+
 
         // Create a shopping list
         initList(listLength);
@@ -979,6 +984,8 @@ function collectFood(player, foodCollided) {
 
 /** Called when the player completes their shopping list. */
 function win() {
+    addScore(score, time);
+    addToLeaderboard(time);
     game.scene.run("gameOver");
     winMenu.visible = true;
     game.scene.pause("GameScene");
