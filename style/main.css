@@ -122,3 +122,9 @@ footer {
         color:initial;
     }
 }
+.scoreNo{
+    padding-right: 40%;
+}
+th{
+    float:left;
+}

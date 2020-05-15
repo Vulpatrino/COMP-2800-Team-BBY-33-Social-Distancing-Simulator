@@ -129,7 +129,7 @@ class SceneA extends Phaser.Scene {
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
-        addScore(score,255);
+        addScore(score,600);
         getScore();
         // Create a shopping list
         initList(listLength);
