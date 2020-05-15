@@ -984,7 +984,7 @@ function collectFood(player, foodCollided) {
 
 /** Called when the player completes their shopping list. */
 function win() {
-    addScore(score, time);
+    addScore(time);
     addToLeaderboard(time);
     game.scene.run("gameOver");
     winMenu.visible = true;
