@@ -31,10 +31,6 @@ var walls;
 var enemyMoveTimer = 0;
 // Maximum value for enemy move timer.
 var enemyMoveTimerMax = 300;
-// Text object that displays "You Win!"
-var gameOverText;
-// Text object that displays "You Lose!"
-var gameLostText;
 // Infection meter.
 var infectBar;
 // Level of infection.
@@ -83,8 +79,12 @@ var soundButton;
 var mobileControlsButton;
 var restartButton;
 var goHomeButton;
+var goHomeButton2;
+var restartButton2;
+var listButton;
 var mobileControls = true;
-
+var gameOverMenu;
+var winMenu;
 
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
@@ -133,6 +133,8 @@ class SceneA extends Phaser.Scene {
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
+        game.scene.sleep("pause");
+        game.scene.sleep("gameOver");
 
         // Create a shopping list
         initList();
@@ -312,7 +314,6 @@ class SceneA extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 1200, 800);
         this.cameras.main.startFollow(player);
         initialMove();
-        game.scene.sleep("pause");
     }
 
     // Reset enemy movement timer to 0.
@@ -365,8 +366,7 @@ class SceneA extends Phaser.Scene {
 
         // Lose the game if player's infection level maxes out.
         if (infectLevel === infectMax) {
-            gameLostText.visible = true;
-            game.scene.pause("GameScene");
+            lose();
         }
     }
 }
@@ -401,22 +401,6 @@ class SceneB extends Phaser.Scene {
             fontSize: "32px",
             fill: "#000"
         })
-        // Add game win text.
-        gameOverText = this.add.text(600, 400, "You Win!", {
-            fontSize: "50px",
-            fill: "#000"
-        });
-        // Add game lose text.
-        gameLostText = this.add.text(600, 400, "You Lose", {
-            fontSize: "50px",
-            fill: "#000"
-        });
-
-        gameOverText.setOrigin(0.5);
-        gameOverText.visible = false;
-
-        gameLostText.setOrigin(0.5);
-        gameLostText.visible = false;
 
 
         // Create the infection meter.
@@ -447,68 +431,113 @@ class SceneC extends Phaser.Scene {
         });
     }
     preload() {
+        this.load.spritesheet('listIcon', 'images/listIcon.png', {
+            frameWidth: 50,
+            frameHeight: 50,
+        });
         this.load.spritesheet('soundIcon', 'images/soundIcon.png', {
-            frameWidth: 75,
-            frameHeight: 75,
+            frameWidth: 50,
+            frameHeight: 50,
         });
         this.load.spritesheet('dpadIcon', 'images/dpadIcon.png', {
-            frameWidth: 75,
-            frameHeight: 75,
+            frameWidth: 50,
+            frameHeight: 50,
         });
         this.load.spritesheet('restartIcon', 'images/restartIcon.png', {
-            frameWidth: 45,
-            frameHeight: 45,
+            frameWidth: 34,
+            frameHeight: 34,
         });
         this.load.spritesheet('homeIcon', 'images/homeIcon.png', {
-            frameWidth: 75,
-            frameHeight: 75,
+            frameWidth: 60,
+            frameHeight: 60,
         });
         this.load.image('menu', 'images/menu.png');
     }
     create() {
         this.add.image(gameWidth / 2, gameHeight / 2 + 40, 'menu');
-        soundButton = this.physics.add.sprite(gameWidth / 2 + 75, gameHeight / 3 +60, "soundIcon").setInteractive();
+        listButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 40, "listIcon").setInteractive();
+        createListButton();
+        soundButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 113, "soundIcon").setInteractive();
         createSoundButton();
-        mobileControlsButton = this.physics.add.sprite(gameWidth / 2 + 75, gameHeight / 3 + 140, "dpadIcon").setInteractive();
+        mobileControlsButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 187, "dpadIcon").setInteractive();
         createMobileControlsButton();
-        restartButton = this.physics.add.sprite(gameWidth / 2 + 75, gameHeight / 3 + 230, "restartIcon").setInteractive();
-        createRestartButton();
-        goHomeButton = this.physics.add.sprite(gameWidth / 2 + 75, gameHeight / 3 + 315, "homeIcon").setInteractive();
-        createGoHomeButton();
+        restartButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 260, "restartIcon").setInteractive();
+        createRestartButton(restartButton);
+        goHomeButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 330, "homeIcon").setInteractive();
+        createGoHomeButton(goHomeButton);
     }
     update() {
 
     }
 }
 
+class SceneD extends Phaser.Scene {
+
+    constructor() {
+        super({
+            key: 'gameOver',
+            active: true
+        });
+    }
+    preload() {
+        this.load.image('gameOver', 'images/gameOver.png');
+        this.load.image('win', 'images/win.png');
+    }
+    create() {
+        gameOverMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'gameOver');
+        winMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'win');
+        gameOverMenu.visible = false;
+        winMenu.visible = false;
+        restartButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 77, "restartIcon").setInteractive();
+        createRestartButton(restartButton2);
+        goHomeButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 175, "homeIcon").setInteractive();
+        createGoHomeButton(goHomeButton2);
+    }
+    update() {
+
+    }
+}
 function updateTime() {
     timerText.setText(++time);
 }
 
-function createGoHomeButton() {
-    goHomeButton.on('pointerover', function () {
-        goHomeButton.setFrame(1);
+function createListButton(){
+    listButton.on('pointerover', function () {
+        listButton.setFrame(1);
     });
 
-    goHomeButton.on('pointerout', function () {
-        goHomeButton.setFrame(0);
+    listButton.on('pointerout', function () {
+        listButton.setFrame(0);
     });
 
-    goHomeButton.on('pointerdown', function () {
+    listButton.on('pointerup', function () {
         // restart function call
     });
 }
-
-function createRestartButton() {
-    restartButton.on('pointerover', function () {
-        restartButton.setFrame(1);
+function createGoHomeButton(button) {
+    button.on('pointerover', function () {
+        button.setFrame(1);
     });
 
-    restartButton.on('pointerout', function () {
-        restartButton.setFrame(0);
+    button.on('pointerout', function () {
+        button.setFrame(0);
     });
 
-    restartButton.on('pointerdown', function () {
+    button.on('pointerup', function () {
+        window.open('main.html','_self');
+    });
+}
+
+function createRestartButton(button) {
+    button.on('pointerover', function () {
+        button.setFrame(1);
+    });
+
+    button.on('pointerout', function () {
+        button.setFrame(0);
+    });
+
+    button.on('pointerup', function () {
         // restart function call
     });
 }
@@ -902,8 +931,17 @@ function collectFood(player, foodCollided) {
 
 /** Called when the player completes their shopping list. */
 function win() {
-    gameOverText.visible = true;
+    game.scene.run("gameOver");
+    winMenu.visible = true;
     game.scene.pause("GameScene");
+    pausePlayButton.visible =false;
+}
+
+function lose(){
+    game.scene.run("gameOver");
+    gameOverMenu.visible = true;
+    game.scene.pause("GameScene");
+    pausePlayButton.visible =false;
 }
 
 /** Called when a player becomes more infected. */
@@ -945,18 +983,9 @@ var config = {
             debug: false
         }
     },
-    scene: [SceneA, SceneB, SceneC]
+    scene: [SceneA, SceneB, SceneC, SceneD]
 
 };
 
 /** Phaser instance. */
 let game = new Phaser.Game(config);
-
-/** Adds game div to main page. */
-$(document).ready(function () {
-    $("#playgame").click(function () {
-        $("#main").hide(400);
-        $("#my-game").css("display", "flex");
-
-    });
-});
