@@ -7,8 +7,6 @@
         <title>Social Distancing Simulator</title>
 
         <link rel="stylesheet" type="text/css" href="style/main.css">
-        <script src="script/foods.js"></script>
-        <script src="script/game.js"></script>
         <script src="script/addScore.js"></script>
         <script src="script/getScore.js"></script>
         <script src="script/getName.js"></script>
@@ -58,7 +56,6 @@
                     <input type="button" value="Play" onclick="window.open('game.html','_self')">
                     <input type="button" value="Tutorial" onclick="window.open('tutorial.html','_self')">
                     <input type="button" value="About Us" onclick="window.open('aboutus.html','_self')">
-                    <input type="button" value="logout" onclick = "logout()">
                 </div>
             </section>
             <section id="leaderboard">
@@ -120,18 +117,15 @@
                         <th id = "score5"></th>
                     </tr>
                 </table>
+                <input type="button" value="Logout" onclick = "logout()">
             </section>
             <footer>
                 <h5>Footer</h5>
             </footer>
         </main>
-        <div id="my-game"></div>
         <!-- Firebase Scripts -->
         <script src="script/create_user.js"></script>
         <script src="script/logout.js"></script>
-        <!-- Game Scripts -->
-        <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
-        <!--<script src="script/game.js"></script>-->
         <script>
             createUser();
         </script>
@@ -140,8 +134,6 @@
             getScore();
             getLeaderBoard();
         </script>
-        <!--<script src="script/foods.js"></script>-->
-        <script src="script/game.js"></script>
 
 
     </body>
