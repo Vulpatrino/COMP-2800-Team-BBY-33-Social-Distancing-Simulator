@@ -381,7 +381,6 @@ update() {
 
     // Quit to main page if the quit key is pressed.
     if (Phaser.Input.Keyboard.JustDown(leavingPage)) {
-
         window.open('main.html', '_self');
     }
 
@@ -392,7 +391,9 @@ update() {
 
     // Lose the game if player's infection level maxes out.
     if (infectLevel === infectMax) {
+        tutorialText.visible = false;
         gameLostText.visible = true;
+        redoButton();
         game.scene.pause("GameScene");
     }
     if(gameOverText.visible == true){
@@ -443,7 +444,7 @@ class SceneB extends Phaser.Scene {
             color : "#FFFFFF"
         });
         // Add game lose text.
-        gameLostText = this.add.text(600, 100, "You got infected redo the tutorial.", {
+        gameLostText = this.add.text(400, 100, "You got infected redo the tutorial.", {
             fontSize: "25px",
             fill: "#000"
         });
@@ -824,6 +825,7 @@ function playerMove() {
             infectBar.fillRect(gameWidth -298, 62, infectMax, 25);
         }
     }
+    // Makes a back to menu button
     function tutorialFinished(){
         tutFinished = true;
         tutorialText.visible = false;
@@ -832,6 +834,15 @@ function playerMove() {
         var body = document.getElementsByTagName("body")[0];
         body.appendChild(menuButton);
         menuButton.onclick = function(){ window.open('main.html','_self')};
+    }
+    // makes a redo button show up
+    function redoButton(){
+        tutorialText.visible = false;
+        var redoButton = document.createElement("button");
+        redoButton.innerHTML = "Try Again";
+        var body = document.getElementsByTagName("body")[0];
+        body.appendChild(redoButton);
+        redoButton.onclick = function(){ window.open('tutorial.html','_self')};
     }
     /** Phaser configuration. */
     var config = {
