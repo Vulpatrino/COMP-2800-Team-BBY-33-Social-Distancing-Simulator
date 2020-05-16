@@ -1,10 +1,11 @@
 body{
     margin:0;
+    background-color: rgb(22, 34, 102);
 }
 main {
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
-    grid-template-rows: 2fr 8fr 1fr;
+    grid-template-rows: 2fr 9fr 1fr;
     grid-template-areas:
         "header header header"
         "account play leaderboard"
@@ -17,15 +18,17 @@ header {
     display:flex;
     justify-content: center;
 
-    background-color: grey;
+    background-color: rgb(16, 24, 71);
 }
 header>img{
-    width: 100%;
+    width: 60%;
 }
 
 #play {
     grid-area: play;
     background-color: white;
+    border: 8px solid rgb(16, 24, 71);
+    border-radius: 5px;
 }
 
 #menu {
@@ -41,8 +44,9 @@ header>img{
     flex-direction: column;
     align-items: center;
 
-    background-color: black;
+    background-color: rgb(22, 34, 102);
     color:white;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 
 }
 
@@ -52,21 +56,22 @@ header>img{
     flex-direction: column;
     align-items: center;    
 
-    background-color: black;
+    background-color: rgb(22, 34, 102);
     color:white;
+    font-family: Verdana;
 }
 
 footer {
     grid-area: footer;
     
-    background-color: grey;
+    background-color: rgb(16, 24, 71);
 }
 #logo{
     max-height:100%;
     max-width: 100%;
     margin:10px;
 }
-#play input{
+input{
     height:25px;
     width:100px;
     margin:10px;
@@ -77,16 +82,15 @@ footer {
     border:1px black solid;
     border-radius: 3px;;
 }
-#play input:hover{  
-    background-color: black;
+input:hover{  
+    background-color: rgb(22, 34, 102);
     color:white;
     border:1px black solid;
     border-radius: 3px;
 }
 #my-game{
 	display: none;
-	flex-direction: column;
-    justify-content: center;
+	
 }
 #menu{
     display:flex;
@@ -117,4 +121,10 @@ footer {
         background-color: white;
         color:initial;
     }
+}
+.scoreNo{
+    padding-right: 10%;
+}
+th{
+    float:left;
 }

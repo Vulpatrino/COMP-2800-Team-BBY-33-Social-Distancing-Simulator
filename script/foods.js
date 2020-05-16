@@ -20,14 +20,12 @@ let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
 "shrimp", "french fry", "salad roll", "candy", "burrito", "lollipop", "pink lemonade",
 "olives", "lobster", "toast", "white radish", "bok choy", "chili pepper"];
 
+
 /**
  * Current shopping list.
  * Will be populated with Food objects.
  */
 let list = [];
-
-/** Number of items on shopping list. */
-let listLength = 10;
 
 /**
  * FOOD OBJECT
@@ -76,20 +74,41 @@ class Food {
         return this.name;
     }
 }
-
 /**
  * Populates the shopping list with random food items.
  * CALL ON GAME START/RESTART!!
  */
-function initList() {
-    for (let i = 0; i < listLength; i++) {
+function initList(newLength) {
+    let listValues = [];
+    let newItem = Math.floor(Math.random() * foodNames.length);
 
-        let newItem = Math.floor(Math.random * foodNames.length);;
+    // Generate random items.
+    for (let i = 0; i < newLength; i++) {
+
+        while (listValues.includes(newItem)) {
+            newItem = Math.floor(Math.random() * foodNames.length);
+        }
+
+        listValues.push(newItem);
+        console.log("Added value " + newItem);
+
+        list.push(new Food(newItem));
+        let listHTML = "<li>" + list[i].getName() + "</li>";
+        document.getElementById("list").innerHTML += listHTML;
+    }
+}
+/**
+ * Populates the shopping list for tutorial
+ */
+function initTutList(newLength) {
+    for (let i = 0; i < newLength; i++) {
+
+        let newItem = i
         let itemAlreadyContained = true;
 
         do {
             // Generate a random (valid) item index.
-            newItem = Math.floor(Math.random() * foodNames.length);
+            newItem = i;
             // Assume this random item isn't already on the list.
             itemAlreadyContained = false;
 

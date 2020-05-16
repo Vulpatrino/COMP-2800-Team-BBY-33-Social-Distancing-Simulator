@@ -24,7 +24,7 @@ var player;
 // Group that contains all food objects.
 var food;
 // Length of the shopping list.
-var listLength = 10;
+var listLength = 3;
 // Group that contains all enemies.
 var enemies;
 // Group that contains all walls.
@@ -33,6 +33,10 @@ var walls;
 var enemyMoveTimer = 0;
 // Maximum value for enemy move timer.
 var enemyMoveTimerMax = 300;
+// Text object that displays "You Win!"
+var gameOverText;
+// Text object that displays "You Lose!"
+var gameLostText;
 // Infection meter.
 var infectBar;
 // Level of infection.
@@ -75,12 +79,23 @@ var leavingPage;
 var restartKey;
 // Whether or not the music is muted.
 var mute = false;
-// Time elapsed
-var time = 0;
-// Timer object
-var timer;
-// Timer text
-var timerText;
+// Tutorial Text
+var tutorialText;
+var tutLeft = false;
+var tutRight = false;
+var tutUp = false;
+var tutDown = false;
+var tutMoving = false;
+var tutFood;
+var button;
+var tutFinished =false;
+var tutWall;
+var pauseCount = 0;
+var arrow;
+var arrow2;
+var arrow3;
+var arrow4;
+var listButton;
 // Button to pause and play game
 var pausePlayButton;
 // Mute button
@@ -91,31 +106,6 @@ var mobileControlsButton;
 var restartButton;
 // Go to home page button
 var goHomeButton;
-// Restart game button 2
-var restartButton2;
-// Go to home page button 2
-var goHomeButton2;
-// View list button
-var listButton;
-// Whether or not mobile controls are visible
-var mobileControls = true;
-// The game over menu
-var gameOverMenu;
-// The win menu
-var winMenu;
-//
-var finalTimeText;
-// Turning points for enemies
-var turnPoints;
-
-var name;
-
-// Array of player tint values.
-var playerTints = [0x58bdd1, 0xe8ae1c, 0xdd00ff, 0x00ff26, 0xffffff, 0x2f3157];
-// Current tint index.
-var currentTint = 5;
-
-
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
 
@@ -131,16 +121,23 @@ class SceneA extends Phaser.Scene {
         this.load.image('wall1', 'images/wall1.png');
         this.load.image('wall2', 'images/wall2.png');
         this.load.image('aisle1', 'images/aisle1.png');
-
+        
         this.load.audio('1', ['audio/1.mp3', 'audio/1.ogg']);
         this.load.audio('2', ['audio/2.mp3', 'audio/2.ogg']);
-        // New Player spritesheet
+        this.load.spritesheet('arrow',
+                              'images/arrow.png', {
+            frameWidth: 241,
+            frameHeight: 209
+        }
+                              );
+        // Player spritesheet
         this.load.spritesheet("player", "images/PlayerSprites.png",
             {
                 frameWidth: 32,
                 frameHeight: 48
             }
         );
+        
         // Enemy spritesheet
         this.load.spritesheet('enemy',
             'images/EnemySprites.png', {
@@ -150,33 +147,41 @@ class SceneA extends Phaser.Scene {
         );
         // Food spritesheet
         this.load.spritesheet('food',
-            'images/food.png', {
-                frameWidth: 49,
-                frameHeight: 49
+                              'images/food.png', {
+            frameWidth: 49,
+            frameHeight: 49
 
-            }
-        );
+        }
+                             );
 
     }
-    
+
+
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
 
         game.scene.sleep("pause");
-        game.scene.sleep("gameOver");
-
-
         // Create a shopping list
-        initList(listLength);
+        initTutList(listLength);
 
         this.add.image(600, 400, 'background').setScale(6);
-
+        arrow = this.add.image(50,400,'arrow').setScale(.25);
+        arrow2 = this.add.image(50,425,'arrow').setScale(.25);
+        arrow3 = this.add.image(700,50,'arrow').setScale(.25);
+        arrow4 = this.add.image(725,50,'arrow').setScale(.25);
+        arrow3.angle = 90;
+        arrow4.angle = 90;
+        arrow.visible = false;
+        arrow2.visible = false;
+        arrow3.visible = false;
+        arrow4.visible = false;
         // Create all four walls
         walls = this.physics.add.staticGroup();
         walls.create(600, 790, 'wall1');
         walls.create(600, 10, 'wall1');
         walls.create(1190, 400, 'wall2');
+        tutWall = walls.create(600, 650, 'wall1');
         walls.create(10, 400, 'wall2');
         aisles = this.physics.add.staticGroup({
             key: 'aisle1',
@@ -206,11 +211,8 @@ class SceneA extends Phaser.Scene {
         restartKey = this.input.keyboard.addKey('R');
 
         // Create the player and their animations
-        player = this.physics.add.sprite(40, 700, 'player');
+        player = this.physics.add.sprite(40, 700, 'dude');
         player.setCollideWorldBounds(true);
-        updatePlayerTint();
-        player.setInteractive();
-        player.on("pointerdown", updatePlayerTint);
 
         this.anims.create({
             key: 'left',
@@ -270,18 +272,10 @@ class SceneA extends Phaser.Scene {
         var h = 45;
         var w = 60;
         var foodcount = 0;
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 13; j++) {
-
-                food.create(w, h, 'food', foodcount);
-                foodcount += 1;
-                h += 50;
-                if (foodcount > 99) {
-                    foodcount = 0;
-                }
-            }
-            w += 120;
-            h = 45;
+        for (let i = 0; i < 3; i++) {
+            food.create(w, h, 'food', foodcount);
+            foodcount += 1;
+            w += 540;
         }
 
         // Adds a Food object to the food collectibles.
@@ -305,7 +299,7 @@ class SceneA extends Phaser.Scene {
         enemies = this.physics.add.group();
         enemies.enableBody = true;
         this.physics.add.collider(enemies, walls, hitWallMove, null, this);
-        this.physics.add.collider(enemies, aisles);
+        this.physics.add.collider(enemies, aisles, hitWallMove, null, this);
         this.anims.create({
             key: 'eRight',
             frames: this.anims.generateFrameNumbers('enemy', {
@@ -347,9 +341,9 @@ class SceneA extends Phaser.Scene {
         });
 
         // Enemy creation loop
-        var enemyX = 60;
-        var enemyY = 70;
-        for (let i = 0; i < 11; i++) {
+        var enemyX = 180;
+        var enemyY = 150;
+        for (let i = 0; i < 3; i++) {
             var enemy = enemies.create(enemyX, enemyY, 'enemy');
             enemy.setCollideWorldBounds(true);
             enemies.add(enemy);
@@ -370,65 +364,77 @@ class SceneA extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 1200, 800);
         this.cameras.main.startFollow(player);
         initialMove();
-
-        // Creates areas that would change the enemy movement
-        turnPoints = this.physics.add.staticGroup();
-        for (var i = 0; i < aisles.getChildren().length; i++) {
-            var x = aisles.getChildren()[i].x;
-            var topY = aisles.getChildren()[i].getTopCenter().y;
-            var botY = aisles.getChildren()[i].getBottomCenter().y;
-            var rect = this.add.rectangle(x, topY - (topY - 10)/2, aisles.getChildren()[i].width + 5, topY-10).setStrokeStyle(2, 0xff0000);
-            turnPoints.add(rect)
-            rect = this.add.rectangle(x, (790-botY)/2 + botY, aisles.getChildren()[i].width + 5, 790 - botY).setStrokeStyle(2, 0xff0000);
-            turnPoints.add(rect);
-        }
-        // Adds an action that happens when enemies touch these points
-        this.physics.add.overlap(enemies, turnPoints, turn)
-
-        // Makes the turning points invisibile
-        Phaser.Actions.SetAlpha(turnPoints.getChildren(), 0);
     }
 
     // Reset enemy movement timer to 0.
     enemyMoveTimer = 0;
 
-    /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
-    update() {
-        // Set all enemies to be slightly transparent.
-        Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
-        // Create cursor keys. (?) --Why is this being called every single frame?
-        cursors = this.input.keyboard.createCursorKeys();
-        // Make the player move.
-        playerMove();
-        // Make the player's circle follow the player object.
-        circle.setPosition(player.x, player.y);
+/** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
+update() {
 
-        // Detect objects inside the player's circle.
-        var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, false);
-        var inCirc = bodies.map((body) => body.gameObject.texture.key);
-        for (var i = 0; i < inCirc.length; i++) {
-            if (inCirc[i] === "enemy") {
-                infect();
-            }
-        }
-        Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
+    // Set all enemies to be slightly transparent.
+    Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
+    // Show the mobile D-pad. (?) --Why is this being called every single frame?
+    showDpad();
+    // Create cursor keys. (?) --Why is this being called every single frame?
+    cursors = this.input.keyboard.createCursorKeys();
+    // Make the player move.
+    playerMove();
+    // Make the player's circle follow the player object.
+    circle.setPosition(player.x, player.y);
 
-        // Mute the music if the mute key is pressed.
-        if (Phaser.Input.Keyboard.JustDown(volumeControl)) {
-            if (mute == false) {
-                this.sound.setMute(true);
-                mute = true;
-            } else {
-                this.sound.setMute(false);
-                mute = false;
-            }
-        }
-
-        // Lose the game if player's infection level maxes out.
-        if (infectLevel === infectMax) {
-            lose();
+    // Detect objects inside the player's circle.
+    var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, false);
+    var inCirc = bodies.map((body) => body.gameObject.texture.key);
+    for (var i = 0; i < inCirc.length; i++) {
+        if (inCirc[i] === "enemy") {
+            infect();
         }
     }
+    Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
+
+    // Tick the enemy move timer, and check if it's at the limit.
+    if (enemyMoveTimer++ == enemyMoveTimerMax) {
+        changeMove();
+        enemyMoveTimer = 0;
+    }
+
+    // Mute the music if the mute key is pressed.
+    if (Phaser.Input.Keyboard.JustDown(volumeControl)) {
+        if (mute == false) {
+            this.sound.setMute(true);
+            mute = true;
+        } else {
+            this.sound.setMute(false);
+            mute = false;
+        }
+    }
+
+    // Quit to main page if the quit key is pressed.
+    if (Phaser.Input.Keyboard.JustDown(leavingPage)) {
+        window.open('main.html', '_self');
+    }
+
+    // Reload the page if the restart key is pressed.
+    if (Phaser.Input.Keyboard.JustDown(restartKey)) {
+        location.reload();
+    }
+
+    // Lose the game if player's infection level maxes out.
+    if (infectLevel === infectMax) {
+        tutorialText.visible = false;
+        gameLostText.visible = true;
+        redoButton();
+        game.scene.pause("GameScene");
+    }
+    if(gameOverText.visible == true){
+        pauseCount +=1;
+        console.log(pauseCount);
+        if (pauseCount >10){
+            this.scene.pause();
+        }
+    }
+}
 }
 
 /** This scene contains the mobile D-pad and UI. */
@@ -455,13 +461,29 @@ class SceneB extends Phaser.Scene {
 
     // Called once when the scene loads.
     create() {
-
-        // Add timer text;
-        timerText = this.add.text(30, 60, '0', {
-            fontSize: "32px",
+        tutorialText = this.add.text(25,100, "Welcome to our game Tutorial. \nIn this tutorial you will be\ntrying to get all the ingredients\non the shopping list while social\ndistancing. First off is \nlearning the movement. Use the\narrow keys for movement.\n\nTry the up arrow key.",{
+            fill : "#000",
+            lineSpacing: 10,
+            fontSize: '17px'
+        });
+        tutorialText.lineSpacing = 10;
+        // Add game win text.
+        gameOverText = this.add.text(gameWidth/2, 200, "You Passed Tutorial!", {
+            fontSize: "28px",
+            fill: "#000",
+            color : "#FFFFFF"
+        });
+        // Add game lose text.
+        gameLostText = this.add.text(400, 100, "You got infected redo the tutorial.", {
+            fontSize: "25px",
             fill: "#000"
-        })
+        });
 
+        gameOverText.setOrigin(0.5);
+        gameOverText.visible = false;
+
+        gameLostText.setOrigin(0.5);
+        gameLostText.visible = false;
 
         // Create the infection meter.
         infectBar = this.add.graphics();
@@ -473,13 +495,8 @@ class SceneB extends Phaser.Scene {
 
         pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive();
         createPausePlayButton();
-
-        timer = this.time.addEvent({
-            delay: 1000,
-            callback: updateTime,
-            loop: true
-        });
     }
+
 }
 
 class SceneC extends Phaser.Scene {
@@ -527,41 +544,9 @@ class SceneC extends Phaser.Scene {
         createGoHomeButton(goHomeButton);
     }
 }
-
-class SceneD extends Phaser.Scene {
-
-    constructor() {
-        super({
-            key: 'gameOver',
-            active: true
-        });
-    }
-    preload() {
-        this.load.image('gameOver', 'images/gameOver.png');
-        this.load.image('win', 'images/win.png');
-    }
-    create() {
-        gameOverMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'gameOver');
-        winMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'win');
-        finalTimeText = this.add.text(gameWidth/2 + 20, gameHeight/2 - 100, '', {
-            fontSize: "25px",
-            fill: "#000"
-        })
-        finalTimeText.visible = false;
-        gameOverMenu.visible = false;
-        winMenu.visible = false;
-        restartButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 77, "restartIcon").setInteractive();
-        createRestartButton(restartButton2);
-        goHomeButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 175, "homeIcon").setInteractive();
-        createGoHomeButton(goHomeButton2);
-    }
+function closeList(){
+    $("#listSection").css("display","none");
 }
-
-// Increase the timer.
-function updateTime() {
-    timerText.setText(++time);
-}
-
 function createListButton(){
     listButton.on('pointerover', function () {
         listButton.setFrame(1);
@@ -601,7 +586,7 @@ function createRestartButton(button) {
     });
 
     button.on('pointerup', function () {
-        location.reload();
+        window.open('tutorial.html','_self');
     });
 }
 
@@ -690,17 +675,16 @@ function createPausePlayButton() {
     pausePlayButton.on('pointerup', function () {
         if (!game.scene.isPaused("GameScene")) {
             pausePlayButton.setFrame(3);
-            timer.paused = true;
             game.scene.pause("GameScene");
             game.scene.run("pause");
         } else {
             pausePlayButton.setFrame(1);
-            timer.paused = false;
             game.scene.resume("GameScene");
             game.scene.sleep("pause");
         }
     })
 }
+
 /** Creates the mobile D-pad. */
 function createDpad() {
 
@@ -858,7 +842,7 @@ function createDpad() {
 }
 
 /** Creates the infection meter. */
-function createInfectBar() {
+function createInfectBar(){
     infectBar.fillStyle(0x000000);
     infectBar.fillRect(25, 25, 200, 30);
     infectBar.fillStyle(0xffffff);
@@ -867,191 +851,238 @@ function createInfectBar() {
     infectBar.fillRect(27, 27, infectLevel, 25);
 }
 
+/** Makes the D-pad visible if the user is on mobile. */
+function showDpad() {
+    if (window.innerWidth > 500) {
+        dpad.getChildren().forEach((dpad) => {
+            dpad.setScrollFactor(0);
+        });
+    } else {
+        dpad.getChildren().forEach((dpad) => {
+            dpad.visible = true;
+        });
+    }
+}
+
 /** Moves the player. */
 function playerMove() {
 
-    // Set player X velocity and play related animations.
+    // Set player X velocity.
     if (cursors.left.isDown || moveLeft) {
         player.setVelocityX(-300);
         player.anims.play('left', true);
+        if(tutLeft == false && tutRight == true && tutUp == true){
+            tutorialText.setText("Now try using the down arrow key.");
+            tutLeft = true;
+        }
     } else if (cursors.right.isDown || moveRight) {
         player.setVelocityX(300);
         player.anims.play('right', true);
+        if(tutRight == false && tutUp == true){
+            tutorialText.setText("Now try using the left arrow key.");
+            tutRight = true;
+        }
     } else {
         player.setVelocityX(0);
+        player.anims.play('turn');
     }
 
-    // Set player Y velocity and play related animations.
+    // Set player Y velocity.
     if (cursors.up.isDown || moveUp) {
         player.setVelocityY(-300);
-        player.anims.play('up', true);
+        if(tutUp == false){
+            tutorialText.setText("Now try using the right arrow key.");
+            tutUp = true;
+        }
     } else if (cursors.down.isDown || moveDown) {
         player.setVelocityY(300);
-        player.anims.play('down', true);
+        if(tutDown == false && tutLeft == true && tutRight == true && tutUp == true){
+            tutorialText.setText("Now that you know how to move,\ntry to get the food without\ngetting too close to the enemies\njust like social distancing.\nPause the game to view the\nshopping list. If you get too\nclose the to the enemy your\ninfection bar will get filled up.\nIf the infection meter fills\nup you lose the game. Also, try to\nget the food before the timer\nruns out.\nGood Luck!");
+            tutDown = true;
+        }
     } else {
         player.setVelocityY(0);
     }
-
-    // If the player isn't moving at all, play idle animation.
-    if (player.body.velocity.x == 0 && player.body.velocity.y == 0) {
-        player.anims.play("idle", true);
+    if (cursors.up.isDown && player.body.touching.down) {
+        player.setVelocityY(0);
     }
-
+    if(tutUp == true && tutLeft == true && tutRight == true && tutDown == true && tutMoving == false){
+        tutMoving = true;
+        console.log("break");
+        tutWall.destroy();
+        arrow.visible = true;
+        arrow2.visible = true;
+        arrow3.visible = true;
+        arrow4.visible = true;
+    }
 }
 
-/** Causes the enemies to move once. */
-function initialMove() {
-    var speed = [-100, 100];
-    let enemyArray = enemies.getChildren();
-    for (var i = 0; i < enemyArray.length; i++) {
-        var choice = Math.floor(Math.random() * 2)
-        enemyArray[i].setVelocityY(speed[choice]);
-        enemyArray[i].setVelocityX(0);
-        if (speed[choice] > 0) {
-            enemyArray[i].anims.play('eDown');
-        } else if (speed[choice] < 0) {
-            enemyArray[i].anims.play('eUp');
+    /** Causes the enemies to move once. */
+    function initialMove() {
+        var speed = [-100, 100];
+        let enemyArray = enemies.getChildren();
+        for (var i = 0; i < enemyArray.length; i++) {
+            var choice = Math.floor(Math.random() * 2)
+            var choice2 = Math.floor(Math.random() * 2);
+            if (choice == 0) {
+                enemyArray[i].setVelocityX(0);
+                enemyArray[i].setVelocityY(speed[choice2]);
+                if (speed[choice2] > 0) {
+                    enemyArray[i].anims.play('eDown');
+                } else if (speed[choice2] < 0) {
+                    enemyArray[i].anims.play('eUp');
+                }
+            } else if (choice == 1) {
+                enemyArray[i].setVelocityY(0);
+                enemyArray[i].setVelocityX(speed[choice2]);
+                if (speed[choice2] > 0) {
+                    enemyArray[i].anims.play('eRight');
+                } else if (speed[choice2] < 0) {
+                    enemyArray[i].anims.play('eLeft');
+                }
+            }
         }
     }
-}
 
-// Makes the enemy turn at certain turning points
-function turn(enemy, turnPoint) {
-    // Checks if the sprite is touching something
-    var touch = !enemy.body.touching.none;
-    var wasTouch = !enemy.body.wasTouching.none;
-
-    var speed = [-100, 100];
-    var choice = Math.floor(Math.random() * 2);
-    var rand = Math.floor(Math.random() * 2);
-    if (touch && !wasTouch) {
-        if (choice == 0) {
-            enemy.setVelocityX(0);
-            enemy.setVelocityY(speed[rand]);
-            if (speed[rand] > 0) {
-                enemy.anims.play('eDown');
+    /** Causes the enemies to change movement direction. */
+    function changeMove() {
+        var speed = [-100, 100];
+        let enemyArray = enemies.getChildren();
+        for (var i = 0; i < enemyArray.length; i++) {
+            var choice = Math.floor(Math.random() * 2)
+            var eKey = enemyArray[i].anims.getCurrentKey();
+            if (eKey === 'eLeft' || eKey === 'eRight') {
+                enemyArray[i].setVelocityX(0);
+                enemyArray[i].setVelocityY(speed[choice]);
+                if (speed[choice] > 0) {
+                    enemyArray[i].anims.play('eDown');
+                } else if (speed[choice] < 0) {
+                    enemyArray[i].anims.play('eUp');
+                }
+            } else if (eKey === 'eUp' || eKey === 'eDown') {
+                enemyArray[i].setVelocityY(0);
+                enemyArray[i].setVelocityX(speed[choice]);
+                if (speed[choice] > 0) {
+                    enemyArray[i].anims.play('eRight');
+                } else if (speed[choice] < 0) {
+                    enemyArray[i].anims.play('eLeft');
+                }
             }
-            else if (speed[rand] < 0) {
+        }
+    }
+
+    /** Causes an enemy to change directions when they hit a wall. */
+    function hitWallMove(enemy) {
+        var speed = [-100, 100];
+        var choice = Math.floor(Math.random() * 2)
+        var eKey = enemy.anims.getCurrentKey();
+        if (eKey === 'eLeft' || eKey === 'eRight') {
+            enemy.setVelocityX(0);
+            enemy.setVelocityY(speed[choice]);
+            if (speed[choice] > 0) {
+                enemy.anims.play('eDown');
+            } else if (speed[choice] < 0) {
                 enemy.anims.play('eUp');
             }
+        } else if (eKey === 'eUp' || eKey === 'eDown') {
+            enemy.setVelocityY(0);
+            enemy.setVelocityX(speed[choice]);
+            if (speed[choice] > 0) {
+                enemy.anims.play('eRight');
+            } else if (speed[choice] < 0) {
+                enemy.anims.play('eLeft');
+            }
         }
     }
-}
 
-/** Causes an enemy to change directions when they hit a wall. */
-function hitWallMove(enemy) {
-    var speed = [-100, 100];
-    var choice = Math.floor(Math.random() * 2)
-    var eKey = enemy.anims.getCurrentKey();
-    if (eKey === 'eLeft' || eKey === 'eRight') {
-        enemy.setVelocityX(0);
-        enemy.setVelocityY(speed[choice]);
-        if (speed[choice] > 0) {
-            enemy.anims.play('eDown');
-        } else if (speed[choice] < 0) {
-            enemy.anims.play('eUp');
-        }
-    } else if (eKey === 'eUp' || eKey === 'eDown') {
-        enemy.setVelocityY(0);
-        enemy.setVelocityX(speed[choice]);
-        if (speed[choice] > 0) {
-            enemy.anims.play('eRight');
-        } else if (speed[choice] < 0) {
-            enemy.anims.play('eLeft');
-        }
-    }
-}
-
-/** Called when the player touches a food object. 
+    /** Called when the player touches a food object. 
  * Note: "player" argument is needed for the overlap event to work.
 */
-function collectFood(player, foodCollided) {
-    // Get the pickup's food data.
-    let foodType = foodCollided.getData("food");
+    function collectFood(player, foodCollided) {
+        // Get the pickup's food data.
+        let foodType = foodCollided.getData("food");
 
-    // Check the pickup's food data against the shopping list.
-    if (foodType != undefined && CheckList(foodType)) {
-        foodCollided.disableBody(true, true);
+        // Check the pickup's food data against the shopping list.
+        if (foodType != undefined && CheckList(foodType)) {
+            foodCollided.disableBody(true, true);
 
-        // Play sound effect if the music isn't muted.
-        if (mute == false) {
-            this.pickupSound.play();
+            // Play sound effect if the music isn't muted.
+            if (mute == false) {
+                this.pickupSound.play();
+            }
         }
+
     }
 
-}
-
-/** Called when the player completes their shopping list. */
-function win() {
-    addScore(time);
-    addToLeaderboard(time);
-    game.scene.run("gameOver");
-    winMenu.visible = true;
-    finalTimeText.visible = true;
-    finalTimeText.setText(time + " seconds");
-    game.scene.pause("GameScene");
-    pausePlayButton.visible =false;
-}
-
-function lose(){
-    game.scene.run("gameOver");
-    gameOverMenu.visible = true;
-    game.scene.pause("GameScene");
-    pausePlayButton.visible =false;
-}
-
-/** Called when a player becomes more infected. */
-function infect() {
-
-    // Increase infection level.
-    infectLevel += 0.5;
-
-    // Rebuild infection meter.
-    infectBar.clear();
-    infectBar.fillStyle(0x000000);
-    infectBar.fillRect(25, 25, 200, 30);
-    infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(27, 27, 195, 25);
-    infectBar.fillStyle(0xff0000);
-    if (infectLevel <= infectMax) {
-        infectBar.fillRect(27, 27, infectLevel, 25);
-    } else {
-        infectBar.fillRect(27, 27, infectMax, 25);
+    /** Called when the player completes their shopping list. */
+    function win() {
+        tutorialFinished();
+        gameOverText.visible = true;
+        tutorialFinished();
+        
+        
     }
-}
 
-function closeList(){
-    $("#listSection").css("display","none");
-}
+    /** Called when a player becomes more infected. */
+    function infect() {
 
-/** Phaser configuration. */
-var config = {
-    type: Phaser.AUTO,
-    width: gameWidth,
-    height: gameHeight,
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
-    },
-    parent: "my-game",
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: {
-                y: 0
-            },
-            debug: false
+        // Increase infection level.
+        infectLevel += 0.5;
+
+        // Rebuild infection meter.
+        infectBar.clear();
+        infectBar.fillStyle(0x000000);
+        infectBar.fillRect(25, 25, 200, 30);
+        infectBar.fillStyle(0xffffff);
+        infectBar.fillRect(27, 27, 195, 25);
+        infectBar.fillStyle(0xff0000);
+        if (infectLevel <= infectMax) {
+            infectBar.fillRect(27, 27, infectLevel, 25);
+        } else {
+            infectBar.fillRect(27, 27, infectMax, 25);
         }
-    },
-    scene: [SceneA, SceneB, SceneC, SceneD]
+    }
+    // Makes a back to menu button
+    function tutorialFinished(){
+        tutFinished = true;
+        tutorialText.visible = false;
+        var menuButton = document.createElement("button");
+        menuButton.innerHTML = "Back to main menu";
+        var body = document.getElementsByTagName("body")[0];
+        body.appendChild(menuButton);
+        menuButton.onclick = function(){ window.open('main.html','_self')};
+    }
+    // makes a redo button show up
+    function redoButton(){
+        tutorialText.visible = false;
+        var redoButton = document.createElement("button");
+        redoButton.innerHTML = "Try Again";
+        var body = document.getElementsByTagName("body")[0];
+        body.appendChild(redoButton);
+        redoButton.onclick = function(){ window.open('tutorial.html','_self')};
+    }
+    /** Phaser configuration. */
+    var config = {
+        type: Phaser.AUTO,
+        width: gameWidth,
+        height: gameHeight,
+        scale: {
+            mode: Phaser.Scale.FIT,
+            autoCenter: Phaser.Scale.CENTER_BOTH
+        },
+        parent: "my-game",
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: {
+                    y: 0
+                },
+                debug: false
+            }
+        },
+        scene: [SceneA, SceneB, SceneC]
 
-};
+    };
 
-/** Player tint update. */
-function updatePlayerTint() {
-    currentTint = (currentTint == (playerTints.length - 1)) ? 0 : (currentTint + 1);
-    player.setTint(playerTints[currentTint]);
-}
-
-/** Phaser instance. */
-let game = new Phaser.Game(config);
+    /** Phaser instance. */
+    let game = new Phaser.Game(config);
