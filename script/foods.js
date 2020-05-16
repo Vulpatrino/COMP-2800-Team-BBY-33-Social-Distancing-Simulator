@@ -85,7 +85,7 @@ function initList(newLength) {
 
         let newItem = Math.floor(Math.random * foodNames.length);;
 
-        while (!listValues.includes(newItem)) {
+        while (listValues.includes(newItem)) {
             newItem = Math.floor(Math.random() * foodNames.length);
         }
 
