@@ -79,26 +79,20 @@ class Food {
  * CALL ON GAME START/RESTART!!
  */
 function initList(newLength) {
+    let listValues = [];
+
     for (let i = 0; i < newLength; i++) {
 
         let newItem = Math.floor(Math.random * foodNames.length);;
-        let itemAlreadyContained = false;
 
-        do {
-            // Generate a random (valid) item index.
+        while (!listValues.includes(newItem)) {
             newItem = Math.floor(Math.random() * foodNames.length);
+        }
 
-            // Iterate through the list to make sure it's not already there.
-            for (let j = 0; j < list.length; j++) {
-                if (list[j].getValue() == newItem) {
-                    itemAlreadyContained = true;
-                    break;
-                }
-            }
-        } while (itemAlreadyContained);
+        listValues.push(newItem);
+        console.log("Added value " + newItem);
 
-        // Since we broke the "is already on the list" loop, the item can be added.
-        list[i] = new Food(newItem);
+        list.push(new Food(newItem));
         let listHTML = "<li>" + list[i].getName() + "</li>";
         document.getElementById("list").innerHTML += listHTML;
     }

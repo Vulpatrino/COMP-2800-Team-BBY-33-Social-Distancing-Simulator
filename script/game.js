@@ -129,13 +129,6 @@ class SceneA extends Phaser.Scene {
 
         this.load.audio('1', ['audio/1.mp3', 'audio/1.ogg']);
         this.load.audio('2', ['audio/2.mp3', 'audio/2.ogg']);
-        // Player spritesheet
-        this.load.spritesheet('dude',
-            'images/mario.png', {
-                frameWidth: 32,
-                frameHeight: 48
-            }
-        );
         // New Player spritesheet
         this.load.spritesheet("player", "images/PlayerSprites.png",
             {
@@ -599,7 +592,7 @@ function createRestartButton(button) {
     });
 
     button.on('pointerup', function () {
-        window.open('game.html','_self');
+        location.reload();
     });
 }
 
@@ -868,7 +861,7 @@ function createInfectBar() {
 /** Moves the player. */
 function playerMove() {
 
-    // Set player X velocity.
+    // Set player X velocity and play related animations.
     if (cursors.left.isDown || moveLeft) {
         player.setVelocityX(-300);
         player.anims.play('left', true);
@@ -879,7 +872,7 @@ function playerMove() {
         player.setVelocityX(0);
     }
 
-    // Set player Y velocity.
+    // Set player Y velocity and play related animations.
     if (cursors.up.isDown || moveUp) {
         player.setVelocityY(-300);
         player.anims.play('up', true);
@@ -889,10 +882,8 @@ function playerMove() {
     } else {
         player.setVelocityY(0);
     }
-    if (cursors.up.isDown && player.body.touching.down) {
-        player.setVelocityY(0);
-    }
 
+    // If the player isn't moving at all, play idle animation.
     if (player.body.velocity.x == 0 && player.body.velocity.y == 0) {
         player.anims.play("idle", true);
     }
