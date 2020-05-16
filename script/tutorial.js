@@ -131,19 +131,20 @@ class SceneA extends Phaser.Scene {
         }
                               );
         // Player spritesheet
-        this.load.spritesheet('dude',
-                              'images/mario.png', {
-            frameWidth: 32,
-            frameHeight: 48
-        }
-                             );
+        this.load.spritesheet("player", "images/PlayerSprites.png",
+            {
+                frameWidth: 32,
+                frameHeight: 48
+            }
+        );
+        
         // Enemy spritesheet
         this.load.spritesheet('enemy',
-                              'images/trump_run_resized_smaller.png', {
-            frameWidth: 50,
-            frameHeight: 50,
-        }
-                             );
+            'images/EnemySprites.png', {
+                frameWidth: 32,
+                frameHeight: 48,
+            }
+        );
         // Food spritesheet
         this.load.spritesheet('food',
                               'images/food.png', {
@@ -215,7 +216,17 @@ class SceneA extends Phaser.Scene {
 
         this.anims.create({
             key: 'left',
-            frames: this.anims.generateFrameNumbers('dude', {
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 12,
+                end: 15
+            }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'down',
+            frames: this.anims.generateFrameNumbers('player', {
                 start: 0,
                 end: 3
             }),
@@ -224,22 +235,32 @@ class SceneA extends Phaser.Scene {
         });
 
         this.anims.create({
-            key: 'turn',
-            frames: [{
-                key: 'dude',
-                frame: 4
-            }],
-            frameRate: 20
-        });
-
-        this.anims.create({
             key: 'right',
-            frames: this.anims.generateFrameNumbers('dude', {
-                start: 5,
-                end: 8
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 8,
+                end: 11
             }),
             frameRate: 10,
             repeat: -1
+        });
+
+        this.anims.create({
+            key: 'up',
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 4,
+                end: 7
+            }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'idle',
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 0,
+                end: 0
+            }),
+            frameRate: 10
         });
 
         // Add collision between the player, walls, and aisles.
@@ -282,7 +303,7 @@ class SceneA extends Phaser.Scene {
         this.anims.create({
             key: 'eRight',
             frames: this.anims.generateFrameNumbers('enemy', {
-                start: 6,
+                start: 8,
                 end: 11
             }),
             frameRate: 10,
@@ -292,8 +313,8 @@ class SceneA extends Phaser.Scene {
         this.anims.create({
             key: 'eLeft',
             frames: this.anims.generateFrameNumbers('enemy', {
-                start: 18,
-                end: 23
+                start: 12,
+                end: 15
             }),
             frameRate: 10,
             repeat: -1
@@ -302,8 +323,8 @@ class SceneA extends Phaser.Scene {
         this.anims.create({
             key: 'eUp',
             frames: this.anims.generateFrameNumbers('enemy', {
-                start: 12,
-                end: 17
+                start: 4,
+                end: 7
             }),
             frameRate: 10,
             repeat: -1
@@ -313,7 +334,7 @@ class SceneA extends Phaser.Scene {
             key: 'eDown',
             frames: this.anims.generateFrameNumbers('enemy', {
                 start: 0,
-                end: 5
+                end: 3
             }),
             frameRate: 10,
             repeat: -1
