@@ -110,6 +110,11 @@ var turnPoints;
 
 var name;
 
+// Array of player tint values.
+var playerTints = [0x58bdd1, 0xe8ae1c, 0xdd00ff, 0x00ff26, 0xffffff, 0x2f3157];
+// Current tint index.
+var currentTint = 5;
+
 
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
@@ -153,7 +158,6 @@ class SceneA extends Phaser.Scene {
         );
 
     }
-
     
 
     /** Called once at the start of the game. Use this to build objects. */
@@ -203,6 +207,9 @@ class SceneA extends Phaser.Scene {
         // Create the player and their animations
         player = this.physics.add.sprite(40, 700, 'player');
         player.setCollideWorldBounds(true);
+        updatePlayerTint();
+        player.setInteractive();
+        player.on("pointerdown", updatePlayerTint);
 
         this.anims.create({
             key: 'left',
@@ -548,6 +555,8 @@ class SceneD extends Phaser.Scene {
         createGoHomeButton(goHomeButton2);
     }
 }
+
+// Increase the timer.
 function updateTime() {
     timerText.setText(++time);
 }
@@ -1036,6 +1045,12 @@ var config = {
     scene: [SceneA, SceneB, SceneC, SceneD]
 
 };
+
+/** Player tint update. */
+function updatePlayerTint() {
+    currentTint = (currentTint == (playerTints.length - 1)) ? 0 : (currentTint + 1);
+    player.setTint(playerTints[currentTint]);
+}
 
 /** Phaser instance. */
 let game = new Phaser.Game(config);
