@@ -423,7 +423,7 @@ class SceneA extends Phaser.Scene {
         }
 
         // Lose the game if player's infection level maxes out.
-        if (infectLevel === infectMax) {
+        if (infectLevel >= infectMax) {
             lose();
         }
     }
@@ -1002,7 +1002,7 @@ function lose(){
 function infect() {
 
     // Increase infection level.
-    infectLevel += 0.5;
+    infectLevel += 2;
 
     // Rebuild infection meter.
     infectBar.clear();
