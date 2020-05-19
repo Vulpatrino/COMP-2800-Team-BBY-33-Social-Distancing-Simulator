@@ -80,10 +80,10 @@ class Food {
  */
 function initList(newLength) {
     let listValues = [];
+    let newItem = Math.floor(Math.random() * foodNames.length);
 
+    // Generate random items.
     for (let i = 0; i < newLength; i++) {
-
-        let newItem = Math.floor(Math.random * foodNames.length);;
 
         while (listValues.includes(newItem)) {
             newItem = Math.floor(Math.random() * foodNames.length);
