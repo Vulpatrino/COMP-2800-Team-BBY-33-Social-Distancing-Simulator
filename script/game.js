@@ -166,7 +166,6 @@ class SceneA extends Phaser.Scene {
         game.scene.sleep("gameOver");
 
 
-        // Create a shopping list
         initList(listLength);
 
         this.add.image(600, 400, 'background').setScale(6);
