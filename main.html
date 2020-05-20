@@ -1,150 +1,138 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Social Distancing Simulator</title>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Distancing Simulator</title>
 
-        <link rel="stylesheet" type="text/css" href="style/main.css">
-        <script src="script/addScore.js"></script>
-        <script src="script/addToLeaderboard.js"></script>
+    <link rel="stylesheet" type="text/css" href="style/main.css">
+    <script src="script/addScore.js"></script>
+    <script src="script/addToLeaderboard.js"></script>
 
-        <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
-        <link rel="manifest" href="images/site.webmanifest">
-        <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-auth.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-firestore.js"></script>
-        <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
-        <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
-        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
-        <script>
-            // Your web app's Firebase configuration
-            var firebaseConfig = {
-                apiKey: "AIzaSyAM863d1r4g9FShKvZ00pgsYVEQ_3LoDDs",
-                authDomain: "social-distancing-simulator.firebaseapp.com",
-                databaseURL: "https://social-distancing-simulator.firebaseio.com",
-                projectId: "social-distancing-simulator",
-                storageBucket: "social-distancing-simulator.appspot.com",
-                messagingSenderId: "737901223848",
-                appId: "1:737901223848:web:92892d643ad69cecda479d",
-                measurementId: "G-2N128JG6QV"
-            };
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            var db = firebase.firestore();
-        </script>
-
-
-    </head>
-
-    <body>
-        <div id="fb-root"></div>
-        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0">
-        </script>
-        <main id="main">
-            <header>
-                <img src="images/logo.png" alt="Logo" id="logo">
-            </header>
-            <section id="play">
-                <div id="menu">
-                    <input type="button" value="Play" onclick="window.open('game.html','_self')">
-                    <input type="button" value="Tutorial" onclick="window.open('tutorial.html','_self')">
-                    <input type="button" value="About Us" onclick="window.open('aboutus.html','_self')">
-                    <input type="button" value="Login" onclick="window.open('login.html','_self')">
-                    <input type="button" value="Logout" onclick="logout()">
-                </div>
-            </section>
-            <section id="leaderboard">
-                <h3>Leaderboard</h3>
-                <table>
-                    <tr>
-                        <td colspan="3" class="tableTitle">Top 5 Fastest Runs</td>
-                    </tr>
-                    <tr>
-                        <th >1.</th>
-                        <td id = "name1"></td>
-                        <td id = "time1"></td>
-
-                    </tr>
-                    <tr>
-                        <th>2.</th>
-                        <td id = "name2"></td>
-                        <td id = "time2"></td>
-                    </tr>
-                    <tr>
-                        <th>3.</th>
-                        <td id = "name3"></td>
-                        <td id = "time3"></td>
-                    </tr>
-                    <tr>
-                        <th>4.</th>
-                        <td id = "name4"></td>
-                        <td id = "time4"></td>
-                    </tr>
-                    <tr>
-                        <th>5.</th>
-                        <td id = "name5"></td>
-                        <td id = "time5"></td>
-                    </tr>
-                </table>
-            </section>
-            <section id="account">
-                <h3>Account Info</h3>
-                <table>
-                    <tr>
-                        <td id = "userName" colspan="3" class="tableTitle">Login or Signup to see high score</td>
-                    </tr>
-                    <tr>
-                        <th class = "scoreNo">1.</th>
-                        <td id = "score1"></td>
-                    </tr>
-                    <tr>
-                        <th class = "scoreNo">2.</th>
-                        <td id = "score2"></td>
-                    </tr>
-                    <tr>
-                        <th class = "scoreNo">3.</th>
-                        <td id = "score3"></td>
-                    </tr>
-                    <tr>
-                        <th class = "scoreNo">4.</th>
-                        <td id = "score4"></td>
-                    </tr>
-                    <tr>
-                        <th class = "scoreNo">5.</th>
-                        <td id = "score5"></td>
-                    </tr>
-                </table>
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+    <link rel="manifest" href="images/site.webmanifest">
+    <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-firestore.js"></script>
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAM863d1r4g9FShKvZ00pgsYVEQ_3LoDDs",
+            authDomain: "social-distancing-simulator.firebaseapp.com",
+            databaseURL: "https://social-distancing-simulator.firebaseio.com",
+            projectId: "social-distancing-simulator",
+            storageBucket: "social-distancing-simulator.appspot.com",
+            messagingSenderId: "737901223848",
+            appId: "1:737901223848:web:92892d643ad69cecda479d",
+            measurementId: "G-2N128JG6QV"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+    </script>
 
 
-                <hr>
-                <h5>Share Your Highscores</h5>
-                <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large"
-                   data-url="https://social-distancing-simulator.web.app/"
-                   data-show-count="false">Tweet</a>
-                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-                <br>
-                <div class="fb-share-button" data-href="https://social-distancing-simulator.web.app/" data-layout="button"
-                     data-size="large"><a target="_blank"
-                                          href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fsocial-distancing-simulator.web.app%2F&amp;src=sdkpreparse"
-                                          class="fb-xfbml-parse-ignore">Share</a></div>
+</head>
 
-            </section>
-            <footer></footer>
-        </main>
-        <script src="script/firebase.js"></script>
-        <script>
-            createUser();
-            getName();
-            getScore();
-            getLeaderBoard();
-        </script>
+<body>
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0">
+    </script>
+    <main id="main">
+        <header>
+            <img src="images/logo.png" alt="Logo" id="logo">
+        </header>
+        <section id="play">
+            <div id="menu">
+                <input type="button" value="Play" onclick="window.open('game.html','_self')">
+                <input type="button" value="Tutorial" onclick="window.open('tutorial.html','_self')">
+                <input type="button" value="About Us" onclick="window.open('aboutus.html','_self')">
+            </div>
+        </section>
+        <section id="leaderboard">
+            <h3>Leaderboard</h3>
+            <table>
+
+               
+                <tr>
+                    <th>2.</th>
+                    <td id="name2"></td>
+                    <td id="time2"></td>
+                </tr>
+                <tr>
+                    <th>3.</th>
+                    <td id="name3"></td>
+                    <td id="time3"></td>
+                </tr>
+                <tr>
+                    <th>4.</th>
+                    <td id="name4"></td>
+                    <td id="time4"></td>
+                </tr>
+                <tr>
+                    <th>5.</th>
+                    <td id="name5"></td>
+                    <td id="time5"></td>
+                </tr>
+            </table>
+        </section>
+        <section id="account">
+            <h3>Account Info</h3>
+            <table>
+                <tr>
+                    <td id="userName" colspan="3" class="tableTitle">Login or Signup to see high score</td>
+                </tr>
+                <tr>
+                    <th class="scoreNo">1.</th>
+                    <td id="score1"></td>
+                </tr>
+                <tr>
+                    <th class="scoreNo">2.</th>
+                    <td id="score2"></td>
+                </tr>
+                <tr>
+                    <th class="scoreNo">3.</th>
+                    <td id="score3"></td>
+                </tr>
+                <tr>
+                    <th class="scoreNo">4.</th>
+                    <td id="score4"></td>
+                </tr>
+                <tr>
+                    <th class="scoreNo">5.</th>
+                    <td id="score5"></td>
+                </tr>
+            </table>
+            <hr>
+
+            <h5>Share Your Highscores</h5>
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large"
+                data-url="https://social-distancing-simulator.web.app/" data-show-count="false">Tweet</a>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <br>
+            <div class="fb-share-button" data-href="https://social-distancing-simulator.web.app/" data-layout="button"
+                data-size="large"><a target="_blank"
+                    href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fsocial-distancing-simulator.web.app%2F&amp;src=sdkpreparse"
+                    class="fb-xfbml-parse-ignore">Share</a></div>
+        </section>
+        <footer></footer>
+    </main>
+    <script src="script/firebase.js"></script>
+    <script>
+        createUser();
+        getName();
+        getScore();
+        getLeaderBoard();
+    </script>
 
     </body>
 
