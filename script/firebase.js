@@ -1,3 +1,7 @@
+var button = document.createElement("INPUT");
+$(document).ready(function () {
+    $("#menu").append(button);
+});
 function getAccountInfo() {
     firebase.auth().onAuthStateChanged(function (user) {
         db.collection("users").doc(user.uid).get().then(function (doc) {
@@ -26,8 +30,6 @@ function createUser() {
     // if the user is authenticated, get this "user" object
     // create this user node(doc) in the datebase users collection
     console.log("Works")
-    var button = document.createElement("INPUT");
-    $("#menu").append(button);
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             db.collection("users").doc(user.uid).set({
