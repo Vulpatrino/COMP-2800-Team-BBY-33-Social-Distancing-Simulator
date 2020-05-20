@@ -38,12 +38,12 @@ $(document).ready(()=>{
     });
 
     $("#soundButton").on("click",function(){
-        if (mute) {
-            mute = false;
-            $("#soundButton").css("background","url(images/soundIcon.png) 150px 0");
-        } else {
+        if (!mute) {
             mute = true;
             $("#soundButton").css("background","url(images/soundIcon.png) 50px 0");
+        } else {
+            mute = false;
+            $("#soundButton").css("background","url(images/soundIcon.png) 150px 0");
         }
     });
 
@@ -63,6 +63,7 @@ $(document).ready(()=>{
     });
 
     $(".restartButton").on("click",function(){
+        window.open('game.html','_self')
     });
 
     $(".restartButton").hover(function(){
@@ -73,6 +74,7 @@ $(document).ready(()=>{
     });
 
     $(".goHomeButton").on("click",function(){
+        window.open('main.html','_self')
     });
 
     $(".goHomeButton").hover(function(){

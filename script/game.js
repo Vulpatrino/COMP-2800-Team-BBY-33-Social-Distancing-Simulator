@@ -402,6 +402,8 @@ class SceneB extends Phaser.Scene {
         this.load.image('dpad2', 'images/dpad2.png');
         this.load.image('dpad3', 'images/dpad3.png');
         this.load.image('dpad4', 'images/dpad4.png');
+        this.load.image('dpad5', 'images/dpad5.png');
+        this.load.image('dpad6', 'images/dpad6.png');
         this.load.spritesheet('pausePlayIcon', 'images/pausePlayIcon.png', {
             frameWidth: 75,
             frameHeight: 75,
@@ -478,14 +480,16 @@ function createPausePlayButton() {
 function createDpad() {
 
     // Create D-pad buttons.
-    dpadUp = dpad.create(80, gameHeight - 110, 'dpad1');
-    dpadRight = dpad.create(110, gameHeight - 80, 'dpad2');
-    dpadDown = dpad.create(80, gameHeight - 50, 'dpad1');
-    dpadLeft = dpad.create(50, gameHeight - 80, 'dpad2');
-    dpadUpRight = dpad.create(110, gameHeight - 110, 'dpad4');
-    dpadDownRight = dpad.create(110, gameHeight - 50, 'dpad3');
-    dpadDownLeft = dpad.create(50, gameHeight - 50, 'dpad4');
-    dpadUpLeft = dpad.create(50, gameHeight - 110, 'dpad3');
+    dpadUp = dpad.create(gameWidth - 150, gameHeight - 200, 'dpad1');
+    dpadRight = dpad.create(gameWidth - 100, gameHeight - 150, 'dpad2');
+    dpadDown = dpad.create(gameWidth - 150, gameHeight - 100, 'dpad3');
+    dpadLeft = dpad.create(gameWidth - 200, gameHeight - 150, 'dpad4');
+    dpad.create(gameWidth - 150, gameHeight - 150, 'dpad5');
+    dpadUpRight = dpad.create(gameWidth - 100, gameHeight - 200, 'dpad6');
+    dpadDownRight = dpad.create(gameWidth - 100, gameHeight - 100, 'dpad6');
+    dpadDownLeft = dpad.create(gameWidth - 200, gameHeight - 100, 'dpad6');
+    dpadUpLeft = dpad.create(gameWidth - 200, gameHeight - 200, 'dpad6');
+    
 
     // Add D-pad functionality to:
     // D-pad up
