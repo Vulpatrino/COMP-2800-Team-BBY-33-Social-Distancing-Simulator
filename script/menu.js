@@ -29,7 +29,7 @@ $(document).ready(()=>{
             $("#mobileControlsButton").css("background","url(images/dpadIcon.png) 150px 0");
         }
     },
-    function(){
+                                     function(){
         if (!mobileControls) {
             $("#mobileControlsButton").css("background","url(images/dpadIcon.png) 100px 0");
         } else {
@@ -39,9 +39,12 @@ $(document).ready(()=>{
 
     $("#soundButton").on("click",function(){
         if (mute) {
+            game.sound.setMute(false);
             mute = false;
             $("#soundButton").css("background","url(images/soundIcon.png) 150px 0");
-        } else {
+        }
+        else {
+            game.sound.setMute(true);
             mute = true;
             $("#soundButton").css("background","url(images/soundIcon.png) 50px 0");
         }
@@ -54,7 +57,7 @@ $(document).ready(()=>{
             $("#soundButton").css("background","url(images/soundIcon.png) 150px 0");
         }
     },
-    function(){
+                            function(){
         if (mute) {
             $("#soundButton").css("background","url(images/soundIcon.png) 100px 0");
         } else {
@@ -68,7 +71,7 @@ $(document).ready(()=>{
     $(".restartButton").hover(function(){
         $(".restartButton").css("background","url(images/restartIcon.png) 35px 0");
     },
-    function(){
+                              function(){
         $(".restartButton").css("background","url(images/restartIcon.png) 0px 0");
     });
 
@@ -78,7 +81,7 @@ $(document).ready(()=>{
     $(".goHomeButton").hover(function(){
         $(".goHomeButton").css("background","url(images/homeIcon.png) 60px 0");
     },
-    function(){
+                             function(){
         $(".goHomeButton").css("background","url(images/homeIcon.png) 0px 0");
     });
 
