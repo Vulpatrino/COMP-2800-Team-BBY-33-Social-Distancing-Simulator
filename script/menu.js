@@ -64,8 +64,10 @@ $(document).ready(() => {
             }
         });
 
-    $(".restartButton").on("click", function () {
-        window.open('game.html', '_self')
+
+    $(".restartButton").on("click",function(){
+        window.open('game.html', '_self');
+
     });
 
     $(".restartButton").hover(function () {
@@ -75,16 +77,18 @@ $(document).ready(() => {
             $(".restartButton").css("background", "url(images/restartIcon.png) 0px 0");
         });
 
-    $(".goHomeButton").on("click", function () {
-        window.open('main.html', '_self')
+    $(".goHomeButton").on("click",function(){
+        window.open('main.html', '_self');
     });
 
-    $(".goHomeButton").hover(function () {
-            $(".goHomeButton").css("background", "url(images/homeIcon.png) 60px 0");
-        },
-        function () {
-            $(".goHomeButton").css("background", "url(images/homeIcon.png) 0px 0");
-        });
+    $(".goHomeButton").hover(function(){
+        $(".goHomeButton").css("background","url(images/homeIcon.png) 60px 0");
+    },
+                             function(){
+        
+        $(".goHomeButton").css("background","url(images/homeIcon.png) 0px 0");
+    });
+
 
 
 })
