@@ -1,7 +1,6 @@
 var button = document.createElement("INPUT");
-$(document).ready(function () {
-    $("#menu").append(button);
-});
+$("#menu").append(button);
+
 function getAccountInfo() {
     firebase.auth().onAuthStateChanged(function (user) {
         db.collection("users").doc(user.uid).get().then(function (doc) {
