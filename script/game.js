@@ -480,194 +480,10 @@ class SceneB extends Phaser.Scene {
     }
 }
 
-class SceneC extends Phaser.Scene {
-
-    constructor() {
-        super({
-            key: 'pause',
-            active: true
-        });
-    }
-    preload() {
-        this.load.spritesheet('listIcon', 'images/listIcon.png', {
-            frameWidth: 50,
-            frameHeight: 50,
-        });
-        this.load.spritesheet('soundIcon', 'images/soundIcon.png', {
-            frameWidth: 50,
-            frameHeight: 50,
-        });
-        this.load.spritesheet('dpadIcon', 'images/dpadIcon.png', {
-            frameWidth: 50,
-            frameHeight: 50,
-        });
-        this.load.spritesheet('restartIcon', 'images/restartIcon.png', {
-            frameWidth: 34,
-            frameHeight: 34,
-        });
-        this.load.spritesheet('homeIcon', 'images/homeIcon.png', {
-            frameWidth: 60,
-            frameHeight: 60,
-        });
-        this.load.image('menu', 'images/menu.png');
-    }
-    create() {
-        this.add.image(gameWidth / 2, gameHeight / 2 + 40, 'menu');
-        listButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 40, "listIcon").setInteractive();
-        createListButton();
-        soundButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 113, "soundIcon").setInteractive();
-        createSoundButton();
-        mobileControlsButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 187, "dpadIcon").setInteractive();
-        createMobileControlsButton();
-        restartButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 260, "restartIcon").setInteractive();
-        createRestartButton(restartButton);
-        goHomeButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 330, "homeIcon").setInteractive();
-        createGoHomeButton(goHomeButton);
-    }
-    update() {
-
-    }
-}
-
-class SceneD extends Phaser.Scene {
-
-    constructor() {
-        super({
-            key: 'gameOver',
-            active: true
-        });
-    }
-    preload() {
-        this.load.image('gameOver', 'images/gameOver.png');
-        this.load.image('win', 'images/win.png');
-    }
-    create() {
-        gameOverMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'gameOver');
-        winMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'win');
-        gameOverMenu.visible = false;
-        winMenu.visible = false;
-        restartButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 77, "restartIcon").setInteractive();
-        createRestartButton(restartButton2);
-        goHomeButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 175, "homeIcon").setInteractive();
-        createGoHomeButton(goHomeButton2);
-    }
-    update() {
-
-    }
-}
 
 // Increase the timer.
 function updateTime() {
     timerText.setText(++time);
-}
-
-function createListButton(){
-    listButton.on('pointerover', function () {
-        listButton.setFrame(1);
-    });
-
-    listButton.on('pointerout', function () {
-        listButton.setFrame(0);
-    });
-
-    listButton.on('pointerup', function () {
-        $("#listSection").css("display","flex");
-        $("#listSection").css("height",gameHeight + "px");
-        $("#listSection").css("wdith",gameWidth + "px")
-        //$("#listSection").on("click").css("display","none");
-    });
-}
-function createGoHomeButton(button) {
-    button.on('pointerover', function () {
-        button.setFrame(1);
-    });
-
-    button.on('pointerout', function () {
-        button.setFrame(0);
-    });
-
-    button.on('pointerup', function () {
-        window.open('main.html','_self');
-    });
-}
-
-function createRestartButton(button) {
-    button.on('pointerover', function () {
-        button.setFrame(1);
-    });
-
-    button.on('pointerout', function () {
-        button.setFrame(0);
-    });
-
-    button.on('pointerup', function () {
-        location.reload();
-    });
-}
-
-function createSoundButton() {
-    soundButton.on('pointerover', function () {
-        if (!mute) {
-            soundButton.setFrame(1);
-        } else {
-            soundButton.setFrame(3)
-        }
-    })
-
-    soundButton.on('pointerout', function () {
-        if (!mute) {
-            soundButton.setFrame(0);
-        } else {
-            soundButton.setFrame(2)
-        }
-    })
-    soundButton.on('pointerup', function () {
-        if (!mute) {
-            soundButton.setFrame(3);
-            game.sound.setMute(true);
-            mute = true;
-        } else {
-            soundButton.setFrame(1)
-            game.sound.setMute(false);
-            mute = false;
-        }
-
-    })
-}
-
-function createMobileControlsButton() {
-
-    mobileControlsButton.on('pointerover', function () {
-        if (!mobileControls) {
-            mobileControlsButton.setFrame(3);
-        } else {
-            mobileControlsButton.setFrame(1)
-        }
-    })
-
-    mobileControlsButton.on('pointerout', function () {
-        if (!mobileControls) {
-            mobileControlsButton.setFrame(2);
-        } else {
-            mobileControlsButton.setFrame(0)
-        }
-    })
-    mobileControlsButton.on('pointerup', function () {
-        if (!mobileControls) {
-            mobileControlsButton.setFrame(1);
-            mobileControls = true;
-            dpad.getChildren().forEach((dpad) => {
-                dpad.visible = true;
-            });
-        } else {
-            mobileControlsButton.setFrame(3)
-            mobileControls = false;
-            dpad.getChildren().forEach((dpad) => {
-                dpad.visible = false;
-            });
-        }
-
-    })
 }
 
 function createPausePlayButton() {
@@ -691,13 +507,13 @@ function createPausePlayButton() {
         if (!game.scene.isPaused("GameScene")) {
             pausePlayButton.setFrame(3);
             timer.paused = true;
+            $("#pauseMenu").show("fast");
             game.scene.pause("GameScene");
-            game.scene.run("pause");
         } else {
             pausePlayButton.setFrame(1);
             timer.paused = false;
             game.scene.resume("GameScene");
-            game.scene.sleep("pause");
+            $("#pauseMenu").hide("fast");
         }
     })
 }
@@ -985,17 +801,16 @@ function collectFood(player, foodCollided) {
 function win() {
     addScore(time);
     addToLeaderboard(time);
-    game.scene.run("gameOver");
-    winMenu.visible = true;
     game.scene.pause("GameScene");
-    pausePlayButton.visible =false;
+    game.scene.sleep("UIScene");
+    $("#timerText").html(time);
+    $("#winMenu").show("slow");
 }
 
 function lose(){
-    game.scene.run("gameOver");
-    gameOverMenu.visible = true;
     game.scene.pause("GameScene");
-    pausePlayButton.visible =false;
+    game.scene.sleep("UIScene");
+    $("#loseMenu").show("slow");
 }
 
 /** Called when a player becomes more infected. */
@@ -1041,7 +856,7 @@ var config = {
             debug: false
         }
     },
-    scene: [SceneA, SceneB, SceneC, SceneD]
+    scene: [SceneA, SceneB]
 
 };
 
