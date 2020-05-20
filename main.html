@@ -44,23 +44,24 @@
     </head>
 
     <body>
+        <div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v7.0">
+        </script>
         <main id="main">
             <header>
                 <img src="images/logo.png" alt="Logo" id="logo">
             </header>
             <section id="play">
-                <div id = "menu">
+                <div id="menu">
                     <input type="button" value="Play" onclick="window.open('game.html','_self')">
-                    <input type="button" value="Sign Up" onclick = "window.open('login.html','_self')">
                     <input type="button" value="Tutorial" onclick="window.open('tutorial.html','_self')">
                     <input type="button" value="About Us" onclick="window.open('aboutus.html','_self')">
-                    <input type="button" value="Logout" onclick = "logout()">
+                    <input type="button" value="Logout" onclick="logout()">
                 </div>
             </section>
             <section id="leaderboard">
                 <h3>Leaderboard</h3>
                 <table>
-
                     <tr>
                         <td colspan="3" class="tableTitle">Top 5 Fastest Runs</td>
                     </tr>
@@ -68,7 +69,7 @@
                         <th >1.</th>
                         <td id = "name1"></td>
                         <td id = "time1"></td>
-                        
+
                     </tr>
                     <tr>
                         <th>2.</th>
@@ -119,19 +120,30 @@
                         <td id = "score5"></td>
                     </tr>
                 </table>
-                
+
             </section>
+            <hr>
+            <h5>Share Your Highscores</h5>
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large"
+               data-url="https://social-distancing-simulator.web.app/"
+               data-show-count="false">Tweet</a>
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <br>
+            <div class="fb-share-button" data-href="https://social-distancing-simulator.web.app/" data-layout="button"
+                 data-size="large"><a target="_blank"
+                                      href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fsocial-distancing-simulator.web.app%2F&amp;src=sdkpreparse"
+                                      class="fb-xfbml-parse-ignore">Share</a></div>
+
             <footer></footer>
         </main>
+<script src="script/firebase.js"></script>
+<script>
+    createUser();
+    getName();
+    getScore();
+    getLeaderBoard();
+</script>
 
-        <script src="script/firebase.js"></script>
-        <script>
-            createUser();
-            getName();
-            getScore();
-            getLeaderBoard();
-        </script>
-
-    </body>
+</body>
 
 </html>
