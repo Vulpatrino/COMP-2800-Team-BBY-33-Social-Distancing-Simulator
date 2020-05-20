@@ -131,7 +131,6 @@ class SceneA extends Phaser.Scene {
         this.load.image('wall1', 'images/wall1.png');
         this.load.image('wall2', 'images/wall2.png');
         this.load.image('aisle1', 'images/aisle1.png');
-
         this.load.audio('1', ['audio/1.mp3', 'audio/1.ogg']);
         this.load.audio('2', ['audio/2.mp3', 'audio/2.ogg']);
         // New Player spritesheet
@@ -270,11 +269,11 @@ class SceneA extends Phaser.Scene {
         var w = 60;
         var foodcount = 0;
         for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 13; j++) {
+            for (let j = 0; j < 10; j++) {
 
                 food.create(w, h, 'food', foodcount);
                 foodcount += 1;
-                h += 50;
+                h += 140;
                 if (foodcount > 99) {
                     foodcount = 0;
                 }
