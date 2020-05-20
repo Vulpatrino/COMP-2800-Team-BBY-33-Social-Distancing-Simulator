@@ -67,12 +67,6 @@ var moveRight = false;
 var dpad;
 // Background music.
 var music;
-// Mute key.
-var volumeControl;
-// Quit key.
-var leavingPage;
-// Restart key.
-var restartKey;
 // Whether or not the music is muted.
 var mute = false;
 // Time elapsed
@@ -83,32 +77,13 @@ var timer;
 var timerText;
 // Button to pause and play game
 var pausePlayButton;
-// Mute button
-var soundButton;
-// Disable mobile controls
-var mobileControlsButton;
-// Restart game button
-var restartButton;
-// Go to home page button
-var goHomeButton;
-// Restart game button 2
-var restartButton2;
-// Go to home page button 2
-var goHomeButton2;
-// View list button
-var listButton;
-// Whether or not mobile controls are visible
 var mobileControls = true;
 // The game over menu
 var gameOverMenu;
-// The win menu
-var winMenu;
-
 // Turning points for enemies
 var turnPoints;
-
+// Current User's Name
 var name;
-
 // Array of player tint values.
 var playerTints = [0x58bdd1, 0xe8ae1c, 0xdd00ff, 0x00ff26, 0xffffff, 0x2f3157];
 // Current tint index.
@@ -195,13 +170,6 @@ class SceneA extends Phaser.Scene {
         // Add food pickup sound effects
         this.pickupSound = this.sound.add('2');
         this.pickupSound.setVolume(0.5);
-
-        // Add the mute button
-        volumeControl = this.input.keyboard.addKey('M');
-        // Add the quit button
-        leavingPage = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-        // Add the restart button.
-        restartKey = this.input.keyboard.addKey('R');
 
         // Create the player and their animations
         player = this.physics.add.sprite(40, 700, 'player');
@@ -410,17 +378,6 @@ class SceneA extends Phaser.Scene {
             }
         }
         Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
-
-        // Mute the music if the mute key is pressed.
-        if (Phaser.Input.Keyboard.JustDown(volumeControl)) {
-            if (mute == false) {
-                this.sound.setMute(true);
-                mute = true;
-            } else {
-                this.sound.setMute(false);
-                mute = false;
-            }
-        }
 
         // Lose the game if player's infection level maxes out.
         if (infectLevel >= infectMax) {
