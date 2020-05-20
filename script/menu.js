@@ -78,7 +78,7 @@ $(document).ready(() => {
         });
 
     $(".goHomeButton").on("click",function(){
-        window.open('main.html', '_self');
+        window.open('index.html', '_self');
     });
 
     $(".goHomeButton").hover(function(){
