@@ -124,9 +124,9 @@ class SceneA extends Phaser.Scene {
         );
         // Food spritesheet
         this.load.spritesheet('food',
-            'images/food.png', {
-                frameWidth: 49,
-                frameHeight: 49
+            'images/foods.png', {
+                frameWidth: 32,
+                frameHeight: 32
 
             }
         );
@@ -242,7 +242,7 @@ class SceneA extends Phaser.Scene {
                 food.create(w, h, 'food', foodcount);
                 foodcount += 1;
                 h += 50;
-                if (foodcount > 99) {
+                if (foodcount > 49) {
                     foodcount = 0;
                 }
             }
