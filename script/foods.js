@@ -138,6 +138,17 @@ function CheckList(shelfFood) {
     return isOnList;
 }
 
+function onList(shelfFood){
+    let isOnList = false;
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].getValue() == shelfFood.getValue() && !list[i].getCollected()) {
+            isOnList = true;
+            break;
+        }
+    }
+    return isOnList;
+}
+
 /**
  * Crosses an item off the shopping list.
  * @param {number} index Index of item to cross off of the list.

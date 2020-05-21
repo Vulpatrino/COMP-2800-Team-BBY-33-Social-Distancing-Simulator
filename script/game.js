@@ -233,21 +233,21 @@ class SceneA extends Phaser.Scene {
 
         // Add food to the map.
         food = this.physics.add.staticGroup();
-        var h = 45;
+        var h = 100;
         var w = 60;
         var foodcount = 0;
         for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 13; j++) {
+            for (let j = 0; j < 10; j++) {
 
                 food.create(w, h, 'food', foodcount);
                 foodcount += 1;
-                h += 50;
+                h += 60;
                 if (foodcount > 49) {
                     foodcount = 0;
                 }
             }
             w += 120;
-            h = 45;
+            h = 100;
         }
 
         // Adds a Food object to the food collectibles.
@@ -383,6 +383,9 @@ class SceneA extends Phaser.Scene {
         if (infectLevel >= infectMax) {
             lose();
         }
+        food.getChildren().forEach(function(data){
+            glowFood(data);
+        });
     }
 }
 
@@ -742,6 +745,15 @@ function collectFood(player, foodCollided) {
         if (mute == false) {
             this.pickupSound.play();
         }
+    }
+
+}
+
+function glowFood(food){
+
+    let foodType = food.getData("food");
+    if (foodType != undefined && onList(foodType)) {
+        food.angle += 1;
     }
 
 }
