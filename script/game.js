@@ -255,14 +255,13 @@ class SceneA extends Phaser.Scene {
 
         // Adds a Food object to the food collectibles.
         let foodChildren = food.getChildren();
-        let foodLimit = foodNames.length;
         let foodIndex = 0;
         for (let i = 0; i < foodChildren.length; i++) {
             foodChildren[i].setDataEnabled();
             let newFood = new Food(foodIndex);
 
             foodIndex++;
-            if (foodIndex >= foodLimit) {
+            if (foodIndex >= foodTypes) {
                 foodIndex = 0;
             }
 

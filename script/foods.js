@@ -4,14 +4,8 @@
  * @author: Jaedon Braun
  */
 
-/** Array of all food names. */
-let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
-"watermelon", "cherry", "orange", "steak", "milk", "wine", "cheese", "green pepper",
-"waffle", "bread loaf", "pretzel", "pea", "ice cream", "cucumber", "radish", "carrot",
-"popsicle", "coke", "eggplant",  "soup", "mushrooms", "chocolate bar", "onion", "burger", "corn",
-"drumstick", "ham", "pizza", "avacodo", "eggs", "cabbage", "blueberry muffin", "tomato", "kiwi", "lemon",
-"pumpkin", "potato", "bacon", "grapes", "strawberry", "salad", "lollipop", "lobster", "chili pepper"];
-
+ /** Number of different kinds of food. */
+let foodTypes = 50;
 
 /**
  * Current shopping list.
@@ -30,7 +24,6 @@ class Food {
      * @param {number} value Index of image and value to use for this Food.
      */
     constructor(value) {
-        this.name = foodNames[value];
         this.value = value;
         this.isCollected = false;
     }
@@ -57,14 +50,6 @@ class Food {
     getValue() {
         return this.value;
     }
-
-    /**
-     * Get the name of this food.
-     * @return name
-     */
-    getName() {
-        return this.name;
-    }
 }
 /**
  * Populates the shopping list with random food items.
@@ -72,21 +57,19 @@ class Food {
  */
 function initList(newLength) {
     let listValues = [];
-    let newItem = Math.floor(Math.random() * foodNames.length);
+    let newItem = Math.floor(Math.random() * foodTypes);
 
     // Generate random items.
     for (let i = 0; i < newLength; i++) {
 
         while (listValues.includes(newItem)) {
-            newItem = Math.floor(Math.random() * foodNames.length);
+            newItem = Math.floor(Math.random() * foodTypes);
         }
 
         listValues.push(newItem);
         console.log("Added value " + newItem);
 
         list.push(new Food(newItem));
-        let listHTML = "<li>" + list[i].getName() + "</li>";
-        document.getElementById("list").innerHTML += listHTML;
     }
 }
 /**
@@ -115,8 +98,6 @@ function initTutList(newLength) {
 
         // Since we broke the "is already on the list" loop, the item can be added.
         list[i] = new Food(newItem);
-        let listHTML = "<li>" + list[i].getName() + "</li>";
-        document.getElementById("list").innerHTML += listHTML;
     }
 }
 
@@ -155,10 +136,6 @@ function onList(shelfFood){
  */
 function UpdateList(index) {
     list[index].setCollected();
-
-    // Cross off item on HTML list.
-    let listHTML = document.getElementById("list").children;
-    listHTML[index].className = "crossedOff";
 
     // Repeats back your shopping list. Remove after debugging.
     let uncrossedEntries = 0;
