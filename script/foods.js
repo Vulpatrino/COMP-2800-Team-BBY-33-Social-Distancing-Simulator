@@ -6,19 +6,11 @@
 
 /** Array of all food names. */
 let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
-"watermelon", "cherry", "orange", "cinnamon roll", "t-bone steak", "beer", "milk",
-"cup", "mug", "wine", "cocktail", "cheese", "green pepper", "orange juice", "roast beef",
-"waffle", "long john", "bread loaf", "croissant", "pie", "pancake", "pretzel", "pea",
-"martini", "turkey", "ice cream sandwich", "jam toast", "cucumber", "radish", "carrot",
-"mashed potato", "english muffin", "popsicle", "coke", "prune", "eggplant", "ice cream cone",
-"spaghetti", "soup", "mushroom", "chocolate bar", "cookie", "onion", "bbq sauce", "ginger",
-"burger", "cupcake", "corn", "club sandwich", "hotdog", "broccoli", "drumstick", "garlic",
-"peanut", "squash", "ham", "turnip", "pizza", "avacodo", "egg", "portabello mushroom",
-"cabbage", "chocolate popsicle", "cauliflower", "blueberry muffin", "rocket popsicles",
-"tomato", "cake slice", "kiwi", "lettuce wrap", "chocolate donut", "lemon", "pumpkin",
-"potato", "crepe", "taco", "steak", "bacon", "grape", "strawberry", "ice cream sundae",
-"shrimp", "french fry", "salad roll", "candy", "burrito", "lollipop", "pink lemonade",
-"olives", "lobster", "toast", "white radish", "bok choy", "chili pepper"];
+"watermelon", "cherry", "orange", "steak", "milk", "wine", "cheese", "green pepper",
+"waffle", "bread loaf", "pretzel", "pea", "ice cream", "cucumber", "radish", "carrot",
+"popsicle", "coke", "eggplant",  "soup", "mushrooms", "chocolate bar", "onion", "burger", "corn",
+"drumstick", "ham", "pizza", "avacodo", "eggs", "cabbage", "blueberry muffin", "tomato", "kiwi", "lemon",
+"pumpkin", "potato", "bacon", "grapes", "strawberry", "salad", "lollipop", "lobster", "chili pepper"];
 
 
 /**
@@ -139,6 +131,17 @@ function CheckList(shelfFood) {
         // Check if Food on shelf is on the shopping list, and has not already been collected.
         if (list[i].getValue() == shelfFood.getValue() && !list[i].getCollected()) {
             UpdateList(i);
+            isOnList = true;
+            break;
+        }
+    }
+    return isOnList;
+}
+
+function onList(shelfFood){
+    let isOnList = false;
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].getValue() == shelfFood.getValue() && !list[i].getCollected()) {
             isOnList = true;
             break;
         }

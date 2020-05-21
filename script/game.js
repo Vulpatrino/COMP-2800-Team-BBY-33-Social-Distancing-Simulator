@@ -9,7 +9,7 @@
 
 // Height of the game window.
 var gameHeight = window.innerHeight;
-if(gameHeight > 800) gameHeight = 800;
+if(gameHeight > 875) gameHeight = 875;
 // Width of the game window.
 var gameWidth = window.innerWidth;
 if(gameWidth > 1200) gameWidth  = 1200;
@@ -88,6 +88,7 @@ var name;
 var playerTints = [0x58bdd1, 0xe8ae1c, 0xdd00ff, 0x00ff26, 0xffffff, 0x2f3157];
 // Current tint index.
 var currentTint = 5;
+var counter = 0;
 
 
 /** This scene contains the main game (player, enemies, aisles, food) */
@@ -110,29 +111,27 @@ class SceneA extends Phaser.Scene {
         this.load.audio('2', ['audio/2.mp3', 'audio/2.ogg']);
         // New Player spritesheet
         this.load.spritesheet("player", "images/PlayerSprites.png",
-            {
-                frameWidth: 32,
-                frameHeight: 48
-            }
-        );
+                              {
+            frameWidth: 32,
+            frameHeight: 48
+        }
+                             );
         // Enemy spritesheet
         this.load.spritesheet('enemy',
-            'images/EnemySprites.png', {
-                frameWidth: 32,
-                frameHeight: 48,
-            }
-        );
+                              'images/EnemySprites.png', {
+            frameWidth: 32,
+            frameHeight: 48,
+        }
+                             );
         // Food spritesheet
         this.load.spritesheet('food',
-            'images/food.png', {
-                frameWidth: 49,
-                frameHeight: 49
-
-            }
-        );
+                              'images/foods.png', {
+            frameWidth: 32,
+            frameHeight: 32    }
+                             );
 
     }
-    
+
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
@@ -147,23 +146,23 @@ class SceneA extends Phaser.Scene {
 
         // Create all four walls
         walls = this.physics.add.staticGroup();
-        walls.create(600, 790, 'wall1');
-        walls.create(600, 10, 'wall1');
-        walls.create(1190, 400, 'wall2');
-        walls.create(10, 400, 'wall2');
+        walls.create(600, 865, 'wall1');
+        walls.create(600, 85, 'wall1');
+        walls.create(1190, 475, 'wall2');
+        walls.create(10, 475, 'wall2');
         aisles = this.physics.add.staticGroup({
             key: 'aisle1',
             repeat: 8,
             setXY: {
                 x: 120,
-                y: 375,
+                y: 450,
                 stepX: 120
             }
         });
 
         // Create and play music
         this.music = this.sound.add('1');
-        this.music.setVolume(0.15);
+        this.music.setVolume(0.1);
         this.music.setLoop(true);
         this.music.play();
 
@@ -171,8 +170,10 @@ class SceneA extends Phaser.Scene {
         this.pickupSound = this.sound.add('2');
         this.pickupSound.setVolume(0.5);
 
+
+
         // Create the player and their animations
-        player = this.physics.add.sprite(40, 700, 'player');
+        player = this.physics.add.sprite(55, 825, 'player');
         player.setCollideWorldBounds(true);
         updatePlayerTint();
         player.setInteractive();
@@ -233,21 +234,23 @@ class SceneA extends Phaser.Scene {
 
         // Add food to the map.
         food = this.physics.add.staticGroup();
-        var h = 45;
+
+        var h = 120;
         var w = 60;
         var foodcount = 0;
         for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 13; j++) {
+            for (let j = 0; j < 10; j++) {
 
                 food.create(w, h, 'food', foodcount);
                 foodcount += 1;
-                h += 50;
-                if (foodcount > 99) {
+                h += 60;
+                if (foodcount > 49) {
                     foodcount = 0;
                 }
             }
             w += 120;
-            h = 45;
+            h = 120;
+
         }
 
         // Adds a Food object to the food collectibles.
@@ -314,7 +317,7 @@ class SceneA extends Phaser.Scene {
 
         // Enemy creation loop
         var enemyX = 60;
-        var enemyY = 70;
+        var enemyY = 145;
         for (let i = 0; i < 11; i++) {
             var enemy = enemies.create(enemyX, enemyY, 'enemy');
             enemy.setCollideWorldBounds(true);
@@ -330,10 +333,10 @@ class SceneA extends Phaser.Scene {
         var circleWidth = 1;
         circle = this.add.circle(player.x, player.y, 50).setStrokeStyle(circleWidth, circleColour);
         this.physics.world.bounds.width = 1200;
-        this.physics.world.bounds.height = 800;
+        this.physics.world.bounds.height = 875;
 
         // Make camera follow the player.
-        this.cameras.main.setBounds(0, 0, 1200, 800);
+        this.cameras.main.setBounds(0, 0, 1200, 875);
         this.cameras.main.startFollow(player);
         initialMove();
 
@@ -358,32 +361,42 @@ class SceneA extends Phaser.Scene {
     // Reset enemy movement timer to 0.
     enemyMoveTimer = 0;
 
-    /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
-    update() {
-        // Set all enemies to be slightly transparent.
-        Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
-        // Create cursor keys. (?) --Why is this being called every single frame?
-        cursors = this.input.keyboard.createCursorKeys();
-        // Make the player move.
-        playerMove();
-        // Make the player's circle follow the player object.
-        circle.setPosition(player.x, player.y);
 
-        // Detect objects inside the player's circle.
-        var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, false);
-        var inCirc = bodies.map((body) => body.gameObject.texture.key);
-        for (var i = 0; i < inCirc.length; i++) {
-            if (inCirc[i] === "enemy") {
-                infect();
-            }
-        }
-        Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
+/** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
+update() {
+    // Set all enemies to be slightly transparent.
+    Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
+    // Create cursor keys. (?) --Why is this being called every single frame?
+    cursors = this.input.keyboard.createCursorKeys();
+    // Make the player move.
+    playerMove();
+    // Make the player's circle follow the player object.
+    circle.setPosition(player.x, player.y);
 
-        // Lose the game if player's infection level maxes out.
-        if (infectLevel >= infectMax) {
-            lose();
+    // Detect objects inside the player's circle.
+    var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, false);
+    var inCirc = bodies.map((body) => body.gameObject.texture.key);
+    for (var i = 0; i < inCirc.length; i++) {
+        if (inCirc[i] === "enemy") {
+            infect();
         }
+        
+        if (counter == 20){
+        food.getChildren().forEach(function(data){
+            glowFood(data, 1.08);
+        });
+        }
+        if (counter == 40){
+            food.getChildren().forEach(function(data){
+                glowFood(data, 1);
+            });
+            counter = 0;
+        }
+        counter++;
     }
+    counter++;
+}
+
 }
 
 /** This scene contains the mobile D-pad and UI. */
@@ -412,23 +425,31 @@ class SceneB extends Phaser.Scene {
 
     // Called once when the scene loads.
     create() {
-
+        
         // Add timer text;
-        timerText = this.add.text(30, 60, '0', {
+        timerText = this.add.text(gameWidth/2, 40, '0', {
             fontSize: "32px",
             fill: "#000"
         })
 
 
+
+
         // Create the infection meter.
         infectBar = this.add.graphics();
         createInfectBar();
-
+        var x = window.matchMedia("(min-width: 700px)");
         // Create the mobile D-pad.
+
         dpad = this.physics.add.group();
         createDpad();
-
+        if(x.matches){
+        dpad.getChildren().forEach((dpad) => {
+            dpad.visible = false;
+        });
+        }
         pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive();
+        pausePlayButton.setFrame(1);
         createPausePlayButton();
 
         timer = this.time.addEvent({
@@ -448,32 +469,19 @@ function updateTime() {
 function createPausePlayButton() {
     pausePlayButton.on('pointerover', function () {
 
-        if (!game.scene.isPaused("GameScene")) {
-            pausePlayButton.setFrame(1);
-        } else {
-            pausePlayButton.setFrame(3);
-        }
+        pausePlayButton.setFrame(3);
+
     })
 
     pausePlayButton.on('pointerout', function () {
-        if (!game.scene.isPaused("GameScene")) {
-            pausePlayButton.setFrame(0);
-        } else {
-            pausePlayButton.setFrame(2);
-        }
+        pausePlayButton.setFrame(1);
     })
     pausePlayButton.on('pointerup', function () {
-        if (!game.scene.isPaused("GameScene")) {
-            pausePlayButton.setFrame(3);
-            timer.paused = true;
-            $("#pauseMenu").show("fast");
-            game.scene.pause("GameScene");
-        } else {
-            pausePlayButton.setFrame(1);
-            timer.paused = false;
-            game.scene.resume("GameScene");
-            $("#pauseMenu").hide("fast");
-        }
+        pausePlayButton.setFrame(3);
+        timer.paused = true;
+        $("#pauseMenu").show("fast");
+        game.scene.pause("GameScene");
+        pausePlayButton.visible = false;
     })
 }
 /** Creates the mobile D-pad. */
@@ -489,7 +497,6 @@ function createDpad() {
     dpadDownRight = dpad.create(gameWidth - 50, gameHeight - 50, 'dpad6');
     dpadDownLeft = dpad.create(gameWidth - 150, gameHeight - 50, 'dpad6');
     dpadUpLeft = dpad.create(gameWidth - 150, gameHeight - 150, 'dpad6');
-    
 
     // Add D-pad functionality to:
     // D-pad up
@@ -754,6 +761,15 @@ function collectFood(player, foodCollided) {
         if (mute == false) {
             this.pickupSound.play();
         }
+    }
+
+}
+
+function glowFood(food, scale){
+
+    let foodType = food.getData("food");
+    if (foodType != undefined && onList(foodType)) {
+        food.setScale(scale);
     }
 
 }
