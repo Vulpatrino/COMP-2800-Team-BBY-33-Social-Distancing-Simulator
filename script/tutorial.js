@@ -147,9 +147,9 @@ class SceneA extends Phaser.Scene {
         );
         // Food spritesheet
         this.load.spritesheet('food',
-                              'images/food.png', {
-            frameWidth: 49,
-            frameHeight: 49
+                              'images/foods.png', {
+            frameWidth: 32,
+            frameHeight: 32
 
         }
                              );
