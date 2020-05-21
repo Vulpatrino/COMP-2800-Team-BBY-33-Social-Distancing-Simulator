@@ -162,7 +162,7 @@ class SceneA extends Phaser.Scene {
 
         // Create and play music
         this.music = this.sound.add('1');
-        this.music.setVolume(0.15);
+        this.music.setVolume(0.1);
         this.music.setLoop(true);
         this.music.play();
 
@@ -173,7 +173,7 @@ class SceneA extends Phaser.Scene {
 
 
         // Create the player and their animations
-        player = this.physics.add.sprite(55, 850, 'player');
+        player = this.physics.add.sprite(55, 825, 'player');
         player.setCollideWorldBounds(true);
         updatePlayerTint();
         player.setInteractive();
@@ -336,7 +336,7 @@ class SceneA extends Phaser.Scene {
         this.physics.world.bounds.height = 875;
 
         // Make camera follow the player.
-        this.cameras.main.setBounds(0, 0, 1200, 800);
+        this.cameras.main.setBounds(0, 0, 1200, 875);
         this.cameras.main.startFollow(player);
         initialMove();
 
