@@ -427,6 +427,7 @@ class SceneB extends Phaser.Scene {
         createDpad();
 
         pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive();
+        pausePlayButton.setFrame(1);
         createPausePlayButton();
 
         timer = this.time.addEvent({
@@ -446,32 +447,19 @@ function updateTime() {
 function createPausePlayButton() {
     pausePlayButton.on('pointerover', function () {
 
-        if (!game.scene.isPaused("GameScene")) {
-            pausePlayButton.setFrame(1);
-        } else {
             pausePlayButton.setFrame(3);
-        }
+
     })
 
     pausePlayButton.on('pointerout', function () {
-        if (!game.scene.isPaused("GameScene")) {
-            pausePlayButton.setFrame(0);
-        } else {
-            pausePlayButton.setFrame(2);
-        }
+            pausePlayButton.setFrame(1);
     })
     pausePlayButton.on('pointerup', function () {
-        if (!game.scene.isPaused("GameScene")) {
             pausePlayButton.setFrame(3);
             timer.paused = true;
             $("#pauseMenu").show("fast");
             game.scene.pause("GameScene");
-        } else {
-            pausePlayButton.setFrame(1);
-            timer.paused = false;
-            game.scene.resume("GameScene");
-            $("#pauseMenu").hide("fast");
-        }
+            pausePlayButton.visible = false;
     })
 }
 /** Creates the mobile D-pad. */

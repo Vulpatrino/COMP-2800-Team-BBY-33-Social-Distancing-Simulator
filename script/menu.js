@@ -1,6 +1,6 @@
 $(document).ready(()=>{
     $("#resume").on("click",function(){
-        pausePlayButton.setFrame(1);
+        pausePlayButton.visible = true;
         timer.paused = false;
         game.scene.resume("GameScene");
         $("#pauseMenu").hide("fast");
