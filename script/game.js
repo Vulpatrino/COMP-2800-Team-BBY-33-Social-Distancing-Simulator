@@ -480,15 +480,15 @@ function createPausePlayButton() {
 function createDpad() {
 
     // Create D-pad buttons.
-    dpadUp = dpad.create(gameWidth - 150, gameHeight - 200, 'dpad1');
-    dpadRight = dpad.create(gameWidth - 100, gameHeight - 150, 'dpad2');
-    dpadDown = dpad.create(gameWidth - 150, gameHeight - 100, 'dpad3');
-    dpadLeft = dpad.create(gameWidth - 200, gameHeight - 150, 'dpad4');
-    dpad.create(gameWidth - 150, gameHeight - 150, 'dpad5');
-    dpadUpRight = dpad.create(gameWidth - 100, gameHeight - 200, 'dpad6');
-    dpadDownRight = dpad.create(gameWidth - 100, gameHeight - 100, 'dpad6');
-    dpadDownLeft = dpad.create(gameWidth - 200, gameHeight - 100, 'dpad6');
-    dpadUpLeft = dpad.create(gameWidth - 200, gameHeight - 200, 'dpad6');
+    dpadUp = dpad.create(gameWidth - 100, gameHeight - 150, 'dpad1');
+    dpadRight = dpad.create(gameWidth - 50, gameHeight - 100, 'dpad2');
+    dpadDown = dpad.create(gameWidth - 100, gameHeight - 50, 'dpad3');
+    dpadLeft = dpad.create(gameWidth - 150, gameHeight - 100, 'dpad4');
+    dpad.create(gameWidth - 100, gameHeight - 100, 'dpad5');
+    dpadUpRight = dpad.create(gameWidth - 50, gameHeight - 150, 'dpad6');
+    dpadDownRight = dpad.create(gameWidth - 50, gameHeight - 50, 'dpad6');
+    dpadDownLeft = dpad.create(gameWidth - 150, gameHeight - 50, 'dpad6');
+    dpadUpLeft = dpad.create(gameWidth - 150, gameHeight - 150, 'dpad6');
     
 
     // Add D-pad functionality to:
