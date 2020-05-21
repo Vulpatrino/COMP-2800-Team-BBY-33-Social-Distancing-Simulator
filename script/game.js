@@ -380,7 +380,6 @@ update() {
         if (inCirc[i] === "enemy") {
             infect();
         }
-<<<<<<< HEAD
         
         if (counter == 20){
         food.getChildren().forEach(function(data){
@@ -394,26 +393,6 @@ update() {
             counter = 0;
         }
         counter++;
-=======
-    }
-    Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
-
-    // Lose the game if player's infection level maxes out.
-    if (infectLevel >= infectMax) {
-        lose();
-    }
-
-    if (counter == 10){
-        food.getChildren().forEach(function(data){
-            glowFood(data, 1.08);
-        });
->>>>>>> a499051141d1647d31937d15d4898b42c6c18b31
-    }
-    if (counter == 20){
-        food.getChildren().forEach(function(data){
-            glowFood(data, 1);
-        });
-        counter = 0;
     }
     counter++;
 }
@@ -464,10 +443,6 @@ class SceneB extends Phaser.Scene {
 
         dpad = this.physics.add.group();
         createDpad();
-<<<<<<< HEAD
-
-        pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive().setScale(0.5).setFrame(1);
-=======
         if(x.matches){
         dpad.getChildren().forEach((dpad) => {
             dpad.visible = false;
@@ -475,7 +450,6 @@ class SceneB extends Phaser.Scene {
         }
         pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive();
         pausePlayButton.setFrame(1);
->>>>>>> a499051141d1647d31937d15d4898b42c6c18b31
         createPausePlayButton();
 
         timer = this.time.addEvent({
