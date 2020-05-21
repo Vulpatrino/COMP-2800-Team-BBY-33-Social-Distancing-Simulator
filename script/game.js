@@ -9,7 +9,7 @@
 
 // Height of the game window.
 var gameHeight = window.innerHeight;
-if(gameHeight > 875) gameHeight = 875;
+if(gameHeight > 800) gameHeight = 800;
 // Width of the game window.
 var gameWidth = window.innerWidth;
 if(gameWidth > 1200) gameWidth  = 1200;
@@ -38,7 +38,7 @@ var infectBar;
 // Level of infection.
 var infectLevel = 0;
 // Maximum level of infection before the player loses.
-var infectMax = 195;
+var infectMax = gameWidth/3 -5;
 // UP on the mobile D-pad.
 var dpadUp;
 // RIGHT on the mobile D-pad.
@@ -333,7 +333,7 @@ class SceneA extends Phaser.Scene {
         var circleWidth = 1;
         circle = this.add.circle(player.x, player.y, 50).setStrokeStyle(circleWidth, circleColour);
         this.physics.world.bounds.width = 1200;
-        this.physics.world.bounds.height = 800;
+        this.physics.world.bounds.height = 875;
 
         // Make camera follow the player.
         this.cameras.main.setBounds(0, 0, 1200, 800);
@@ -380,19 +380,24 @@ update() {
         if (inCirc[i] === "enemy") {
             infect();
         }
-        
-        if (counter == 20){
+    }
+    Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
+
+    // Lose the game if player's infection level maxes out.
+    if (infectLevel >= infectMax) {
+        lose();
+    }
+
+    if (counter == 10){
         food.getChildren().forEach(function(data){
             glowFood(data, 1.08);
         });
-        }
-        if (counter == 40){
-            food.getChildren().forEach(function(data){
-                glowFood(data, 1);
-            });
-            counter = 0;
-        }
-        counter++;
+    }
+    if (counter == 20){
+        food.getChildren().forEach(function(data){
+            glowFood(data, 1);
+        });
+        counter = 0;
     }
     counter++;
 }
@@ -644,9 +649,9 @@ function createDpad() {
 /** Creates the infection meter. */
 function createInfectBar() {
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(25, 25, 200, 30);
+    infectBar.fillRect(25, 25, gameWidth /3, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(27, 27, 195, 25);
+    infectBar.fillRect(27, 27, gameWidth /3 - 5, 25);
     infectBar.fillStyle(0xff0000);
     infectBar.fillRect(27, 27, infectLevel, 25);
 }
@@ -794,14 +799,14 @@ function lose(){
 function infect() {
 
     // Increase infection level.
-    infectLevel += 2;
+    infectLevel += gameWidth / 400;
 
     // Rebuild infection meter.
     infectBar.clear();
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(25, 25, 200, 30);
+    infectBar.fillRect(25, 25, gameWidth/3, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(27, 27, 195, 25);
+    infectBar.fillRect(27, 27, gameWidth/3 -5, 25);
     infectBar.fillStyle(0xff0000);
     if (infectLevel <= infectMax) {
         infectBar.fillRect(27, 27, infectLevel, 25);
