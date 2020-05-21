@@ -384,12 +384,12 @@ class SceneA extends Phaser.Scene {
             lose();
         }
         
-        if (counter == 10){
+        if (counter == 20){
         food.getChildren().forEach(function(data){
             glowFood(data, 1.08);
         });
         }
-        if (counter == 20){
+        if (counter == 40){
             food.getChildren().forEach(function(data){
                 glowFood(data, 1);
             });
@@ -441,8 +441,7 @@ class SceneB extends Phaser.Scene {
         dpad = this.physics.add.group();
         createDpad();
 
-        pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive();
-        pausePlayButton.setFrame(1);
+        pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive().setScale(0.5).setFrame(1);
         createPausePlayButton();
 
         timer = this.time.addEvent({
