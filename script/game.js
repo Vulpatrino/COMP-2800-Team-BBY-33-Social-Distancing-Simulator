@@ -88,7 +88,7 @@ var name;
 var playerTints = [0x58bdd1, 0xe8ae1c, 0xdd00ff, 0x00ff26, 0xffffff, 0x2f3157];
 // Current tint index.
 var currentTint = 5;
-
+var counter = 0;
 
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
@@ -383,9 +383,19 @@ class SceneA extends Phaser.Scene {
         if (infectLevel >= infectMax) {
             lose();
         }
+        
+        if (counter == 10){
         food.getChildren().forEach(function(data){
-            glowFood(data);
+            glowFood(data, 1.05);
         });
+        }
+        if (counter == 20){
+            food.getChildren().forEach(function(data){
+                glowFood(data, 1);
+            });
+            counter = 0;
+        }
+        counter++;
     }
 }
 
@@ -749,11 +759,11 @@ function collectFood(player, foodCollided) {
 
 }
 
-function glowFood(food){
+function glowFood(food, scale){
 
     let foodType = food.getData("food");
     if (foodType != undefined && onList(foodType)) {
-        food.angle += 1;
+        food.setScale(scale);
     }
 
 }
