@@ -67,12 +67,6 @@ var moveRight = false;
 var dpad;
 // Background music.
 var music;
-// Mute key.
-var volumeControl;
-// Quit key.
-var leavingPage;
-// Restart key.
-var restartKey;
 // Whether or not the music is muted.
 var mute = false;
 // Time elapsed
@@ -83,33 +77,13 @@ var timer;
 var timerText;
 // Button to pause and play game
 var pausePlayButton;
-// Mute button
-var soundButton;
-// Disable mobile controls
-var mobileControlsButton;
-// Restart game button
-var restartButton;
-// Go to home page button
-var goHomeButton;
-// Restart game button 2
-var restartButton2;
-// Go to home page button 2
-var goHomeButton2;
-// View list button
-var listButton;
-// Whether or not mobile controls are visible
 var mobileControls = true;
 // The game over menu
 var gameOverMenu;
-// The win menu
-var winMenu;
-//
-var finalTimeText;
 // Turning points for enemies
 var turnPoints;
-
+// Current User's Name
 var name;
-
 // Array of player tint values.
 var playerTints = [0x58bdd1, 0xe8ae1c, 0xdd00ff, 0x00ff26, 0xffffff, 0x2f3157];
 // Current tint index.
@@ -131,6 +105,7 @@ class SceneA extends Phaser.Scene {
         this.load.image('wall1', 'images/wall1.png');
         this.load.image('wall2', 'images/wall2.png');
         this.load.image('aisle1', 'images/aisle1.png');
+
         this.load.audio('1', ['audio/1.mp3', 'audio/1.ogg']);
         this.load.audio('2', ['audio/2.mp3', 'audio/2.ogg']);
         // New Player spritesheet
@@ -195,13 +170,6 @@ class SceneA extends Phaser.Scene {
         // Add food pickup sound effects
         this.pickupSound = this.sound.add('2');
         this.pickupSound.setVolume(0.5);
-
-        // Add the mute button
-        volumeControl = this.input.keyboard.addKey('M');
-        // Add the quit button
-        leavingPage = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-        // Add the restart button.
-        restartKey = this.input.keyboard.addKey('R');
 
         // Create the player and their animations
         player = this.physics.add.sprite(40, 700, 'player');
@@ -269,11 +237,11 @@ class SceneA extends Phaser.Scene {
         var w = 60;
         var foodcount = 0;
         for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
+            for (let j = 0; j < 13; j++) {
 
                 food.create(w, h, 'food', foodcount);
                 foodcount += 1;
-                h += 140;
+                h += 50;
                 if (foodcount > 99) {
                     foodcount = 0;
                 }
@@ -411,19 +379,8 @@ class SceneA extends Phaser.Scene {
         }
         Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
 
-        // Mute the music if the mute key is pressed.
-        if (Phaser.Input.Keyboard.JustDown(volumeControl)) {
-            if (mute == false) {
-                this.sound.setMute(true);
-                mute = true;
-            } else {
-                this.sound.setMute(false);
-                mute = false;
-            }
-        }
-
         // Lose the game if player's infection level maxes out.
-        if (infectLevel === infectMax) {
+        if (infectLevel >= infectMax) {
             lose();
         }
     }
@@ -445,6 +402,8 @@ class SceneB extends Phaser.Scene {
         this.load.image('dpad2', 'images/dpad2.png');
         this.load.image('dpad3', 'images/dpad3.png');
         this.load.image('dpad4', 'images/dpad4.png');
+        this.load.image('dpad5', 'images/dpad5.png');
+        this.load.image('dpad6', 'images/dpad6.png');
         this.load.spritesheet('pausePlayIcon', 'images/pausePlayIcon.png', {
             frameWidth: 75,
             frameHeight: 75,
@@ -480,192 +439,10 @@ class SceneB extends Phaser.Scene {
     }
 }
 
-class SceneC extends Phaser.Scene {
-
-    constructor() {
-        super({
-            key: 'pause',
-            active: true
-        });
-    }
-    preload() {
-        this.load.spritesheet('listIcon', 'images/listIcon.png', {
-            frameWidth: 50,
-            frameHeight: 50,
-        });
-        this.load.spritesheet('soundIcon', 'images/soundIcon.png', {
-            frameWidth: 50,
-            frameHeight: 50,
-        });
-        this.load.spritesheet('dpadIcon', 'images/dpadIcon.png', {
-            frameWidth: 50,
-            frameHeight: 50,
-        });
-        this.load.spritesheet('restartIcon', 'images/restartIcon.png', {
-            frameWidth: 34,
-            frameHeight: 34,
-        });
-        this.load.spritesheet('homeIcon', 'images/homeIcon.png', {
-            frameWidth: 60,
-            frameHeight: 60,
-        });
-        this.load.image('menu', 'images/menu.png');
-    }
-    create() {
-        this.add.image(gameWidth / 2, gameHeight / 2 + 40, 'menu');
-        listButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 40, "listIcon").setInteractive();
-        createListButton();
-        soundButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 113, "soundIcon").setInteractive();
-        createSoundButton();
-        mobileControlsButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 187, "dpadIcon").setInteractive();
-        createMobileControlsButton();
-        restartButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 260, "restartIcon").setInteractive();
-        createRestartButton(restartButton);
-        goHomeButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 330, "homeIcon").setInteractive();
-        createGoHomeButton(goHomeButton);
-    }
-}
-
-class SceneD extends Phaser.Scene {
-
-    constructor() {
-        super({
-            key: 'gameOver',
-            active: true
-        });
-    }
-    preload() {
-        this.load.image('gameOver', 'images/gameOver.png');
-        this.load.image('win', 'images/win.png');
-    }
-    create() {
-        gameOverMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'gameOver');
-        winMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'win');
-        finalTimeText = this.add.text(gameWidth/2 + 20, gameHeight/2 - 100, '', {
-            fontSize: "25px",
-            fill: "#000"
-        })
-        finalTimeText.visible = false;
-        gameOverMenu.visible = false;
-        winMenu.visible = false;
-        restartButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 77, "restartIcon").setInteractive();
-        createRestartButton(restartButton2);
-        goHomeButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 175, "homeIcon").setInteractive();
-        createGoHomeButton(goHomeButton2);
-    }
-}
 
 // Increase the timer.
 function updateTime() {
     timerText.setText(++time);
-}
-
-function createListButton(){
-    listButton.on('pointerover', function () {
-        listButton.setFrame(1);
-    });
-
-    listButton.on('pointerout', function () {
-        listButton.setFrame(0);
-    });
-
-    listButton.on('pointerup', function () {
-        $("#listSection").css("display","flex");
-        $("#listSection").css("height",gameHeight + "px");
-        $("#listSection").css("wdith",gameWidth + "px")
-    });
-}
-function createGoHomeButton(button) {
-    button.on('pointerover', function () {
-        button.setFrame(1);
-    });
-
-    button.on('pointerout', function () {
-        button.setFrame(0);
-    });
-
-    button.on('pointerup', function () {
-        window.open('main.html','_self');
-    });
-}
-
-function createRestartButton(button) {
-    button.on('pointerover', function () {
-        button.setFrame(1);
-    });
-
-    button.on('pointerout', function () {
-        button.setFrame(0);
-    });
-
-    button.on('pointerup', function () {
-        location.reload();
-    });
-}
-
-function createSoundButton() {
-    soundButton.on('pointerover', function () {
-        if (!mute) {
-            soundButton.setFrame(1);
-        } else {
-            soundButton.setFrame(3)
-        }
-    })
-
-    soundButton.on('pointerout', function () {
-        if (!mute) {
-            soundButton.setFrame(0);
-        } else {
-            soundButton.setFrame(2)
-        }
-    })
-    soundButton.on('pointerup', function () {
-        if (!mute) {
-            soundButton.setFrame(3);
-            game.sound.setMute(true);
-            mute = true;
-        } else {
-            soundButton.setFrame(1)
-            game.sound.setMute(false);
-            mute = false;
-        }
-
-    })
-}
-
-function createMobileControlsButton() {
-
-    mobileControlsButton.on('pointerover', function () {
-        if (!mobileControls) {
-            mobileControlsButton.setFrame(3);
-        } else {
-            mobileControlsButton.setFrame(1)
-        }
-    })
-
-    mobileControlsButton.on('pointerout', function () {
-        if (!mobileControls) {
-            mobileControlsButton.setFrame(2);
-        } else {
-            mobileControlsButton.setFrame(0)
-        }
-    })
-    mobileControlsButton.on('pointerup', function () {
-        if (!mobileControls) {
-            mobileControlsButton.setFrame(1);
-            mobileControls = true;
-            dpad.getChildren().forEach((dpad) => {
-                dpad.visible = true;
-            });
-        } else {
-            mobileControlsButton.setFrame(3)
-            mobileControls = false;
-            dpad.getChildren().forEach((dpad) => {
-                dpad.visible = false;
-            });
-        }
-
-    })
 }
 
 function createPausePlayButton() {
@@ -689,13 +466,13 @@ function createPausePlayButton() {
         if (!game.scene.isPaused("GameScene")) {
             pausePlayButton.setFrame(3);
             timer.paused = true;
+            $("#pauseMenu").show("fast");
             game.scene.pause("GameScene");
-            game.scene.run("pause");
         } else {
             pausePlayButton.setFrame(1);
             timer.paused = false;
             game.scene.resume("GameScene");
-            game.scene.sleep("pause");
+            $("#pauseMenu").hide("fast");
         }
     })
 }
@@ -703,14 +480,16 @@ function createPausePlayButton() {
 function createDpad() {
 
     // Create D-pad buttons.
-    dpadUp = dpad.create(80, gameHeight - 110, 'dpad1');
-    dpadRight = dpad.create(110, gameHeight - 80, 'dpad2');
-    dpadDown = dpad.create(80, gameHeight - 50, 'dpad1');
-    dpadLeft = dpad.create(50, gameHeight - 80, 'dpad2');
-    dpadUpRight = dpad.create(110, gameHeight - 110, 'dpad4');
-    dpadDownRight = dpad.create(110, gameHeight - 50, 'dpad3');
-    dpadDownLeft = dpad.create(50, gameHeight - 50, 'dpad4');
-    dpadUpLeft = dpad.create(50, gameHeight - 110, 'dpad3');
+    dpadUp = dpad.create(gameWidth - 100, gameHeight - 150, 'dpad1');
+    dpadRight = dpad.create(gameWidth - 50, gameHeight - 100, 'dpad2');
+    dpadDown = dpad.create(gameWidth - 100, gameHeight - 50, 'dpad3');
+    dpadLeft = dpad.create(gameWidth - 150, gameHeight - 100, 'dpad4');
+    dpad.create(gameWidth - 100, gameHeight - 100, 'dpad5');
+    dpadUpRight = dpad.create(gameWidth - 50, gameHeight - 150, 'dpad6');
+    dpadDownRight = dpad.create(gameWidth - 50, gameHeight - 50, 'dpad6');
+    dpadDownLeft = dpad.create(gameWidth - 150, gameHeight - 50, 'dpad6');
+    dpadUpLeft = dpad.create(gameWidth - 150, gameHeight - 150, 'dpad6');
+    
 
     // Add D-pad functionality to:
     // D-pad up
@@ -983,26 +762,23 @@ function collectFood(player, foodCollided) {
 function win() {
     addScore(time);
     addToLeaderboard(time);
-    game.scene.run("gameOver");
-    winMenu.visible = true;
-    finalTimeText.visible = true;
-    finalTimeText.setText(time + " seconds");
     game.scene.pause("GameScene");
-    pausePlayButton.visible =false;
+    game.scene.sleep("UIScene");
+    $("#timerText").html(time);
+    $("#winMenu").show("slow");
 }
 
 function lose(){
-    game.scene.run("gameOver");
-    gameOverMenu.visible = true;
     game.scene.pause("GameScene");
-    pausePlayButton.visible =false;
+    game.scene.sleep("UIScene");
+    $("#loseMenu").show("slow");
 }
 
 /** Called when a player becomes more infected. */
 function infect() {
 
     // Increase infection level.
-    infectLevel += 0.5;
+    infectLevel += 2;
 
     // Rebuild infection meter.
     infectBar.clear();
@@ -1041,7 +817,7 @@ var config = {
             debug: false
         }
     },
-    scene: [SceneA, SceneB, SceneC, SceneD]
+    scene: [SceneA, SceneB]
 
 };
 

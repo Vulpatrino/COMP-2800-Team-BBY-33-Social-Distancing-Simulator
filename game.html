@@ -1,58 +1,145 @@
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Game</title>
-        <link rel="stylesheet" type="text/css" href="style/gameStyle.css">
-    </head>
-    <body>
-        <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
 
-        <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style/gameStyle.css">
+</head>
 
-        <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
-        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>
+<body>
+    <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
 
-        <!-- Add Firebase products that you want to use -->
-        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-auth.js"></script>
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
 
-        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
+    <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>
 
-        <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+    <!-- Add Firebase products that you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-auth.js"></script>
 
-        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
-        <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
-        <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
 
-        <script src="script/addScore.js"></script>
-        <script src="script/addToLeaderboard.js"></script>
-        <script src="script/foods.js"></script>
-        <script src="script/game.js"></script>
-        <script src="script/firebase.js"></script>
-        <script>
-            
-            // Your web app's Firebase configuration
-            var firebaseConfig = {
-                apiKey: "AIzaSyAM863d1r4g9FShKvZ00pgsYVEQ_3LoDDs",
-                authDomain: "social-distancing-simulator.firebaseapp.com",
-                databaseURL: "https://social-distancing-simulator.firebaseio.com",
-                projectId: "social-distancing-simulator",
-                storageBucket: "social-distancing-simulator.appspot.com",
-                messagingSenderId: "737901223848",
-                appId: "1:737901223848:web:92892d643ad69cecda479d",
-                measurementId: "G-2N128JG6QV"
-            };
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            var db = firebase.firestore();
-        </script>
-        <section id="listSection" style="display:none">
-            <input type ="button" value="CLOSE" onclick="closeList()">
-            <h1>Shopping List:</h1>
-            <ul id="list"></ul>
-        </section>
-    </body>
+    <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+    <script src="//cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.23.0/dist/phaser.js"></script>
+
+    <script src="script/addScore.js"></script>
+    <script src="script/addToLeaderboard.js"></script>
+    <script src="script/foods.js"></script>
+    <script src="script/game.js"></script>
+    <script src="script/firebase.js"></script>
+    <script src="script/menu.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAM863d1r4g9FShKvZ00pgsYVEQ_3LoDDs",
+            authDomain: "social-distancing-simulator.firebaseapp.com",
+            databaseURL: "https://social-distancing-simulator.firebaseio.com",
+            projectId: "social-distancing-simulator",
+            storageBucket: "social-distancing-simulator.appspot.com",
+            messagingSenderId: "737901223848",
+            appId: "1:737901223848:web:92892d643ad69cecda479d",
+            measurementId: "G-2N128JG6QV"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.firestore();
+    </script>
+    <section id="listSection" style="display:none">
+        <input type="button" value="CLOSE" onclick="closeList()">
+        <h1>Shopping List:</h1>
+        <ul id="list"></ul>
+    </section>
+    <div id="pauseMenu" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="col-12 modal-title">GAME PAUSED</h2>
+                </div>
+                <div id="pauseContent" class="modal-body">
+
+                    <h4>Mute</h4>
+                    <span>
+                        <img id="soundButton" src="images/trans.png" height="1" width="1">
+                    </span>
+
+                    <h4>Mobile Controls</h4>
+                    <span>
+                        <img id="mobileControlsButton" src="images/trans.png" height="1" width="1">
+                    </span>
+
+                    <h4>Restart</h4>
+                    <span>
+                        <img class="restartButton" src="images/trans.png" height="1" width="1">
+                    </span>
+                    <h4>Go Home</h4>
+                    <span>
+                        <img class="goHomeButton" src="images/trans.png" height="1" width="1">
+                    </span>
+                </div>
+                <div class="modal-footer">
+                    <button id="resume" type="button" class="col-12 btn btn-primary">Resume</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="winMenu" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="col-12 modal-title">YOU WIN</h2>
+                </div>
+                <div class="modal-body">
+                    <h4>You collected all the food in <span id="timerText"></span> seconds!</h4>
+                    <div class="endButtons">
+                        <h4>Restart</h4>
+                        <span>
+                            <img class="restartButton" src="images/trans.png" height="1" width="1">
+                        </span>
+                        <h4>Go Home</h4>
+                        <span>
+                            <img class="goHomeButton" src="images/trans.png" height="1" width="1">
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loseMenu" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="col-12 modal-title">GAME OVER</h2>
+                </div>
+                <div class="modal-body">
+                    <h4>STAY AWAY FROM OTHER SHOPPERS!</h4>
+                    <div class="endButtons">
+                        <h4>Restart</h4>
+                        <span>                            <img class="restartButton" src="images/trans.png" height="1" width="1">
+                        </span>
+                        <h4>Go Home</h4>
+                        <span>
+                            <img class="goHomeButton" src="images/trans.png" height="1" width="1">
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
 
 
 </html>
