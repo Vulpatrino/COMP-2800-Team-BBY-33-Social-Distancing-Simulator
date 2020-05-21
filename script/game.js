@@ -169,10 +169,8 @@ class SceneA extends Phaser.Scene {
         // Add food pickup sound effects
         this.pickupSound = this.sound.add('2');
         this.pickupSound.setVolume(0.5);
-        <<<<<<< HEAD
-            =======
-            this.pickupSound.setVolume(0.5);
-        >>>>>>> topbar
+
+
 
         // Create the player and their animations
         player = this.physics.add.sprite(55, 850, 'player');
@@ -402,8 +400,8 @@ update() {
         counter = 0;
     }
     counter++;
-        }
-    }
+}
+
 }
 
 /** This scene contains the mobile D-pad and UI. */
@@ -432,7 +430,7 @@ class SceneB extends Phaser.Scene {
 
     // Called once when the scene loads.
     create() {
-
+        
         // Add timer text;
         timerText = this.add.text(gameWidth/2, 40, '0', {
             fontSize: "32px",
@@ -445,11 +443,16 @@ class SceneB extends Phaser.Scene {
         // Create the infection meter.
         infectBar = this.add.graphics();
         createInfectBar();
-
+        var x = window.matchMedia("(min-width: 700px)");
         // Create the mobile D-pad.
+
         dpad = this.physics.add.group();
         createDpad();
-
+        if(x.matches){
+        dpad.getChildren().forEach((dpad) => {
+            dpad.visible = false;
+        });
+        }
         pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive();
         pausePlayButton.setFrame(1);
         createPausePlayButton();
