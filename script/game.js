@@ -386,7 +386,7 @@ class SceneA extends Phaser.Scene {
         
         if (counter == 10){
         food.getChildren().forEach(function(data){
-            glowFood(data, 1.05);
+            glowFood(data, 1.08);
         });
         }
         if (counter == 20){
