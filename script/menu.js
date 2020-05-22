@@ -1,4 +1,5 @@
 $(document).ready(()=>{
+    
     $("#resume").on("click",function(){
         pausePlayButton.visible = true;
         game.scene.resume("GameScene");
@@ -19,12 +20,16 @@ $(document).ready(()=>{
         $("#next-btn").show("fast");
     });
     $("#start-btn").on("click",function(){
+        finishTut = true;
         $("#intruction2").hide("fast");
         $("#back-btn").hide("fast");
         $("#start-btn").hide("fast");
         $("#instruction-btn").show("fast");
+        game.scene.resume("GameScene");
+        
     });
     $("#instruction-btn").on("click",function(){
+        game.scene.pause("GameScene");
         $("#intruction1").show("fast");
         $("#next-btn").show("fast");
         $("#instruction-btn").hide("fast");

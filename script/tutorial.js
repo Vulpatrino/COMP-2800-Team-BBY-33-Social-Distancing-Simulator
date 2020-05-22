@@ -84,7 +84,7 @@ var playerTints = [0x58bdd1, 0xe8ae1c, 0xdd00ff, 0x00ff26, 0xffffff, 0x2f3157];
 var currentTint = 5;
 var counter = 0;
 var isTut = true;
-
+var finishTut = false;
 
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
@@ -358,6 +358,7 @@ class SceneA extends Phaser.Scene {
 
 /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
 update() {
+    
     // Set all enemies to be slightly transparent.
     Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
     // Create cursor keys. (?) --Why is this being called every single frame?
@@ -394,6 +395,10 @@ update() {
         counter = 0;
     }
     counter++;
+    if(!finishTut){
+        game.scene.pause("GameScene");
+        console.log("hi");
+    }
 }
 
 }
