@@ -406,7 +406,7 @@ update() {
 
 }
 
-/** This scene contains the mobile D-pad and UI. */
+/** This scene contains the mobile controls and UI. */
 class SceneB extends Phaser.Scene {
 
     constructor() {
@@ -471,7 +471,7 @@ class SceneB extends Phaser.Scene {
 }
 
 
-// Increase the timer.
+/** Updates the timer text. */
 function updateTime() {
     timerText.setText(++time);
 }
@@ -709,7 +709,7 @@ function initialMove() {
     }
 }
 
-// Makes the enemy turn at certain turning points
+/** Makes the enemy turn at certain turning points. */
 function turn(enemy, turnPoint) {
     // Checks if the sprite is touching something
     var touch = !enemy.body.touching.none;
@@ -757,7 +757,7 @@ function hitWallMove(enemy) {
 }
 
 /** Called when the player touches a food object. 
- * Note: "player" argument is needed for the overlap event to work.
+ *  Note: "player" argument is needed for the overlap event to work.
 */
 function collectFood(player, foodCollided) {
     // Get the pickup's food data.
@@ -774,7 +774,8 @@ function collectFood(player, foodCollided) {
     }
 
 }
-/** Makes the food jiggle */
+
+/** Makes food you need to collect jiggle. */
 function glowFood(food, scale){
 
     let foodType = food.getData("food");
@@ -793,7 +794,8 @@ function win() {
     $("#timerText").html(time);
     $("#winMenu").show("slow");
 }
-/** Called when infection meter is filled up */
+
+/** Called when the player has their infect bar filled. */
 function lose(){
     game.scene.pause("GameScene");
     game.scene.sleep("UIScene");
@@ -819,6 +821,13 @@ function infect() {
         infectBar.fillRect(27, 27, infectMax, 25);
     }
 }
+
+/** Player tint update. */
+function updatePlayerTint() {
+    currentTint = (currentTint == (playerTints.length - 1)) ? 0 : (currentTint + 1);
+    player.setTint(playerTints[currentTint]);
+}
+
 /** Phaser configuration. */
 var config = {
     type: Phaser.AUTO,
@@ -841,12 +850,6 @@ var config = {
     scene: [SceneA, SceneB]
 
 };
-
-/** Player tint update. */
-function updatePlayerTint() {
-    currentTint = (currentTint == (playerTints.length - 1)) ? 0 : (currentTint + 1);
-    player.setTint(playerTints[currentTint]);
-}
 
 /** Phaser instance. */
 let game = new Phaser.Game(config);
