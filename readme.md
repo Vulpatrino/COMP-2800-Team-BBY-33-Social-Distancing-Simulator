@@ -18,6 +18,8 @@ First and foremost, we'd like to thank the following parties for their help:
     - https://firebase.google.com/docs
 - DeWolfe Music, for the use of "Mr. Lucky" as our background music.
     - https://www.youtube.com/watch?v=ZZLyx_Owqec
+- Coin sound from freesound.org
+    - https://freesound.org/people/timgormly/sounds/170147/
 - Bootstrap for modal styling
     - https://getbootstrap.com/docs/4.1/getting-started/introduction/
 - Twitter docs for adding "tweet"
