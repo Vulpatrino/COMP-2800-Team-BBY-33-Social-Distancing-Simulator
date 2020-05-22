@@ -38,6 +38,7 @@ $(document).ready(()=>{
         $("#instruction-btn").hide("fast");
     });
 
+    // Button for adding and removing mobile controls
     $("#mobileControlsButton").on("click", function () {
         if (!mobileControls) {
             mobileControls = true;
@@ -53,7 +54,6 @@ $(document).ready(()=>{
             $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 50px 0");
         }
     });
-
     $("#mobileControlsButton").hover(function () {
             if (!mobileControls) {
                 $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 50px 0");
@@ -69,6 +69,7 @@ $(document).ready(()=>{
             }
         });
 
+    // Button for muting and unmuting sound
     $("#soundButton").on("click", function () {
         if (mute) {
             game.sound.setMute(false);
@@ -80,7 +81,6 @@ $(document).ready(()=>{
             $("#soundButton").css("background", "url(images/soundIcon.png) 50px 0");
         }
     });
-
     $("#soundButton").hover(function () {
             if (mute) {
                 $("#soundButton").css("background", "url(images/soundIcon.png) 50px 0");
@@ -96,7 +96,7 @@ $(document).ready(()=>{
             }
         });
 
-
+    // Button for restarting game
     $(".restartButton").on("click", function () {
         if(isTut){
         window.open('tutorial.html', '_self');
@@ -104,18 +104,17 @@ $(document).ready(()=>{
             window.open('game.html', '_self');
         }
     });
-
     $(".restartButton").hover(function () {
             $(".restartButton").css("background", "url(images/restartIcon.png) 35px 0");
         },
         function () {
             $(".restartButton").css("background", "url(images/restartIcon.png) 0px 0");
         });
-
+    
+    // Button for going back to home page
     $(".goHomeButton").on("click", function () {
         window.open('index.html', '_self');
     });
-
     $(".goHomeButton").hover(function () {
             $(".goHomeButton").css("background", "url(images/homeIcon.png) 60px 0");
         },
