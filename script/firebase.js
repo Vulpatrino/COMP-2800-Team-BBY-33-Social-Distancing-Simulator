@@ -1,6 +1,13 @@
+/**
+ * FIREBASE.JS
+ * Contains firebase authentication and firebase fire store functions.
+ * @author: Eddy Wu
+ * @author: Eric Dam
+ */
 var button = document.createElement("INPUT");
 $("#menu").append(button);
 
+/** Used to get user information from database and displaying it on menu */
 function getAccountInfo() {
     firebase.auth().onAuthStateChanged(function (user) {
         db.collection("users").doc(user.uid).get().then(function (doc) {
@@ -23,12 +30,11 @@ function getAccountInfo() {
         });
     });
 }
-
+/** Creates a key for the user to log all the data of that user */
 function createUser() {
 
     // if the user is authenticated, get this "user" object
     // create this user node(doc) in the datebase users collection
-    console.log("Works")
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             db.collection("users").doc(user.uid).set({
@@ -51,21 +57,20 @@ function createUser() {
         }
     });
 }
-
+/** Function to log user out */
 function logout() {
     firebase.auth().signOut().then(function () {
         console.log('Signed Out');
     });
     window.location.replace("index.html");
 }
-
+/** Gets the username of our user */
 function getName() {
 
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {
             db.collection("users").doc(user.uid).get().then(function (doc) {
                 if (doc.exists) {
-                    console.log("Document data:", doc.data().name);
                     var name = doc.data().name;
                     document.getElementById("userName").innerHTML = name + "'s Top 5 Scores";
                 } else {
@@ -77,93 +82,4 @@ function getName() {
             });
         }
     });
-}
-
-function getScore() {
-    var count = 0;
-    console.log("Got score");
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {
-            db.collection("users").doc(user.uid).collection("Scores").orderBy("time", "asc").get().then(snapshot => {
-                let scores = snapshot;
-                scores.forEach(file => {
-                    console.log(file.data().time)
-                    if (count == 0) {
-                        var score = file.data().time + " seconds";
-                        document.getElementById("score1").innerHTML = score;
-                    }
-                    if (count == 1) {
-                        var score = file.data().time + " seconds";
-                        document.getElementById("score2").innerHTML = score;
-                    }
-                    if (count == 2) {
-                        var score = file.data().time + " seconds";
-                        document.getElementById("score3").innerHTML = score;
-                    }
-                    if (count == 3) {
-                        var score = file.data().time + " seconds";
-                        document.getElementById("score4").innerHTML = score;
-                    }
-                    if (count == 4) {
-                        var score = file.data().time + " seconds";
-                        document.getElementById("score5").innerHTML = score;
-                    }
-                    if (count > 4) {
-                        return 0;
-                    }
-                    console.log(count);
-                    count++;
-                })
-
-            })
-        }
-    })
-}
-
-function getLeaderBoard() {
-    var count = 0;
-    firebase.auth().onAuthStateChanged(function (user) {
-        db.collection("leaderboard").orderBy("time", "asc").get().then(snapshot => {
-            let scores = snapshot;
-            scores.forEach(file => {
-                console.log(file.data().time)
-                if (count == 0) {
-                    var name = file.data().name;
-                    document.getElementById("name1").innerHTML = name;
-                    var score = file.data().time + " seconds";
-                    document.getElementById("time1").innerHTML = score;
-                }
-                if (count == 1) {
-                    var name = file.data().name;
-                    document.getElementById("name2").innerHTML = name;
-                    var score = file.data().time + " seconds";
-                    document.getElementById("time2").innerHTML = score;
-                }
-                if (count == 2) {
-                    var name = file.data().name;
-                    document.getElementById("name3").innerHTML = name;
-                    var score = file.data().time + " seconds";
-                    document.getElementById("time3").innerHTML = score;
-                }
-                if (count == 3) {
-                    var name = file.data().name;
-                    document.getElementById("name4").innerHTML = name;
-                    var score = file.data().time + " seconds";
-                    document.getElementById("time4").innerHTML = score;
-                }
-                if (count == 4) {
-                    var name = file.data().name;
-                    document.getElementById("name5").innerHTML = name;
-                    var score = file.data().time + " seconds";
-                    document.getElementById("time5").innerHTML = score;
-                }
-                if (count > 4) {
-                    return 0;
-                }
-                console.log(count);
-                count++;
-
-            })
-        })
-    })
 }

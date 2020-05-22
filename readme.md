@@ -34,7 +34,7 @@ We give you all the source code to the game, as well as our working files.
 
 The developer will not need any API keys or downloaded frameworks. No special configuration is necessary. Everything you need to start out is included in this package.
 
-If you need access to the Firebase database, please reach out to contributor [wueddyw.](https://github.com/wueddyw)
+If you need access to the Firebase database, please reach out to contributor [wueddyw.](https://github.com/wueddyw)(wueddyw@gmail.com)
 
 ## Getting Started:
 Getting started with this package is really simple.
