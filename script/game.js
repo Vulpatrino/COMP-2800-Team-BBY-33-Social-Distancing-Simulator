@@ -77,6 +77,7 @@ var timer;
 var timerText;
 // Button to pause and play game
 var pausePlayButton;
+// Whether or not mobile controls are active
 var mobileControls = true;
 // The game over menu
 var gameOverMenu;
@@ -449,6 +450,8 @@ class SceneB extends Phaser.Scene {
         createDpad();
         if(x.matches){
         dpad.getChildren().forEach((dpad) => {
+            $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 100px 0");
+            mobileControls = false;
             dpad.visible = false;
         });
         }
