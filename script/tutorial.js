@@ -79,6 +79,7 @@ var leavingPage;
 var restartKey;
 // Whether or not the music is muted.
 var mute = false;
+var mobileControls = true;
 // Tutorial Text
 var tutorialText;
 var tutLeft = false;
@@ -132,11 +133,10 @@ class SceneA extends Phaser.Scene {
                               );
         // Player spritesheet
         this.load.spritesheet("player", "images/PlayerSprites.png",
-            {
-                frameWidth: 32,
-                frameHeight: 48
-            }
-        );
+                              {
+            frameWidth: 32,
+            frameHeight: 48
+        }
         
         // Enemy spritesheet
         this.load.spritesheet('enemy',
@@ -211,8 +211,11 @@ class SceneA extends Phaser.Scene {
         restartKey = this.input.keyboard.addKey('R');
 
         // Create the player and their animations
-        player = this.physics.add.sprite(40, 700, 'dude');
+        player = this.physics.add.sprite(600, 800, 'player');
         player.setCollideWorldBounds(true);
+        updatePlayerTint();
+        player.setInteractive();
+        player.on("pointerdown", updatePlayerTint);
 
         this.anims.create({
             key: 'left',
@@ -280,14 +283,13 @@ class SceneA extends Phaser.Scene {
 
         // Adds a Food object to the food collectibles.
         let foodChildren = food.getChildren();
-        let foodLimit = foodNames.length;
         let foodIndex = 0;
         for (let i = 0; i < foodChildren.length; i++) {
             foodChildren[i].setDataEnabled();
             let newFood = new Food(foodIndex);
 
             foodIndex++;
-            if (foodIndex >= foodLimit) {
+            if (foodIndex >= foodTypes) {
                 foodIndex = 0;
             }
 
