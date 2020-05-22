@@ -136,7 +136,7 @@ class SceneA extends Phaser.Scene {
                               {
             frameWidth: 32,
             frameHeight: 48
-        }
+        });
         
         // Enemy spritesheet
         this.load.spritesheet('enemy',
