@@ -13,8 +13,18 @@ This readme will tell you everything you need to know about getting started with
 ## Gratitude List:
 First and foremost, we'd like to thank the following parties for their help:
 - Photon Storm, for creating the Phaser 3 framework that this whole game is founded on.
+    - https://photonstorm.github.io/phaser3-docs/
 - Google, for the Firebase Authentication and Datastore products that allowed us to create a leaderboard of user scores.
+    - https://firebase.google.com/docs
 - DeWolfe Music, for the use of "Mr. Lucky" as our background music.
+    - https://www.youtube.com/watch?v=ZZLyx_Owqec
+- Bootstrap for modal styling
+    - https://getbootstrap.com/docs/4.1/getting-started/introduction/
+- Twitter docs for adding "tweet"
+    - https://developer.twitter.com/en/docs
+- Facebook docs for adding "share" button
+    - https://developers.facebook.com/docs/
+
 
 ## What's Included:
 We give you all the source code to the game, as well as our working files.
