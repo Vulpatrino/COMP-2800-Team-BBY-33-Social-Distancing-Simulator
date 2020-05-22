@@ -4,7 +4,7 @@
  * @author: Jaedon Braun
  */
 
- /** Number of different kinds of food. */
+/** Number of different kinds of food. */
 let foodTypes = 50;
 
 /**

@@ -2,13 +2,13 @@
  * Code for the various menus in our game. Including handling mouseovers and button presses.
  */
 $(document).ready(()=>{
-    
+
     $("#resume").on("click",function(){
         pausePlayButton.visible = true;
         game.scene.resume("GameScene");
         $("#pauseMenu").hide("fast");
         if(!isTut){
-        timer.paused = false;
+            timer.paused = false;
         }
     });
     $("#next-btn").on("click",function(){
@@ -29,7 +29,7 @@ $(document).ready(()=>{
         $("#start-btn").hide("fast");
         $("#instruction-btn").show("fast");
         game.scene.resume("GameScene");
-        
+
     });
     $("#instruction-btn").on("click",function(){
         game.scene.pause("GameScene");
@@ -55,19 +55,19 @@ $(document).ready(()=>{
     });
 
     $("#mobileControlsButton").hover(function () {
-            if (!mobileControls) {
-                $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 50px 0");
-            } else {
-                $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 150px 0");
-            }
-        },
-        function () {
-            if (!mobileControls) {
-                $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 100px 0");
-            } else {
-                $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 0px 0");
-            }
-        });
+        if (!mobileControls) {
+            $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 50px 0");
+        } else {
+            $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 150px 0");
+        }
+    },
+                                     function () {
+        if (!mobileControls) {
+            $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 100px 0");
+        } else {
+            $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 0px 0");
+        }
+    });
 
     $("#soundButton").on("click", function () {
         if (mute) {
@@ -82,47 +82,47 @@ $(document).ready(()=>{
     });
 
     $("#soundButton").hover(function () {
-            if (mute) {
-                $("#soundButton").css("background", "url(images/soundIcon.png) 50px 0");
-            } else {
-                $("#soundButton").css("background", "url(images/soundIcon.png) 150px 0");
-            }
-        },
-        function () {
-            if (mute) {
-                $("#soundButton").css("background", "url(images/soundIcon.png) 100px 0");
-            } else {
-                $("#soundButton").css("background", "url(images/soundIcon.png) 0px 0");
-            }
-        });
+        if (mute) {
+            $("#soundButton").css("background", "url(images/soundIcon.png) 50px 0");
+        } else {
+            $("#soundButton").css("background", "url(images/soundIcon.png) 150px 0");
+        }
+    },
+                            function () {
+        if (mute) {
+            $("#soundButton").css("background", "url(images/soundIcon.png) 100px 0");
+        } else {
+            $("#soundButton").css("background", "url(images/soundIcon.png) 0px 0");
+        }
+    });
 
 
     $(".restartButton").on("click", function () {
         if(isTut){
-        window.open('tutorial.html', '_self');
+            window.open('tutorial.html', '_self');
         } else{
             window.open('game.html', '_self');
         }
     });
 
     $(".restartButton").hover(function () {
-            $(".restartButton").css("background", "url(images/restartIcon.png) 35px 0");
-        },
-        function () {
-            $(".restartButton").css("background", "url(images/restartIcon.png) 0px 0");
-        });
+        $(".restartButton").css("background", "url(images/restartIcon.png) 35px 0");
+    },
+                              function () {
+        $(".restartButton").css("background", "url(images/restartIcon.png) 0px 0");
+    });
 
     $(".goHomeButton").on("click", function () {
         window.open('index.html', '_self');
     });
 
     $(".goHomeButton").hover(function () {
-            $(".goHomeButton").css("background", "url(images/homeIcon.png) 60px 0");
-        },
-        function () {
+        $(".goHomeButton").css("background", "url(images/homeIcon.png) 60px 0");
+    },
+                             function () {
 
-            $(".goHomeButton").css("background", "url(images/homeIcon.png) 0px 0");
-        });
+        $(".goHomeButton").css("background", "url(images/homeIcon.png) 0px 0");
+    });
 
 
 
