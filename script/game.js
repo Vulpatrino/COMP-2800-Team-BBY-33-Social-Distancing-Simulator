@@ -9,7 +9,7 @@
 
 // Height of the game window.
 var gameHeight = window.innerHeight;
-if(gameHeight > 800) gameHeight = 800;
+if(gameHeight > 875) gameHeight = 875;
 // Width of the game window.
 var gameWidth = window.innerWidth;
 if(gameWidth > 1200) gameWidth  = 1200;
@@ -38,7 +38,7 @@ var infectBar;
 // Level of infection.
 var infectLevel = 0;
 // Maximum level of infection before the player loses.
-var infectMax = 195;
+var infectMax = gameWidth/3 -5;
 // UP on the mobile D-pad.
 var dpadUp;
 // RIGHT on the mobile D-pad.
@@ -67,12 +67,6 @@ var moveRight = false;
 var dpad;
 // Background music.
 var music;
-// Mute key.
-var volumeControl;
-// Quit key.
-var leavingPage;
-// Restart key.
-var restartKey;
 // Whether or not the music is muted.
 var mute = false;
 // Time elapsed
@@ -83,38 +77,22 @@ var timer;
 var timerText;
 // Button to pause and play game
 var pausePlayButton;
-// Mute button
-var soundButton;
-// Disable mobile controls
-var mobileControlsButton;
-// Restart game button
-var restartButton;
-// Go to home page button
-var goHomeButton;
-// Restart game button 2
-var restartButton2;
-// Go to home page button 2
-var goHomeButton2;
-// View list button
-var listButton;
-// Whether or not mobile controls are visible
+// Whether or not mobile controls are active
 var mobileControls = true;
 // The game over menu
 var gameOverMenu;
-// The win menu
-var winMenu;
-//
-var finalTimeText;
 // Turning points for enemies
 var turnPoints;
-
+// Current User's Name
 var name;
-
 // Array of player tint values.
 var playerTints = [0x58bdd1, 0xe8ae1c, 0xdd00ff, 0x00ff26, 0xffffff, 0x2f3157];
 // Current tint index.
 var currentTint = 5;
-
+// Counter to implement food jiggle
+var counter = 0;
+// game is not tutorial
+var isTut = false;
 
 /** This scene contains the main game (player, enemies, aisles, food) */
 class SceneA extends Phaser.Scene {
@@ -136,29 +114,27 @@ class SceneA extends Phaser.Scene {
         this.load.audio('2', ['audio/2.mp3', 'audio/2.ogg']);
         // New Player spritesheet
         this.load.spritesheet("player", "images/PlayerSprites.png",
-            {
-                frameWidth: 32,
-                frameHeight: 48
-            }
-        );
+                              {
+            frameWidth: 32,
+            frameHeight: 48
+        }
+                             );
         // Enemy spritesheet
         this.load.spritesheet('enemy',
-            'images/EnemySprites.png', {
-                frameWidth: 32,
-                frameHeight: 48,
-            }
-        );
+                              'images/EnemySprites.png', {
+            frameWidth: 32,
+            frameHeight: 48,
+        }
+                             );
         // Food spritesheet
         this.load.spritesheet('food',
-            'images/food.png', {
-                frameWidth: 49,
-                frameHeight: 49
-
-            }
-        );
+                              'images/foods.png', {
+            frameWidth: 32,
+            frameHeight: 32    }
+                             );
 
     }
-    
+
 
     /** Called once at the start of the game. Use this to build objects. */
     create() {
@@ -167,30 +143,29 @@ class SceneA extends Phaser.Scene {
         game.scene.sleep("gameOver");
 
 
-        // Create a shopping list
         initList(listLength);
 
-        this.add.image(600, 400, 'background').setScale(6);
+        this.add.image(600, 675, 'background').setScale(5);
 
         // Create all four walls
         walls = this.physics.add.staticGroup();
-        walls.create(600, 790, 'wall1');
-        walls.create(600, 10, 'wall1');
-        walls.create(1190, 400, 'wall2');
-        walls.create(10, 400, 'wall2');
+        walls.create(600, 865, 'wall1');
+        walls.create(600, 85, 'wall1');
+        walls.create(1190, 475, 'wall2');
+        walls.create(10, 475, 'wall2');
         aisles = this.physics.add.staticGroup({
             key: 'aisle1',
             repeat: 8,
             setXY: {
                 x: 120,
-                y: 375,
+                y: 450,
                 stepX: 120
             }
         });
 
         // Create and play music
         this.music = this.sound.add('1');
-        this.music.setVolume(0.15);
+        this.music.setVolume(0.1);
         this.music.setLoop(true);
         this.music.play();
 
@@ -198,15 +173,10 @@ class SceneA extends Phaser.Scene {
         this.pickupSound = this.sound.add('2');
         this.pickupSound.setVolume(0.5);
 
-        // Add the mute button
-        volumeControl = this.input.keyboard.addKey('M');
-        // Add the quit button
-        leavingPage = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
-        // Add the restart button.
-        restartKey = this.input.keyboard.addKey('R');
+
 
         // Create the player and their animations
-        player = this.physics.add.sprite(40, 700, 'player');
+        player = this.physics.add.sprite(600, 800, 'player');
         player.setCollideWorldBounds(true);
         updatePlayerTint();
         player.setInteractive();
@@ -267,33 +237,34 @@ class SceneA extends Phaser.Scene {
 
         // Add food to the map.
         food = this.physics.add.staticGroup();
-        var h = 45;
+
+        var h = 180;
         var w = 60;
         var foodcount = 0;
         for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 13; j++) {
+            for (let j = 0; j < 10; j++) {
 
                 food.create(w, h, 'food', foodcount);
                 foodcount += 1;
-                h += 50;
-                if (foodcount > 99) {
+                h += 60;
+                if (foodcount > 49) {
                     foodcount = 0;
                 }
             }
             w += 120;
-            h = 45;
+            h = 180;
+
         }
 
         // Adds a Food object to the food collectibles.
         let foodChildren = food.getChildren();
-        let foodLimit = foodNames.length;
         let foodIndex = 0;
         for (let i = 0; i < foodChildren.length; i++) {
             foodChildren[i].setDataEnabled();
             let newFood = new Food(foodIndex);
 
             foodIndex++;
-            if (foodIndex >= foodLimit) {
+            if (foodIndex >= foodTypes) {
                 foodIndex = 0;
             }
 
@@ -348,7 +319,7 @@ class SceneA extends Phaser.Scene {
 
         // Enemy creation loop
         var enemyX = 60;
-        var enemyY = 70;
+        var enemyY = 145;
         for (let i = 0; i < 11; i++) {
             var enemy = enemies.create(enemyX, enemyY, 'enemy');
             enemy.setCollideWorldBounds(true);
@@ -364,10 +335,10 @@ class SceneA extends Phaser.Scene {
         var circleWidth = 1;
         circle = this.add.circle(player.x, player.y, 50).setStrokeStyle(circleWidth, circleColour);
         this.physics.world.bounds.width = 1200;
-        this.physics.world.bounds.height = 800;
+        this.physics.world.bounds.height = 875;
 
         // Make camera follow the player.
-        this.cameras.main.setBounds(0, 0, 1200, 800);
+        this.cameras.main.setBounds(0, 0, 1200, 875);
         this.cameras.main.startFollow(player);
         initialMove();
 
@@ -392,46 +363,50 @@ class SceneA extends Phaser.Scene {
     // Reset enemy movement timer to 0.
     enemyMoveTimer = 0;
 
-    /** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
-    update() {
-        // Set all enemies to be slightly transparent.
-        Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
-        // Create cursor keys. (?) --Why is this being called every single frame?
-        cursors = this.input.keyboard.createCursorKeys();
-        // Make the player move.
-        playerMove();
-        // Make the player's circle follow the player object.
-        circle.setPosition(player.x, player.y);
 
-        // Detect objects inside the player's circle.
-        var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, false);
-        var inCirc = bodies.map((body) => body.gameObject.texture.key);
-        for (var i = 0; i < inCirc.length; i++) {
-            if (inCirc[i] === "enemy") {
-                infect();
-            }
-        }
-        Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
+/** Called once every frame. Use for player movement, animations, and anything that needs frequent updating. */
+update() {
+    // Set all enemies to be slightly transparent.
+    Phaser.Actions.SetAlpha(enemies.getChildren(), 0.7);
+    // Create cursor keys. (?) --Why is this being called every single frame?
+    cursors = this.input.keyboard.createCursorKeys();
+    // Make the player move.
+    playerMove();
+    // Make the player's circle follow the player object.
+    circle.setPosition(player.x, player.y);
 
-        // Mute the music if the mute key is pressed.
-        if (Phaser.Input.Keyboard.JustDown(volumeControl)) {
-            if (mute == false) {
-                this.sound.setMute(true);
-                mute = true;
-            } else {
-                this.sound.setMute(false);
-                mute = false;
-            }
-        }
-
-        // Lose the game if player's infection level maxes out.
-        if (infectLevel === infectMax) {
-            lose();
+    // Detect objects inside the player's circle.
+    var bodies = this.physics.overlapCirc(circle.x, circle.y, circle.radius, true, false);
+    var inCirc = bodies.map((body) => body.gameObject.texture.key);
+    for (var i = 0; i < inCirc.length; i++) {
+        if (inCirc[i] === "enemy") {
+            infect();
         }
     }
+    Phaser.Actions.SetAlpha(bodies.map((body) => body.gameObject), 1);
+
+    // Lose the game if player's infection level maxes out.
+    if (infectLevel >= infectMax) {
+        lose();
+    }
+
+    if (counter == 10){
+        food.getChildren().forEach(function(data){
+            glowFood(data, 1.08);
+        });
+    }
+    if (counter == 20){
+        food.getChildren().forEach(function(data){
+            glowFood(data, 1);
+        });
+        counter = 0;
+    }
+    counter++;
 }
 
-/** This scene contains the mobile D-pad and UI. */
+}
+
+/** This scene contains the mobile controls and UI. */
 class SceneB extends Phaser.Scene {
 
     constructor() {
@@ -447,6 +422,8 @@ class SceneB extends Phaser.Scene {
         this.load.image('dpad2', 'images/dpad2.png');
         this.load.image('dpad3', 'images/dpad3.png');
         this.load.image('dpad4', 'images/dpad4.png');
+        this.load.image('dpad5', 'images/dpad5.png');
+        this.load.image('dpad6', 'images/dpad6.png');
         this.load.spritesheet('pausePlayIcon', 'images/pausePlayIcon.png', {
             frameWidth: 75,
             frameHeight: 75,
@@ -457,21 +434,32 @@ class SceneB extends Phaser.Scene {
     create() {
 
         // Add timer text;
-        timerText = this.add.text(30, 60, '0', {
+        timerText = this.add.text(gameWidth/2, 25, '0', {
             fontSize: "32px",
-            fill: "#000"
+            fill: "#FFF"
         })
+
+
 
 
         // Create the infection meter.
         infectBar = this.add.graphics();
         createInfectBar();
-
+        var x = window.matchMedia("(min-width: 700px)");
         // Create the mobile D-pad.
+
         dpad = this.physics.add.group();
         createDpad();
+        if(x.matches){
+            dpad.getChildren().forEach((dpad) => {
+                $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 100px 0");
+                mobileControls = false;
+                dpad.visible = false;
+            });
+        }
+        pausePlayButton = this.physics.add.sprite(gameWidth - 37, 37, "pausePlayIcon").setInteractive();
 
-        pausePlayButton = this.physics.add.sprite(gameWidth - 60, 60, "pausePlayIcon").setInteractive();
+        pausePlayButton.setFrame(1);
         createPausePlayButton();
 
         timer = this.time.addEvent({
@@ -482,237 +470,43 @@ class SceneB extends Phaser.Scene {
     }
 }
 
-class SceneC extends Phaser.Scene {
 
-    constructor() {
-        super({
-            key: 'pause',
-            active: true
-        });
-    }
-    preload() {
-        this.load.spritesheet('listIcon', 'images/listIcon.png', {
-            frameWidth: 50,
-            frameHeight: 50,
-        });
-        this.load.spritesheet('soundIcon', 'images/soundIcon.png', {
-            frameWidth: 50,
-            frameHeight: 50,
-        });
-        this.load.spritesheet('dpadIcon', 'images/dpadIcon.png', {
-            frameWidth: 50,
-            frameHeight: 50,
-        });
-        this.load.spritesheet('restartIcon', 'images/restartIcon.png', {
-            frameWidth: 34,
-            frameHeight: 34,
-        });
-        this.load.spritesheet('homeIcon', 'images/homeIcon.png', {
-            frameWidth: 60,
-            frameHeight: 60,
-        });
-        this.load.image('menu', 'images/menu.png');
-    }
-    create() {
-        this.add.image(gameWidth / 2, gameHeight / 2 + 40, 'menu');
-        listButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 40, "listIcon").setInteractive();
-        createListButton();
-        soundButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 113, "soundIcon").setInteractive();
-        createSoundButton();
-        mobileControlsButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 187, "dpadIcon").setInteractive();
-        createMobileControlsButton();
-        restartButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 260, "restartIcon").setInteractive();
-        createRestartButton(restartButton);
-        goHomeButton = this.physics.add.sprite(gameWidth / 2 + 120, gameHeight / 3 + 330, "homeIcon").setInteractive();
-        createGoHomeButton(goHomeButton);
-    }
-}
-
-class SceneD extends Phaser.Scene {
-
-    constructor() {
-        super({
-            key: 'gameOver',
-            active: true
-        });
-    }
-    preload() {
-        this.load.image('gameOver', 'images/gameOver.png');
-        this.load.image('win', 'images/win.png');
-    }
-    create() {
-        gameOverMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'gameOver');
-        winMenu = this.add.image(gameWidth / 2, gameHeight / 2, 'win');
-        finalTimeText = this.add.text(gameWidth/2 + 20, gameHeight/2 - 100, '', {
-            fontSize: "25px",
-            fill: "#000"
-        })
-        finalTimeText.visible = false;
-        gameOverMenu.visible = false;
-        winMenu.visible = false;
-        restartButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 77, "restartIcon").setInteractive();
-        createRestartButton(restartButton2);
-        goHomeButton2 = this.physics.add.sprite(gameWidth / 2 + 50, gameHeight / 2 + 175, "homeIcon").setInteractive();
-        createGoHomeButton(goHomeButton2);
-    }
-}
-
-// Increase the timer.
+/** Updates the timer text. */
 function updateTime() {
     timerText.setText(++time);
 }
-
-function createListButton(){
-    listButton.on('pointerover', function () {
-        listButton.setFrame(1);
-    });
-
-    listButton.on('pointerout', function () {
-        listButton.setFrame(0);
-    });
-
-    listButton.on('pointerup', function () {
-        $("#listSection").css("display","flex");
-        $("#listSection").css("height",gameHeight + "px");
-        $("#listSection").css("wdith",gameWidth + "px")
-    });
-}
-function createGoHomeButton(button) {
-    button.on('pointerover', function () {
-        button.setFrame(1);
-    });
-
-    button.on('pointerout', function () {
-        button.setFrame(0);
-    });
-
-    button.on('pointerup', function () {
-        window.open('main.html','_self');
-    });
-}
-
-function createRestartButton(button) {
-    button.on('pointerover', function () {
-        button.setFrame(1);
-    });
-
-    button.on('pointerout', function () {
-        button.setFrame(0);
-    });
-
-    button.on('pointerup', function () {
-        location.reload();
-    });
-}
-
-function createSoundButton() {
-    soundButton.on('pointerover', function () {
-        if (!mute) {
-            soundButton.setFrame(1);
-        } else {
-            soundButton.setFrame(3)
-        }
-    })
-
-    soundButton.on('pointerout', function () {
-        if (!mute) {
-            soundButton.setFrame(0);
-        } else {
-            soundButton.setFrame(2)
-        }
-    })
-    soundButton.on('pointerup', function () {
-        if (!mute) {
-            soundButton.setFrame(3);
-            game.sound.setMute(true);
-            mute = true;
-        } else {
-            soundButton.setFrame(1)
-            game.sound.setMute(false);
-            mute = false;
-        }
-
-    })
-}
-
-function createMobileControlsButton() {
-
-    mobileControlsButton.on('pointerover', function () {
-        if (!mobileControls) {
-            mobileControlsButton.setFrame(3);
-        } else {
-            mobileControlsButton.setFrame(1)
-        }
-    })
-
-    mobileControlsButton.on('pointerout', function () {
-        if (!mobileControls) {
-            mobileControlsButton.setFrame(2);
-        } else {
-            mobileControlsButton.setFrame(0)
-        }
-    })
-    mobileControlsButton.on('pointerup', function () {
-        if (!mobileControls) {
-            mobileControlsButton.setFrame(1);
-            mobileControls = true;
-            dpad.getChildren().forEach((dpad) => {
-                dpad.visible = true;
-            });
-        } else {
-            mobileControlsButton.setFrame(3)
-            mobileControls = false;
-            dpad.getChildren().forEach((dpad) => {
-                dpad.visible = false;
-            });
-        }
-
-    })
-}
-
+/** Adds functionality to pause button */
 function createPausePlayButton() {
     pausePlayButton.on('pointerover', function () {
 
-        if (!game.scene.isPaused("GameScene")) {
-            pausePlayButton.setFrame(1);
-        } else {
-            pausePlayButton.setFrame(3);
-        }
+        pausePlayButton.setFrame(3);
+
     })
 
     pausePlayButton.on('pointerout', function () {
-        if (!game.scene.isPaused("GameScene")) {
-            pausePlayButton.setFrame(0);
-        } else {
-            pausePlayButton.setFrame(2);
-        }
+        pausePlayButton.setFrame(1);
     })
     pausePlayButton.on('pointerup', function () {
-        if (!game.scene.isPaused("GameScene")) {
-            pausePlayButton.setFrame(3);
-            timer.paused = true;
-            game.scene.pause("GameScene");
-            game.scene.run("pause");
-        } else {
-            pausePlayButton.setFrame(1);
-            timer.paused = false;
-            game.scene.resume("GameScene");
-            game.scene.sleep("pause");
-        }
+        pausePlayButton.setFrame(3);
+        timer.paused = true;
+        $("#pauseMenu").show("fast");
+        game.scene.pause("GameScene");
+        pausePlayButton.visible = false;
     })
 }
 /** Creates the mobile D-pad. */
 function createDpad() {
 
     // Create D-pad buttons.
-    dpadUp = dpad.create(80, gameHeight - 110, 'dpad1');
-    dpadRight = dpad.create(110, gameHeight - 80, 'dpad2');
-    dpadDown = dpad.create(80, gameHeight - 50, 'dpad1');
-    dpadLeft = dpad.create(50, gameHeight - 80, 'dpad2');
-    dpadUpRight = dpad.create(110, gameHeight - 110, 'dpad4');
-    dpadDownRight = dpad.create(110, gameHeight - 50, 'dpad3');
-    dpadDownLeft = dpad.create(50, gameHeight - 50, 'dpad4');
-    dpadUpLeft = dpad.create(50, gameHeight - 110, 'dpad3');
+    dpadUp = dpad.create(gameWidth - 100, gameHeight - 150, 'dpad1');
+    dpadRight = dpad.create(gameWidth - 50, gameHeight - 100, 'dpad2');
+    dpadDown = dpad.create(gameWidth - 100, gameHeight - 50, 'dpad3');
+    dpadLeft = dpad.create(gameWidth - 150, gameHeight - 100, 'dpad4');
+    dpad.create(gameWidth - 100, gameHeight - 100, 'dpad5');
+    dpadUpRight = dpad.create(gameWidth - 50, gameHeight - 150, 'dpad6');
+    dpadDownRight = dpad.create(gameWidth - 50, gameHeight - 50, 'dpad6');
+    dpadDownLeft = dpad.create(gameWidth - 150, gameHeight - 50, 'dpad6');
+    dpadUpLeft = dpad.create(gameWidth - 150, gameHeight - 150, 'dpad6');
 
     // Add D-pad functionality to:
     // D-pad up
@@ -860,9 +654,9 @@ function createDpad() {
 /** Creates the infection meter. */
 function createInfectBar() {
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(25, 25, 200, 30);
+    infectBar.fillRect(25, 25, gameWidth /3, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(27, 27, 195, 25);
+    infectBar.fillRect(27, 27, gameWidth /3 - 5, 25);
     infectBar.fillStyle(0xff0000);
     infectBar.fillRect(27, 27, infectLevel, 25);
 }
@@ -915,7 +709,7 @@ function initialMove() {
     }
 }
 
-// Makes the enemy turn at certain turning points
+/** Makes the enemy turn at certain turning points. */
 function turn(enemy, turnPoint) {
     // Checks if the sprite is touching something
     var touch = !enemy.body.touching.none;
@@ -963,7 +757,7 @@ function hitWallMove(enemy) {
 }
 
 /** Called when the player touches a food object. 
- * Note: "player" argument is needed for the overlap event to work.
+ *  Note: "player" argument is needed for the overlap event to work.
 */
 function collectFood(player, foodCollided) {
     // Get the pickup's food data.
@@ -981,37 +775,45 @@ function collectFood(player, foodCollided) {
 
 }
 
+/** Makes food you need to collect jiggle. */
+function glowFood(food, scale){
+
+    let foodType = food.getData("food");
+    if (foodType != undefined && onList(foodType)) {
+        food.setScale(scale);
+    }
+
+}
+
 /** Called when the player completes their shopping list. */
 function win() {
     addScore(time);
     addToLeaderboard(time);
-    game.scene.run("gameOver");
-    winMenu.visible = true;
-    finalTimeText.visible = true;
-    finalTimeText.setText(time + " seconds");
     game.scene.pause("GameScene");
-    pausePlayButton.visible =false;
+    game.scene.sleep("UIScene");
+    $("#timerText").html(time);
+    $("#winMenu").show("slow");
 }
 
+/** Called when the player has their infect bar filled. */
 function lose(){
-    game.scene.run("gameOver");
-    gameOverMenu.visible = true;
     game.scene.pause("GameScene");
-    pausePlayButton.visible =false;
+    game.scene.sleep("UIScene");
+    $("#loseMenu").show("slow");
 }
 
 /** Called when a player becomes more infected. */
 function infect() {
 
     // Increase infection level.
-    infectLevel += 0.5;
+    infectLevel += gameWidth / 400;
 
     // Rebuild infection meter.
     infectBar.clear();
     infectBar.fillStyle(0x000000);
-    infectBar.fillRect(25, 25, 200, 30);
+    infectBar.fillRect(25, 25, gameWidth/3, 30);
     infectBar.fillStyle(0xffffff);
-    infectBar.fillRect(27, 27, 195, 25);
+    infectBar.fillRect(27, 27, gameWidth/3 -5, 25);
     infectBar.fillStyle(0xff0000);
     if (infectLevel <= infectMax) {
         infectBar.fillRect(27, 27, infectLevel, 25);
@@ -1020,8 +822,10 @@ function infect() {
     }
 }
 
-function closeList(){
-    $("#listSection").css("display","none");
+/** Player tint update. */
+function updatePlayerTint() {
+    currentTint = (currentTint == (playerTints.length - 1)) ? 0 : (currentTint + 1);
+    player.setTint(playerTints[currentTint]);
 }
 
 /** Phaser configuration. */
@@ -1043,15 +847,9 @@ var config = {
             debug: false
         }
     },
-    scene: [SceneA, SceneB, SceneC, SceneD]
+    scene: [SceneA, SceneB]
 
 };
-
-/** Player tint update. */
-function updatePlayerTint() {
-    currentTint = (currentTint == (playerTints.length - 1)) ? 0 : (currentTint + 1);
-    player.setTint(playerTints[currentTint]);
-}
 
 /** Phaser instance. */
 let game = new Phaser.Game(config);

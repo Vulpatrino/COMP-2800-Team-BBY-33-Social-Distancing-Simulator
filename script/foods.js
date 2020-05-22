@@ -2,24 +2,11 @@
  * FOODS.JS
  * Contains all food-related functionality.
  * @author: Jaedon Braun
+ * @author: Eddy Wu
  */
 
-/** Array of all food names. */
-let foodNames = ["sandwich", "pear", "banana", "pineapple", "peach", "apple",
-"watermelon", "cherry", "orange", "cinnamon roll", "t-bone steak", "beer", "milk",
-"cup", "mug", "wine", "cocktail", "cheese", "green pepper", "orange juice", "roast beef",
-"waffle", "long john", "bread loaf", "croissant", "pie", "pancake", "pretzel", "pea",
-"martini", "turkey", "ice cream sandwich", "jam toast", "cucumber", "radish", "carrot",
-"mashed potato", "english muffin", "popsicle", "coke", "prune", "eggplant", "ice cream cone",
-"spaghetti", "soup", "mushroom", "chocolate bar", "cookie", "onion", "bbq sauce", "ginger",
-"burger", "cupcake", "corn", "club sandwich", "hotdog", "broccoli", "drumstick", "garlic",
-"peanut", "squash", "ham", "turnip", "pizza", "avacodo", "egg", "portabello mushroom",
-"cabbage", "chocolate popsicle", "cauliflower", "blueberry muffin", "rocket popsicles",
-"tomato", "cake slice", "kiwi", "lettuce wrap", "chocolate donut", "lemon", "pumpkin",
-"potato", "crepe", "taco", "steak", "bacon", "grape", "strawberry", "ice cream sundae",
-"shrimp", "french fry", "salad roll", "candy", "burrito", "lollipop", "pink lemonade",
-"olives", "lobster", "toast", "white radish", "bok choy", "chili pepper"];
-
+/** Number of different kinds of food. */
+let foodTypes = 50;
 
 /**
  * Current shopping list.
@@ -38,7 +25,6 @@ class Food {
      * @param {number} value Index of image and value to use for this Food.
      */
     constructor(value) {
-        this.name = foodNames[value];
         this.value = value;
         this.isCollected = false;
     }
@@ -65,14 +51,6 @@ class Food {
     getValue() {
         return this.value;
     }
-
-    /**
-     * Get the name of this food.
-     * @return name
-     */
-    getName() {
-        return this.name;
-    }
 }
 /**
  * Populates the shopping list with random food items.
@@ -80,21 +58,19 @@ class Food {
  */
 function initList(newLength) {
     let listValues = [];
-    let newItem = Math.floor(Math.random() * foodNames.length);
+    let newItem = Math.floor(Math.random() * foodTypes);
 
     // Generate random items.
     for (let i = 0; i < newLength; i++) {
 
         while (listValues.includes(newItem)) {
-            newItem = Math.floor(Math.random() * foodNames.length);
+            newItem = Math.floor(Math.random() * foodTypes);
         }
 
         listValues.push(newItem);
         console.log("Added value " + newItem);
 
         list.push(new Food(newItem));
-        let listHTML = "<li>" + list[i].getName() + "</li>";
-        document.getElementById("list").innerHTML += listHTML;
     }
 }
 /**
@@ -103,7 +79,7 @@ function initList(newLength) {
 function initTutList(newLength) {
     for (let i = 0; i < newLength; i++) {
 
-        let newItem = i
+        let newItem = i;
         let itemAlreadyContained = true;
 
         do {
@@ -123,8 +99,6 @@ function initTutList(newLength) {
 
         // Since we broke the "is already on the list" loop, the item can be added.
         list[i] = new Food(newItem);
-        let listHTML = "<li>" + list[i].getName() + "</li>";
-        document.getElementById("list").innerHTML += listHTML;
     }
 }
 
@@ -146,16 +120,23 @@ function CheckList(shelfFood) {
     return isOnList;
 }
 
+function onList(shelfFood){
+    let isOnList = false;
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].getValue() == shelfFood.getValue() && !list[i].getCollected()) {
+            isOnList = true;
+            break;
+        }
+    }
+    return isOnList;
+}
+
 /**
  * Crosses an item off the shopping list.
  * @param {number} index Index of item to cross off of the list.
  */
 function UpdateList(index) {
     list[index].setCollected();
-
-    // Cross off item on HTML list.
-    let listHTML = document.getElementById("list").children;
-    listHTML[index].className = "crossedOff";
 
     // Repeats back your shopping list. Remove after debugging.
     let uncrossedEntries = 0;

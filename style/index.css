@@ -1,28 +1,52 @@
-@font-face{
-    src:url(../fonts/EUROSTIB.ttf);
-    font-family: eurostilebold;
-}
-header {
+.main-container {
     display:flex;
     align-items: center;
     justify-content: center;
-    margin-top: 3%;
+    flex-direction: column;
+    margin-top: 10%;
+    color:white;
+    text-align: center;
 }
 
 .tagline{
     z-index: 100;
     position: absolute;
-    bottom: 10%;
-    text-align: center;
+    bottom: 50%;
     width: 100%;
-}
-h2{
-    font-family: 'eurostilebold'; 
-    text-transform: uppercase;
-    font-size: 50px;
+    color:white;
 }
 body{
-    
-    background-image: url(../images/social-distancing.jpg);
+
+    background-color: rgb(22, 34, 102);
     margin:0;
+}
+input{
+    width:50vw;
+    height:8vw;
+    background-color: white;
+    border:1px rgb(16, 24, 71) solid;
+    border-radius: 3px;;
+    color:rgb(16, 24, 71);
+}
+input:hover{  
+    border:5px rgb(16, 24, 71) solid;
+}
+img{
+    width:60%;
+}
+@media screen and (max-width: 1024px){
+    img{
+        width: 70%;
+    }
+    input{
+        height:10vw;
+    }
+}
+@media screen and (max-width: 450px){
+    img{
+        width: 95%;
+    }
+    input{
+        height:15vw;
+    }
 }

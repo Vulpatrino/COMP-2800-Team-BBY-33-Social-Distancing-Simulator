@@ -80,4 +80,8 @@ nav a {
     .profile img {
         width:20vw;
     }
+    body {
+        overflow:hidden;
+    }
+
 }

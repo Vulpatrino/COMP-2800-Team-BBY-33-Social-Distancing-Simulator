@@ -4,7 +4,7 @@ body{
 }
 main {
     display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
     grid-template-rows: 2fr 9fr 1fr;
     grid-template-areas:
         "header header header"
@@ -21,7 +21,7 @@ header {
     background-color: rgb(16, 24, 71);
 }
 header>img{
-    width: 60%;
+    width: 40%;
 }
 
 #play {
@@ -34,7 +34,7 @@ header>img{
 #menu {
     height:100%;
     display:flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
 }
 
@@ -63,7 +63,7 @@ header>img{
 
 footer {
     grid-area: footer;
-    
+
     background-color: rgb(16, 24, 71);
 }
 #logo{
@@ -72,55 +72,82 @@ footer {
     margin:10px;
 }
 input{
-    height:25px;
-    width:100px;
+    height:10%;
+    width:30%;
     margin:10px;
     position: relative;
-    top:20%;    
-
+    top:30%;
     background-color: white;
-    border:1px black solid;
-    border-radius: 3px;;
+    border:3px rgb(0, 0, 0) solid;
+    border-radius: 3px;
+    font-size: 1em;
 }
 input:hover{  
     background-color: rgb(22, 34, 102);
     color:white;
     border:1px black solid;
     border-radius: 3px;
+
 }
 #my-game{
-	display: none;
-	
+    display: none;
+
 }
 #menu{
     display:flex;
+    background : url(/images/mainbackground.png);
+    background-size: contain;
+    background-position: center; 
+    background-repeat:no-repeat;
+    background-color: #001b2e;
+}
+
+table{
+    margin:20px;
+    padding:10px;
+    border-radius: 3px;;
+    background-color: white;
+    color: rgb(16, 24, 71);
+    border: 3px rgb(16, 24, 71) solid;
+    text-align: center;
+}
+.tableTitle{
+    border-bottom: 2px solid rgb(16, 24, 71);
+    padding:5px;
 }
 @media screen and (max-width: 1024px){
     main{
         grid-template-areas:
-        "header header"
-        "play play"
-        "account leaderboard"
-        "footer footer";
-    grid-template-columns: repeat(2, 50vw);
-    grid-template-rows: 20vh 80vh 90vh 10vh;
+            "header header"
+            "play play"
+            "account leaderboard"
+            "footer footer";
+        grid-template-columns: repeat(2, 50vw);
+        grid-template-rows: 20vh 80vh 90vh 10vh;
+    }
+    header>img{
+        width: 70%;
     }
 }
 @media screen and (max-width: 450px){
     main{
         grid-template-areas:
-        "header"
-        "play"
-        "account"
-        "leaderboard"
-        "footer";
-    grid-template-columns: 100vw;
-    grid-template-rows: 20vh 80vh 100vh 90vh 10vh;
+            "header"
+            "play"
+            "account"
+            "leaderboard"
+            "footer";
+        grid-template-columns: 100vw;
+        grid-template-rows: 20vh 80vh 100vh 90vh 10vh;
     }
     #leaderboard{
         background-color: white;
-        color:initial;
+        color:rgb(16, 24, 71);
     }
+    header>img{
+        width: 95%;
+    }
+
 }
 .scoreNo{
     padding-right: 10%;

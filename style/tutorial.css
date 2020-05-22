@@ -2,26 +2,95 @@
     margin: 0;
     padding: 0;
 }
-
-    #listSection {
-        flex-direction: column;
-        position: absolute;
-        padding:1em;
-        background-color:#e5e5a0;
-        box-shadow:grey 0.25em 0.25em;
-        font-family:Arial, Helvetica, sans-serif;
-        z-index: 1;
-    }
-@font-face{
-    src:url(../fonts/EUROSTIB.ttf);
-    font-family: eurostilebold;
-}
-button{
+.instruction-btn{
     position: absolute;
-    left: 20%;
-    top: 50%;
-    font-family: eurostilebold;
-    font-size: 16pt;
-    padding:15pt;
-    border: 2px outset lightgray;
+    left: 50%;
+    top: 4%;
+    display: none;
+}
+#instrctions img{
+    max-width:100%;
+    height:auto;
+    position: absolute;
+    top:10%;
+
+}
+#instruction1{
+    display: hidden;
+}
+#instruction2{
+    display: hidden;
+}
+
+#instrctions button {
+    background-color: white;
+    border:1px rgb(16, 24, 71) solid;
+    border-radius: 3px;;
+    color: rgb(16, 24, 71);
+    position: absolute;
+
+
+}
+#next-btn{
+    top: 65%;
+    left:45%;
+}
+#back-btn{
+    top: 70%;
+    left: 45%;
+}
+#start-btn{
+    top: 65%;
+    left:45%;
+}
+#instrctions button:hover{
+    background-color: rgb(16, 24, 71);
+    color:white;
+    border:1px black solid;
+    border-radius: 3px;
+}
+@media only screen and (min-width: 768px) {
+    #instrctions button {
+
+        font-size: 2em;
+    }
+    .instruction-btn{
+        top: 8%;
+    }
+    #next-btn{
+        top: 85%;
+
+    }
+    #back-btn{
+        top: 92%;
+
+    }
+    #start-btn{
+        top: 85%;
+
+    }
+}
+@media only screen and (min-width: 1025px) {
+    #instrctions img{
+        max-width:40%;
+        height:auto;
+        position: absolute;
+        top:0%;
+        left :30%;
+    }
+    #next-btn{
+        left:47%;
+
+    }
+    #back-btn{
+        left:47%;
+
+    }
+    #start-btn{
+        left:47%;
+
+    }
+    .instruction-btn{
+        top: 2%;
+    }
 }

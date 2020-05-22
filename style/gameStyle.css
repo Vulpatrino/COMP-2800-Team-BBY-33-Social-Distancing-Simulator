@@ -1,34 +1,78 @@
-
-body {
-    display:grid;
-    grid-template-columns: 1fr 4fr;
+* {
+    overflow: hidden;
+    margin:0;
 }
-
-#listSection {
-    flex-direction: column;
-    position: absolute;
-    padding:1em;
-    background-color:#e5e5a0;
-    box-shadow:grey 0.25em 0.25em;
-    font-family:Arial, Helvetica, sans-serif;
-    z-index: 1;
+#soundButton{
+    height:50px;
+    width:50px;
+    background:url(../images/soundIcon.png) 0 0;
 }
-
-#listSection h1 {
-    font-size:3em;
+#mobileControlsButton{
+    height:50px;
+    width:50px;
+    background:url(../images/dpadIcon.png) 0 0;
 }
-
-#list {
-    list-style:circle;
-    font-size:2em;
+.restartButton{
+    height:35px;
+    width:35px;
+    background:url(../images/restartIcon.png) 0 0;
 }
+.goHomeButton{
+    height:60px;
+    width:60px;
+    background:url(../images/homeIcon.png) 0 0;
+}
+#pauseContent{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(4, 100px);
+    align-items: center;
+    gap:10px;
+}
+#pauseContent h4{
+    margin:0;
+    text-align: end;
+    color:rgb(16, 24, 71);
 
-.crossedOff {
-    text-decoration:line-through;
+}
+.modal-body h4{
+    color:rgb(16, 24, 71);
+    text-align: center;
+
+}
+.endButtons{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(2, 100px);
+    align-items: center;
+    gap:10px;
+}
+.endButtons h4{
+    margin:0;
+    text-align: end;
+
+}
+.modal-header *{
+    text-align: center;
+    color:rgb(16, 24, 71);
+}
+#resume{
+    background-color: white;
+    border:1px rgb(16, 24, 71) solid;
+    border-radius: 3px;;
+    color: rgb(16, 24, 71)
+}
+#resume:hover{  
+    background-color: rgb(16, 24, 71);
+    color:white;
+    border:1px black solid;
+    border-radius: 3px;
 }
 #player{
     position: absolute;
     top:0px;
     left:0px;
 }
+
+
 
