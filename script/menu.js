@@ -1,9 +1,38 @@
 $(document).ready(()=>{
+    
     $("#resume").on("click",function(){
         pausePlayButton.visible = true;
-        timer.paused = false;
         game.scene.resume("GameScene");
         $("#pauseMenu").hide("fast");
+        if(!isTut){
+        timer.paused = false;
+        }
+    });
+    $("#next-btn").on("click",function(){
+        $("#intruction1").hide("fast");
+        $("#next-btn").hide("fast");
+        $("#intruction2").show("fast");
+        $("#back-btn").show("fast");
+        $("#start-btn").show("fast");
+    });
+    $("#back-btn").on("click",function(){
+        $("#intruction1").show("fast");
+        $("#next-btn").show("fast");
+    });
+    $("#start-btn").on("click",function(){
+        finishTut = true;
+        $("#intruction2").hide("fast");
+        $("#back-btn").hide("fast");
+        $("#start-btn").hide("fast");
+        $("#instruction-btn").show("fast");
+        game.scene.resume("GameScene");
+        
+    });
+    $("#instruction-btn").on("click",function(){
+        game.scene.pause("GameScene");
+        $("#intruction1").show("fast");
+        $("#next-btn").show("fast");
+        $("#instruction-btn").hide("fast");
     });
 
     $("#mobileControlsButton").on("click", function () {
@@ -66,8 +95,11 @@ $(document).ready(()=>{
 
 
     $(".restartButton").on("click", function () {
-        window.open('game.html', '_self');
-
+        if(isTut){
+        window.open('tutorial.html', '_self');
+        } else{
+            window.open('game.html', '_self');
+        }
     });
 
     $(".restartButton").hover(function () {

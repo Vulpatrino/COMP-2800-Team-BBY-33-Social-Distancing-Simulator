@@ -78,7 +78,7 @@ function initList(newLength) {
 function initTutList(newLength) {
     for (let i = 0; i < newLength; i++) {
 
-        let newItem = i
+        let newItem = i;
         let itemAlreadyContained = true;
 
         do {
