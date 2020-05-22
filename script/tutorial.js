@@ -82,8 +82,11 @@ var name;
 var playerTints = [0x58bdd1, 0xe8ae1c, 0xdd00ff, 0x00ff26, 0xffffff, 0x2f3157];
 // Current tint index.
 var currentTint = 5;
+// Counter used to make food jiggle
 var counter = 0;
+//checks to see if its a tutorial
 var isTut = true;
+//checks to see if it the tutorial is finish
 var finishTut = false;
 
 /** This scene contains the main game (player, enemies, aisles, food) */
@@ -429,11 +432,6 @@ class SceneB extends Phaser.Scene {
 
     // Called once when the scene loads.
     create() {
-
-
-
-
-
         // Create the infection meter.
         infectBar = this.add.graphics();
         createInfectBar();
@@ -451,13 +449,11 @@ class SceneB extends Phaser.Scene {
 
         pausePlayButton.setFrame(1);
         createPausePlayButton();
-
-       
     }
 }
 
 
-
+/** Adds functionality to pause button */
 function createPausePlayButton() {
     pausePlayButton.on('pointerover', function () {
 
@@ -755,7 +751,7 @@ function collectFood(player, foodCollided) {
     }
 
 }
-
+/** Makes the food jiggle */
 function glowFood(food, scale){
 
     let foodType = food.getData("food");
@@ -771,7 +767,7 @@ function win() {
     game.scene.sleep("UIScene");
     $("#winMenu").show("slow");
 }
-
+/** Called when infection meter is filled up */
 function lose(){
     game.scene.pause("GameScene");
     game.scene.sleep("UIScene");
@@ -796,10 +792,6 @@ function infect() {
     } else {
         infectBar.fillRect(27, 27, infectMax, 25);
     }
-}
-
-function closeList(){
-    $("#listSection").css("display","none");
 }
 
 /** Phaser configuration. */

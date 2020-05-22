@@ -95,7 +95,7 @@ input:hover{
 }
 #menu{
     display:flex;
-    background : url(/images/mainbackground3.png);
+    background : url(/images/mainbackground.png);
     background-size: contain;
     background-position: center; 
     background-repeat:no-repeat;

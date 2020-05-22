@@ -89,7 +89,9 @@ var name;
 var playerTints = [0x58bdd1, 0xe8ae1c, 0xdd00ff, 0x00ff26, 0xffffff, 0x2f3157];
 // Current tint index.
 var currentTint = 5;
+// Counter to implement food jiggle
 var counter = 0;
+// game is not tutorial
 var isTut = false;
 
 /** This scene contains the main game (player, enemies, aisles, food) */
@@ -430,7 +432,7 @@ class SceneB extends Phaser.Scene {
 
     // Called once when the scene loads.
     create() {
-        
+
         // Add timer text;
         timerText = this.add.text(gameWidth/2, 25, '0', {
             fontSize: "32px",
@@ -449,11 +451,11 @@ class SceneB extends Phaser.Scene {
         dpad = this.physics.add.group();
         createDpad();
         if(x.matches){
-        dpad.getChildren().forEach((dpad) => {
-            $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 100px 0");
-            mobileControls = false;
-            dpad.visible = false;
-        });
+            dpad.getChildren().forEach((dpad) => {
+                $("#mobileControlsButton").css("background", "url(images/dpadIcon.png) 100px 0");
+                mobileControls = false;
+                dpad.visible = false;
+            });
         }
         pausePlayButton = this.physics.add.sprite(gameWidth - 37, 37, "pausePlayIcon").setInteractive();
 
@@ -473,8 +475,7 @@ class SceneB extends Phaser.Scene {
 function updateTime() {
     timerText.setText(++time);
 }
-
-/** Creating the button for pausing the game and bringing up the menu. */
+/** Adds functionality to pause button */
 function createPausePlayButton() {
     pausePlayButton.on('pointerover', function () {
 
