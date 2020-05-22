@@ -2,17 +2,39 @@
 This readme will tell you everything you need to know about getting started with the SDS game.
 
 ## Table of Contents:
+- Gratitude List
+- What's Included
 - What You Need
 - Getting Started
 - Testing History
 
 ***
 
+## Gratitude List:
+First and foremost, we'd like to thank the following parties for their help:
+- Photon Storm, for creating the Phaser 3 framework that this whole game is founded on.
+- Google, for the Firebase Authentication and Datastore products that allowed us to create a leaderboard of user scores.
+- DeWolfe Music, for the use of "Mr. Lucky" as our background music.
+
+## What's Included:
+We give you all the source code to the game, as well as our working files.
+- HTML pages
+- JavaScript scripts
+- CSS stylesheets
+- Firestore authentication and Firestore rules
+- Image and icon files
+- Audio files
+- In-progress files:
+- - Aseprite files for various animations
+
 ## What You Need:
 - Javascript IDE (Visual Studio, Notepad++, etc)
 - Image editing software (for creating or editing sprites)
-- Phaser 3 knowledge (the documentation will come in handy)
-The developer will not need any API keys or downloaded frameworks. Everything you need to start out is included in this package.
+- Phaser 3 knowledge (the [online documentation](https://photonstorm.github.io/phaser3-docs/index.html) will come in handy)
+
+The developer will not need any API keys or downloaded frameworks. No special configuration is necessary. Everything you need to start out is included in this package.
+
+If you need access to the Firebase database, please reach out to contributor [wueddyw.](https://github.com/wueddyw)
 
 ## Getting Started:
 Getting started with this package is really simple.
@@ -27,8 +49,6 @@ Each Phaser scene has a *preload(), create(),* and *update()* function.
 - *preload()* loads all outside assets needed for the game, such as images and audio.
 - *create()* creates ALL GAME OBJECTS, including players, enemies, walls, sprite animations, audio players, and more!
 - *update()* is called every time a new frame is rendered, and should only be used for constant functions like object movement.
-
-
 
 ## Testing History:
 You can see our current testing history [on this spreadsheet.](https://docs.google.com/spreadsheets/d/1mr0khymjQXTGa3ddb4prcuiclrct1MMS4igVVIiYBxw/edit?usp=sharing)
