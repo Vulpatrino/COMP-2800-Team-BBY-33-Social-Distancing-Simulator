@@ -9,7 +9,7 @@
 
 // Height of the game window.
 var gameHeight = window.innerHeight;
-if(gameHeight > 800) gameHeight = 800;
+if(gameHeight > 875) gameHeight = 875;
 // Width of the game window.
 var gameWidth = window.innerWidth;
 if(gameWidth > 1200) gameWidth  = 1200;
@@ -142,7 +142,7 @@ class SceneA extends Phaser.Scene {
 
         initList(listLength);
 
-        this.add.image(600, 400, 'background').setScale(6);
+        this.add.image(600, 675, 'background').setScale(5);
 
         // Create all four walls
         walls = this.physics.add.staticGroup();
@@ -431,9 +431,9 @@ class SceneB extends Phaser.Scene {
     create() {
         
         // Add timer text;
-        timerText = this.add.text(gameWidth/2, 40, '0', {
+        timerText = this.add.text(gameWidth/2, 25, '0', {
             fontSize: "32px",
-            fill: "#000"
+            fill: "#FFF"
         })
 
 
@@ -452,7 +452,9 @@ class SceneB extends Phaser.Scene {
             dpad.visible = false;
         });
         }
+
         pausePlayButton = this.physics.add.sprite(gameWidth - 37, 37, "pausePlayIcon").setInteractive();
+
         pausePlayButton.setFrame(1);
         createPausePlayButton();
 

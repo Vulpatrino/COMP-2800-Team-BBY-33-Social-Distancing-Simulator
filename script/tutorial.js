@@ -413,7 +413,7 @@ update() {
 
     // Quit to main page if the quit key is pressed.
     if (Phaser.Input.Keyboard.JustDown(leavingPage)) {
-        window.open('main.html', '_self');
+        window.open('index.html', '_self');
     }
 
     // Reload the page if the restart key is pressed.
@@ -573,7 +573,7 @@ function createGoHomeButton(button) {
     });
 
     button.on('pointerup', function () {
-        window.open('main.html','_self');
+        window.open('index.html','_self');
     });
 }
 
@@ -1051,7 +1051,7 @@ function playerMove() {
         menuButton.innerHTML = "Back to main menu";
         var body = document.getElementsByTagName("body")[0];
         body.appendChild(menuButton);
-        menuButton.onclick = function(){ window.open('main.html','_self')};
+        menuButton.onclick = function(){ window.open('index.html','_self')};
     }
     // makes a redo button show up
     function redoButton(){
