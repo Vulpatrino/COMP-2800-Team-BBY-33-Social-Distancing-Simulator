@@ -2,6 +2,7 @@
  * FOODS.JS
  * Contains all food-related functionality.
  * @author: Jaedon Braun
+ * @author: Eddy Wu
  */
 
 /** Number of different kinds of food. */
