@@ -452,7 +452,6 @@ class SceneB extends Phaser.Scene {
             dpad.visible = false;
         });
         }
-
         pausePlayButton = this.physics.add.sprite(gameWidth - 37, 37, "pausePlayIcon").setInteractive();
 
         pausePlayButton.setFrame(1);
