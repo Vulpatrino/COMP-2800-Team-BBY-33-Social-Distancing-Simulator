@@ -93,7 +93,7 @@ $(document).ready(()=>{
         if(isTut){
         window.open('tutorial.html', '_self');
         } else{
-            window.open('game .html', '_self');
+            window.open('game.html', '_self');
         }
     });
 
