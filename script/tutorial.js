@@ -79,6 +79,7 @@ var leavingPage;
 var restartKey;
 // Whether or not the music is muted.
 var mute = false;
+var mobileControls = true;
 // Tutorial Text
 var tutorialText;
 var tutLeft = false;
