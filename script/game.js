@@ -173,7 +173,7 @@ class SceneA extends Phaser.Scene {
 
 
         // Create the player and their animations
-        player = this.physics.add.sprite(55, 825, 'player');
+        player = this.physics.add.sprite(600, 800, 'player');
         player.setCollideWorldBounds(true);
         updatePlayerTint();
         player.setInteractive();
@@ -255,14 +255,13 @@ class SceneA extends Phaser.Scene {
 
         // Adds a Food object to the food collectibles.
         let foodChildren = food.getChildren();
-        let foodLimit = foodNames.length;
         let foodIndex = 0;
         for (let i = 0; i < foodChildren.length; i++) {
             foodChildren[i].setDataEnabled();
             let newFood = new Food(foodIndex);
 
             foodIndex++;
-            if (foodIndex >= foodLimit) {
+            if (foodIndex >= foodTypes) {
                 foodIndex = 0;
             }
 
@@ -453,7 +452,9 @@ class SceneB extends Phaser.Scene {
             dpad.visible = false;
         });
         }
-        pausePlayButton = this.physics.add.sprite(gameWidth - 60, 35, "pausePlayIcon").setInteractive();
+
+        pausePlayButton = this.physics.add.sprite(gameWidth - 37, 37, "pausePlayIcon").setInteractive();
+
         pausePlayButton.setFrame(1);
         createPausePlayButton();
 
