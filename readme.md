@@ -24,13 +24,13 @@ We give you all the source code to the game, as well as our working files.
 - Firestore authentication and Firestore rules
 - Image and icon files
 - Audio files
-- In-progress files:
-- - Aseprite files for various animations
+- Aseprite working files
 
 ## What You Need:
 - Javascript IDE (Visual Studio, Notepad++, etc)
 - Image editing software (for creating or editing sprites)
 - Phaser 3 knowledge (the [online documentation](https://photonstorm.github.io/phaser3-docs/index.html) will come in handy)
+- Aseprite (*optional,* if you want to use the working files for player and enemy animations)
 
 The developer will not need any API keys or downloaded frameworks. No special configuration is necessary. Everything you need to start out is included in this package.
 
