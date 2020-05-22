@@ -1,3 +1,6 @@
+/**
+ * Code for the various menus in our game. Including handling mouseovers and button presses.
+ */
 $(document).ready(()=>{
     
     $("#resume").on("click",function(){
